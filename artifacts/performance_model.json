@@ -1,0 +1,289 @@
+{
+  "sphere_162_design": {
+    "name": "Sphere-162",
+    "tiles": {
+      "compute": {
+        "count": 113,
+        "cores": 4,
+        "matrix_units": 1,
+        "power_w": 15.0
+      },
+      "memory_ctrl": {
+        "count": 25,
+        "hbm_stacks": 1,
+        "power_w": 12.0
+      },
+      "cache_io": {
+        "count": 24,
+        "l3_mb": 64,
+        "power_w": 8.0
+      }
+    },
+    "process_nm": 3,
+    "matrix_tops_fp8_per_unit": 500.0,
+    "core_clock_ghz": 3.5,
+    "core_ipc_fp32": 4.0,
+    "hbm_bw_per_stack_gbps": 9600,
+    "hbm_capacity_per_stack_gb": 36,
+    "fabric_link_bw_gbps": 256,
+    "fabric_links_per_tile": 6,
+    "l3_per_tile_mb": 64
+  },
+  "sphere_162_aggregate_performance": {
+    "fp8_pflops_dense": 56.5,
+    "fp32_tflops_scalar": 12.656,
+    "hbm_capacity_gb": 900,
+    "hbm_bw_tbps": 30.0,
+    "hbm_bw_TBps": 30.0,
+    "l3_total_mb": 1536,
+    "power_typical_w": 2280.312,
+    "power_breakdown": {
+      "compute": 1695.0,
+      "memory_ctrl": 300.0,
+      "cache_io": 192.0,
+      "serdes": 93.312
+    }
+  },
+  "competitors": {
+    "NVIDIA H100 SXM": {
+      "fp8_pflops_dense": 3.96,
+      "fp32_tflops_scalar": 67,
+      "hbm_capacity_gb": 80,
+      "hbm_bw_TBps": 3.35,
+      "l3_total_mb": 50,
+      "power_typical_w": 700
+    },
+    "NVIDIA B200": {
+      "fp8_pflops_dense": 9.0,
+      "fp32_tflops_scalar": 80,
+      "hbm_capacity_gb": 192,
+      "hbm_bw_TBps": 8.0,
+      "l3_total_mb": 100,
+      "power_typical_w": 1000
+    },
+    "AMD MI300X": {
+      "fp8_pflops_dense": 5.22,
+      "fp32_tflops_scalar": 81.7,
+      "hbm_capacity_gb": 192,
+      "hbm_bw_TBps": 5.3,
+      "l3_total_mb": 256,
+      "power_typical_w": 750
+    },
+    "Cerebras WSE-3": {
+      "fp8_pflops_dense": 125,
+      "fp32_tflops_scalar": 0,
+      "hbm_capacity_gb": 44,
+      "hbm_bw_TBps": 21000,
+      "l3_total_mb": 44000,
+      "power_typical_w": 23000
+    },
+    "8x H100 node (NVLink)": {
+      "fp8_pflops_dense": 31.68,
+      "fp32_tflops_scalar": 536,
+      "hbm_capacity_gb": 640,
+      "hbm_bw_TBps": 26.8,
+      "l3_total_mb": 400,
+      "power_typical_w": 6400
+    },
+    "Sphere-162 (this work)": {
+      "fp8_pflops_dense": 56.5,
+      "fp32_tflops_scalar": 12.656,
+      "hbm_capacity_gb": 900,
+      "hbm_bw_TBps": 30.0,
+      "l3_total_mb": 1536,
+      "power_typical_w": 2280.312
+    }
+  },
+  "workload_projections": {
+    "Llama-70B inference (FP8)": {
+      "NVIDIA H100 SXM": {
+        "compute_ratio": 7.92,
+        "mem_ratio": 0.67,
+        "fits_in_memory": true,
+        "effective_throughput_x": 0.67
+      },
+      "NVIDIA B200": {
+        "compute_ratio": 18.0,
+        "mem_ratio": 1.6,
+        "fits_in_memory": true,
+        "effective_throughput_x": 1.6
+      },
+      "AMD MI300X": {
+        "compute_ratio": 10.44,
+        "mem_ratio": 1.06,
+        "fits_in_memory": true,
+        "effective_throughput_x": 1.06
+      },
+      "Cerebras WSE-3": {
+        "compute_ratio": 250.0,
+        "mem_ratio": 4200.0,
+        "fits_in_memory": false,
+        "effective_throughput_x": 75.0
+      },
+      "8x H100 node (NVLink)": {
+        "compute_ratio": 63.36,
+        "mem_ratio": 5.36,
+        "fits_in_memory": true,
+        "effective_throughput_x": 5.36
+      },
+      "Sphere-162 (this work)": {
+        "compute_ratio": 113.0,
+        "mem_ratio": 6.0,
+        "fits_in_memory": true,
+        "effective_throughput_x": 6.0
+      }
+    },
+    "Llama-405B inference (FP8)": {
+      "NVIDIA H100 SXM": {
+        "compute_ratio": 1.584,
+        "mem_ratio": 0.134,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.0402
+      },
+      "NVIDIA B200": {
+        "compute_ratio": 3.6,
+        "mem_ratio": 0.32,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.096
+      },
+      "AMD MI300X": {
+        "compute_ratio": 2.088,
+        "mem_ratio": 0.212,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.06359999999999999
+      },
+      "Cerebras WSE-3": {
+        "compute_ratio": 50.0,
+        "mem_ratio": 840.0,
+        "fits_in_memory": false,
+        "effective_throughput_x": 15.0
+      },
+      "8x H100 node (NVLink)": {
+        "compute_ratio": 12.672,
+        "mem_ratio": 1.072,
+        "fits_in_memory": true,
+        "effective_throughput_x": 1.072
+      },
+      "Sphere-162 (this work)": {
+        "compute_ratio": 22.6,
+        "mem_ratio": 1.2,
+        "fits_in_memory": true,
+        "effective_throughput_x": 1.2
+      }
+    },
+    "GPT-175B training step": {
+      "NVIDIA H100 SXM": {
+        "compute_ratio": 0.07919999999999999,
+        "mem_ratio": 0.41875,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.023759999999999996
+      },
+      "NVIDIA B200": {
+        "compute_ratio": 0.18,
+        "mem_ratio": 1.0,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.054
+      },
+      "AMD MI300X": {
+        "compute_ratio": 0.10439999999999999,
+        "mem_ratio": 0.6625,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.031319999999999994
+      },
+      "Cerebras WSE-3": {
+        "compute_ratio": 2.5,
+        "mem_ratio": 2625.0,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.75
+      },
+      "8x H100 node (NVLink)": {
+        "compute_ratio": 0.6335999999999999,
+        "mem_ratio": 3.35,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.19007999999999997
+      },
+      "Sphere-162 (this work)": {
+        "compute_ratio": 1.13,
+        "mem_ratio": 3.75,
+        "fits_in_memory": true,
+        "effective_throughput_x": 1.13
+      }
+    },
+    "Sparse GEMM (graph, FP16)": {
+      "NVIDIA H100 SXM": {
+        "compute_ratio": 39.599999999999994,
+        "mem_ratio": 0.2791666666666667,
+        "fits_in_memory": true,
+        "effective_throughput_x": 0.2791666666666667
+      },
+      "NVIDIA B200": {
+        "compute_ratio": 90.0,
+        "mem_ratio": 0.6666666666666666,
+        "fits_in_memory": true,
+        "effective_throughput_x": 0.6666666666666666
+      },
+      "AMD MI300X": {
+        "compute_ratio": 52.199999999999996,
+        "mem_ratio": 0.44166666666666665,
+        "fits_in_memory": true,
+        "effective_throughput_x": 0.44166666666666665
+      },
+      "Cerebras WSE-3": {
+        "compute_ratio": 1250.0,
+        "mem_ratio": 1750.0,
+        "fits_in_memory": false,
+        "effective_throughput_x": 375.0
+      },
+      "8x H100 node (NVLink)": {
+        "compute_ratio": 316.79999999999995,
+        "mem_ratio": 2.2333333333333334,
+        "fits_in_memory": true,
+        "effective_throughput_x": 2.2333333333333334
+      },
+      "Sphere-162 (this work)": {
+        "compute_ratio": 565.0,
+        "mem_ratio": 2.5,
+        "fits_in_memory": true,
+        "effective_throughput_x": 2.5
+      }
+    },
+    "CFD simulation (FP64)": {
+      "NVIDIA H100 SXM": {
+        "compute_ratio": 0.792,
+        "mem_ratio": 0.8375,
+        "fits_in_memory": false,
+        "effective_throughput_x": 0.2376
+      },
+      "NVIDIA B200": {
+        "compute_ratio": 1.8,
+        "mem_ratio": 2.0,
+        "fits_in_memory": true,
+        "effective_throughput_x": 1.8
+      },
+      "AMD MI300X": {
+        "compute_ratio": 1.044,
+        "mem_ratio": 1.325,
+        "fits_in_memory": true,
+        "effective_throughput_x": 1.044
+      },
+      "Cerebras WSE-3": {
+        "compute_ratio": 25.0,
+        "mem_ratio": 5250.0,
+        "fits_in_memory": false,
+        "effective_throughput_x": 7.5
+      },
+      "8x H100 node (NVLink)": {
+        "compute_ratio": 6.336,
+        "mem_ratio": 6.7,
+        "fits_in_memory": true,
+        "effective_throughput_x": 6.336
+      },
+      "Sphere-162 (this work)": {
+        "compute_ratio": 11.3,
+        "mem_ratio": 7.5,
+        "fits_in_memory": true,
+        "effective_throughput_x": 7.5
+      }
+    }
+  }
+}
