@@ -16,4 +16,5 @@ keywords:
   - deadlock-free routing
   - all-reduce
 license: MIT
+doi: 10.5281/zenodo.19918238
 type: software

@@ -1,3 +1,6 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19918238.svg)](https://doi.org/10.5281/zenodo.19918238)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # Spherical Chiplet Fabric — Publication Bundle
 
 **Paper:** *A Spherical Chiplet Fabric with Geodesic Topology, Planet-Style
@@ -126,8 +129,8 @@ Paper text: CC-BY 4.0.
          for Large-Scale AI and HPC Workloads},
   author={Ali, Musthafa},
   year={2026},
-  note={Independent research, Sydney, Australia.
-        Available at: <arxiv-link-here>}
+  doi={10.5281/zenodo.19918238},
+  url={https://github.com/igenius0/sphere-chiplet-fabric}
 }
 ```
 
