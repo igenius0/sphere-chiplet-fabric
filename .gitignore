@@ -22,3 +22,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Reproducible local experiment output (curated examples/results stays tracked)
+generated/
+.venv/

@@ -5,6 +5,11 @@ import math
 from collections import defaultdict, deque
 import numpy as np
 
+try:
+    from .validation import finite, integer
+except ImportError:
+    from validation import finite, integer
+
 
 def _normalize(v):
     n = math.sqrt(sum(x*x for x in v))
@@ -33,6 +38,9 @@ def icosahedron_base():
 
 
 def make_icosphere(subdivisions=2, radius_mm=40.0, add_chords=False, n_chords=0):
+    integer(subdivisions, 'subdivisions')
+    finite(radius_mm, 'radius_mm', strict=True)
+    integer(n_chords, 'n_chords')
     verts, faces = icosahedron_base()
     for _ in range(subdivisions):
         cache = {}
@@ -62,7 +70,10 @@ def make_icosphere(subdivisions=2, radius_mm=40.0, add_chords=False, n_chords=0)
     coords = {i: tuple(radius_mm * x for x in v) for i, v in enumerate(verts)}
     adj_out = {i: sorted(list(s)) for i, s in adj.items()}
 
+    chord_edges = set()
     if add_chords and n_chords > 0:
+        if n_chords > len(verts) // 2:
+            raise ValueError('n_chords exceeds the disjoint endpoint budget')
         verts_arr = np.array(verts)
         used = set()
         chords_added = 0
@@ -77,6 +88,7 @@ def make_icosphere(subdivisions=2, radius_mm=40.0, add_chords=False, n_chords=0)
                 continue
             adj_out[i].append(j)
             adj_out[j].append(i)
+            chord_edges.add(tuple(sorted((i, j))))
             used.add(i); used.add(j)
             chords_added += 1
 
@@ -86,24 +98,29 @@ def make_icosphere(subdivisions=2, radius_mm=40.0, add_chords=False, n_chords=0)
             if (v, u) in link_length:
                 link_length[(u, v)] = link_length[(v, u)]
                 continue
-            uv = np.array(coords[u])
-            vv = np.array(coords[v])
-            cos_angle = np.dot(uv, vv) / (np.linalg.norm(uv) * np.linalg.norm(vv))
+            uv = np.array(verts[u])
+            vv = np.array(verts[v])
+            cos_angle = np.dot(uv, vv)
             cos_angle = np.clip(cos_angle, -1, 1)
-            arc = radius_mm * math.acos(cos_angle)
-            link_length[(u, v)] = arc
+            length = (radius_mm * float(np.linalg.norm(uv - vv))
+                      if tuple(sorted((u, v))) in chord_edges
+                      else radius_mm * math.acos(cos_angle))
+            link_length[(u, v)] = length
 
     return {
         'name': f'icosphere_s{subdivisions}{"_chords"+str(n_chords) if add_chords else ""}',
         'nodes': list(range(len(verts))),
         'coords': coords,
-        'adj': adj_out,
+        'adj': {i: sorted(neighbors) for i, neighbors in adj_out.items()},
         'link_length': link_length,
         'topology_type': 'icosphere',
     }
 
 
 def make_torus(rows, cols, link_length_mm=4.0):
+    integer(rows, 'rows', 1)
+    integer(cols, 'cols', 1)
+    finite(link_length_mm, 'link_length_mm', strict=True)
     N = rows * cols
     adj = {i: [] for i in range(N)}
     coords = {}
@@ -115,6 +132,7 @@ def make_torus(rows, cols, link_length_mm=4.0):
             adj[i].append(r * cols + ((c-1) % cols))
             adj[i].append(((r+1) % rows) * cols + c)
             adj[i].append(((r-1) % rows) * cols + c)
+    adj = {k: sorted(set(v) - {k}) for k, v in adj.items()}
     link_length = {}
     for u, neighbors in adj.items():
         for v in neighbors:
@@ -123,23 +141,27 @@ def make_torus(rows, cols, link_length_mm=4.0):
         'name': f'torus_{rows}x{cols}',
         'nodes': list(range(N)),
         'coords': coords,
-        'adj': {k: sorted(list(set(v))) for k, v in adj.items()},
+        'adj': adj,
         'link_length': link_length,
         'topology_type': 'torus',
     }
 
 
 def make_dragonfly(n_groups=9, routers_per_group=6, link_length_mm=8.0):
+    """Synthetic grouped graph, not a radix-matched canonical dragonfly."""
+    integer(n_groups, 'n_groups', 1)
+    integer(routers_per_group, 'routers_per_group', 1)
+    finite(link_length_mm, 'link_length_mm', strict=True)
     N = n_groups * routers_per_group
     adj = {i: [] for i in range(N)}
     coords = {}
     for g in range(n_groups):
-        gx = 100 * math.cos(2*math.pi*g/n_groups)
-        gy = 100 * math.sin(2*math.pi*g/n_groups)
+        gx = 12.5 * link_length_mm * math.cos(2*math.pi*g/n_groups)
+        gy = 12.5 * link_length_mm * math.sin(2*math.pi*g/n_groups)
         for r in range(routers_per_group):
             i = g * routers_per_group + r
-            rx = gx + 10 * math.cos(2*math.pi*r/routers_per_group)
-            ry = gy + 10 * math.sin(2*math.pi*r/routers_per_group)
+            rx = gx + 1.25 * link_length_mm * math.cos(2*math.pi*r/routers_per_group)
+            ry = gy + 1.25 * link_length_mm * math.sin(2*math.pi*r/routers_per_group)
             coords[i] = (rx, ry, 0)
     for g in range(n_groups):
         base = g * routers_per_group
@@ -149,6 +171,8 @@ def make_dragonfly(n_groups=9, routers_per_group=6, link_length_mm=8.0):
                 adj[base + r2].append(base + r1)
     for g in range(n_groups):
         for r in range(routers_per_group):
+            if n_groups == 1:
+                continue
             i = g * routers_per_group + r
             target_g = (g + 1 + r) % n_groups
             if target_g == g:
@@ -191,12 +215,17 @@ def topology_stats(topo):
             if d > 0:
                 all_dists.append(d)
         diameters.append(max(dist.values()))
+    possible_pairs = N * (N - 1)
+    all_dists.sort()
     return {
         'nodes': N,
-        'avg_degree': sum(len(v) for v in adj.values()) / N,
-        'avg_hops': sum(all_dists) / len(all_dists),
-        'max_hops': max(diameters),
-        'p99_hops': sorted(all_dists)[int(0.99 * len(all_dists))],
-        'p95_hops': sorted(all_dists)[int(0.95 * len(all_dists))],
+        'avg_degree': sum(len(v) for v in adj.values()) / N if N else 0.0,
+        'reachable_pairs': len(all_dists),
+        'unreachable_pairs': possible_pairs - len(all_dists),
+        'connected': len(all_dists) == possible_pairs,
+        'avg_hops': sum(all_dists) / len(all_dists) if all_dists else None,
+        'max_hops': max(diameters) if diameters else None,
+        'p99_hops': all_dists[int(0.99 * len(all_dists))] if all_dists else None,
+        'p95_hops': all_dists[int(0.95 * len(all_dists))] if all_dists else None,
         'hop_dist': all_dists,
     }

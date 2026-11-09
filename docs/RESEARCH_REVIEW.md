@@ -1,0 +1,34 @@
+# Research review and evidence status
+
+Review baseline: main commit `6440633e56af59fbefcb183736994769bd5bcd58`. The April 2026 paper, its PDF, root `figures/` and original `artifacts/` remain historical publication material. Corrected code changes the model and outputs; it does not retroactively validate those published figures or claims.
+
+## Findings addressed
+
+| Finding | Correction in this revision | Consequence |
+|---|---|---|
+| Packets labelled uncontended were injected as a simultaneous burst | `run_traffic(rate=None)` resets link state for every probe | Regenerate unloaded latency and tail distributions |
+| A submitted packet reserved downstream links before earlier-arriving competitors | Chronological hop-arrival `send_batch()` scheduler; used by traffic and collective phases | Load/contention results no longer depend on submission order except explicit simultaneous ties |
+| Disconnected collectives silently produced timings; singleton traffic could loop | Explicit validation and unreachable-route handling | Invalid experiments fail; valid delivery/loss accounting remains visible |
+| Finite inputs could overflow timing or lose positive delays at huge timestamps | Validate derived timing/service values and floating-point resolution | Unrepresentable experiments fail explicitly |
+| Topology dimensions and edge cases were unchecked | Validate dimensions/radius; clean degenerate tori; report unreachable pairs | Exported graphs and statistics are internally consistent |
+| Antipodal chord lengths used surface arcs | Straight chords use Euclidean length; surface neighbors keep arcs | Chord latency uses the intended geometric path |
+| Comparisons mixed different node counts/network budgets | Equal 42/162-node experiments and equal-total/per-link policies | Exposes extra ports, bandwidth and wiring costs |
+| A chosen, sometimes unbalanced cut was called bisection | Report one balanced coordinate-median cut with partition sizes | No minimum-bisection claim |
+| Ring chunks and tree full messages were compared as equal payload | Evaluation uses ring 8-flit chunks and tree N×8-flit full payloads | Matched per-rank payload; ideal schedule only |
+| FP8 peaks were applied to FP16/FP64 tasks; competitor tables mixed sparsity and SRAM/HBM | Replace comparator with explicit precision-matched Roofline ceiling | No unsupported competitor, efficiency or mixed-precision ranking |
+| HBM stack bandwidth bypassed fabric endpoint constraints in the analytical model | Expose 30 TB/s local stack sum and ≤4.8 TB/s remote endpoint ceiling | Makes compute/HBM locality a first-order requirement |
+| Component power was presented as system power | Report component subtotal and missing HBM/system terms | Full-system efficiency remains unknown |
+| Scripts wrote to an author's absolute path and executed on import | Import-safe CLIs with caller-selected output paths | Reproducible runs from arbitrary working directories |
+| No automated regressions or CI | Independent analytic, CLI, graph, workload, model and adversarial tests; Python 3.10/3.12 CI | Repeatable software correctness checks |
+
+## Claims requiring further work
+
+The Python model has infinite output queues, deterministic shortest-hop BFS and independent full-duplex link capacity. Virtual-channel count is metadata. It does not implement the paper's adaptive/escape-VC routing, finite buffers, credit backpressure, channel-dependency proof, request/response network, epoch/commit frame protocol, reduction compute or endpoint shared-injection limits. The router is exploratory and event-driven, not cycle accurate.
+
+The sphere has twelve degree-five vertices and other degree-six vertices at subdivision two; those vertices are not all graph-equivalent under rotation. Coordinate reorientation preserves distances, topology and ownership. Performance improvement requires an actual change to work/data placement or route policy, with its costs measured.
+
+Synthetic dispatch is not full MoE inference. Periodic-grid stencil placement is aligned with torus wiring. Finite-trace average payload delivery is not a sustained saturation measurement. Static failed edges are not live fault recovery. Delivered-only percentiles must always be read with loss counts.
+
+The historical 56.5 PFLOPS, 900 GB, 30 TB/s and approximately 2.3 kW describe assumptions/projections, not an implemented processor. The former efficiency ratio and headline timing comparisons should not be reused as validated results. In particular, NVIDIA's H100 datasheet marks 3,958 FP8 TFLOPS with sparsity; assigning that number to a dense field was inconsistent. [NVIDIA source](https://resources.nvidia.com/en-us-gpu/h100-datasheet-24306).
+
+Use the [design proposal](DESIGN_PROPOSAL.md) for the recommended next architecture and the [validation plan](VALIDATION_PLAN.md) to decide when evidence is sufficient to advance.
