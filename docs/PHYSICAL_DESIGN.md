@@ -1,5 +1,6 @@
 # Physical architecture recommendation
 
+Publication/evidence revision **v1.1.0, 9 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
 Status: engineering proposal, 9 November 2026. No placement, routing, package extraction, silicon implementation or thermal qualification has been completed. Numbers derived from the repository are analytical bounds. External examples establish available technology classes, not access to compatible chiplets or a manufacturing quotation.
 
 ## Recommended direction

@@ -1,320 +1,289 @@
 {
-  "topology_stats": {
-    "Sphere (162)": {
-      "nodes": 162,
-      "avg_degree": 5.925925925925926,
-      "avg_hops": 5.6645962732919255,
-      "max_hops": 12,
-      "p99_hops": 10,
-      "p95_hops": 9
+  "schema_version": 2,
+  "config": {
+    "subdivisions": 2,
+    "n_packets": 2000,
+    "seed": 42,
+    "bandwidth_policy": "equal_total"
+  },
+  "assumptions": {
+    "evidence": "exploratory store-and-forward simulation, not cycle-accurate hardware validation",
+    "fairness": "equal nodes and shared rank traces; optional equal baseline total directed bandwidth",
+    "uncontended": "every packet is isolated with link state reset",
+    "contention": "chronological hop events; infinite output queues and full-duplex directed links",
+    "physical": "surface arcs or straight chords on sphere; ideal fixed 4mm torus links; wiring and power differ",
+    "cut": "one balanced coordinate partition, not minimum bisection",
+    "collectives": "matched full payload; ideal schedules omit compute, launch, credits and protocol overhead",
+    "energy": "unvalidated constant 1.5pJ/link-bit and 0.5pJ/router-bit at every rate; path-count proxy only",
+    "omitted": "finite buffers, VC arbitration, endpoint shared injection, memory, faults, thermal and SI/PI"
+  },
+  "candidates": [
+    {
+      "name": "sphere",
+      "resource_budget": {
+        "nodes": 162,
+        "undirected_links": 480,
+        "average_degree": 5.925925925925926,
+        "link_bandwidth_gbps_per_direction": 172.8,
+        "aggregate_directed_bandwidth_gbps": 165888.0,
+        "total_link_length_mm": 5769.128408697569,
+        "mean_link_length_mm": 12.019017518119936
+      },
+      "topology_stats": {
+        "nodes": 162,
+        "avg_degree": 5.925925925925926,
+        "reachable_pairs": 26082,
+        "unreachable_pairs": 0,
+        "connected": true,
+        "avg_hops": 5.6645962732919255,
+        "max_hops": 12,
+        "p99_hops": 10,
+        "p95_hops": 9
+      },
+      "uncontended_latency": {
+        "n_packets": 2000,
+        "failed": 0,
+        "avg_latency_ns": 79.63876609270523,
+        "p50_latency_ns": 83.59383415653323,
+        "p95_latency_ns": 125.42064890352819,
+        "p99_latency_ns": 139.35627655947576,
+        "max_latency_ns": 153.2708063294437,
+        "avg_hops": 5.716,
+        "p99_hops": 10
+      },
+      "load_sweep": {
+        "aggregate_rates_pkts_per_ns": [
+          0.001,
+          0.01,
+          0.1,
+          0.5,
+          1.0,
+          2.0
+        ],
+        "mean_latency_ns": [
+          79.63876609281874,
+          79.64346173249523,
+          79.78340642091861,
+          80.64640665868711,
+          81.59512545707663,
+          84.46930406220248
+        ],
+        "p99_latency_ns": [
+          139.35627655941062,
+          139.35627655941062,
+          139.35627655947437,
+          150.99691270258262,
+          150.6505618039266,
+          163.18649891794135
+        ]
+      },
+      "all_reduce": {
+        "per_rank_payload_flits": 1296,
+        "ring_chunk_flits": 8,
+        "tree_message_flits": 1296,
+        "ring_time_ns": 49802.98614112144,
+        "tree_time_ns": 92209.98533795883,
+        "semantics": "same full payload per rank; ideal reduce/broadcast schedules; no reduction compute"
+      },
+      "balanced_coordinate_cut": {
+        "partition_sizes": [
+          81,
+          81
+        ],
+        "crossing_links": 54,
+        "cut_bandwidth_gbps": 9331.2,
+        "method": "one balanced coordinate-median cut; not a minimum-cut search"
+      },
+      "hotspot": {
+        "n_packets": 2000,
+        "failed": 0,
+        "avg_latency_ns": 79.67381701887957,
+        "p50_latency_ns": 83.5661984645526,
+        "p95_latency_ns": 133.66046148328516,
+        "p99_latency_ns": 145.12927049954584,
+        "max_latency_ns": 161.14833307387096,
+        "avg_hops": 5.62,
+        "p99_hops": 10
+      },
+      "assumed_path_energy_pj_per_bit": 11.829192546583851
     },
-    "Sphere+chords (162)": {
-      "nodes": 162,
-      "avg_degree": 6.049382716049383,
-      "avg_hops": 4.40602714515758,
-      "max_hops": 7,
-      "p99_hops": 6,
-      "p95_hops": 6
+    {
+      "name": "sphere_chords",
+      "resource_budget": {
+        "nodes": 162,
+        "undirected_links": 490,
+        "average_degree": 6.049382716049383,
+        "link_bandwidth_gbps_per_direction": 169.2734693877551,
+        "aggregate_directed_bandwidth_gbps": 165888.0,
+        "total_link_length_mm": 6569.128408697569,
+        "mean_link_length_mm": 13.40638450754606
+      },
+      "topology_stats": {
+        "nodes": 162,
+        "avg_degree": 6.049382716049383,
+        "reachable_pairs": 26082,
+        "unreachable_pairs": 0,
+        "connected": true,
+        "avg_hops": 4.40602714515758,
+        "max_hops": 7,
+        "p99_hops": 6,
+        "p95_hops": 6
+      },
+      "uncontended_latency": {
+        "n_packets": 2000,
+        "failed": 0,
+        "avg_latency_ns": 62.91450907571306,
+        "p50_latency_ns": 70.89605701943447,
+        "p95_latency_ns": 85.51985946728067,
+        "p99_latency_ns": 85.54480494640454,
+        "max_latency_ns": 99.7081199070424,
+        "avg_hops": 4.424,
+        "p99_hops": 6
+      },
+      "load_sweep": {
+        "aggregate_rates_pkts_per_ns": [
+          0.001,
+          0.01,
+          0.1,
+          0.5,
+          1.0,
+          2.0
+        ],
+        "mean_latency_ns": [
+          62.91450907586361,
+          62.91450907572067,
+          63.0603507782126,
+          63.76891494318554,
+          64.85882656967716,
+          69.15514510728748
+        ],
+        "p99_latency_ns": [
+          85.54480494686985,
+          85.54480494640302,
+          88.82395919336136,
+          96.27759133722725,
+          99.80355077556625,
+          130.111852452231
+        ]
+      },
+      "all_reduce": {
+        "per_rank_payload_flits": 1296,
+        "ring_chunk_flits": 8,
+        "tree_message_flits": 1296,
+        "ring_time_ns": 33986.28329455969,
+        "tree_time_ns": 47065.9137022403,
+        "semantics": "same full payload per rank; ideal reduce/broadcast schedules; no reduction compute"
+      },
+      "balanced_coordinate_cut": {
+        "partition_sizes": [
+          81,
+          81
+        ],
+        "crossing_links": 62,
+        "cut_bandwidth_gbps": 10494.955102040816,
+        "method": "one balanced coordinate-median cut; not a minimum-cut search"
+      },
+      "hotspot": {
+        "n_packets": 2000,
+        "failed": 0,
+        "avg_latency_ns": 64.00030410885061,
+        "p50_latency_ns": 70.89347990541592,
+        "p95_latency_ns": 89.26096796353575,
+        "p99_latency_ns": 97.44822027159152,
+        "max_latency_ns": 113.08536311486932,
+        "avg_hops": 4.407,
+        "p99_hops": 6
+      },
+      "assumed_path_energy_pj_per_bit": 9.31205429031516
     },
-    "Torus 13x13 (169)": {
-      "nodes": 169,
-      "avg_degree": 4.0,
-      "avg_hops": 6.5,
-      "max_hops": 12,
-      "p99_hops": 12,
-      "p95_hops": 11
-    },
-    "Dragonfly 9x6 (54)": {
-      "nodes": 54,
-      "avg_degree": 7.0,
-      "avg_hops": 2.358490566037736,
-      "max_hops": 3,
-      "p99_hops": 3,
-      "p95_hops": 3
+    {
+      "name": "torus",
+      "resource_budget": {
+        "nodes": 162,
+        "undirected_links": 324,
+        "average_degree": 4.0,
+        "link_bandwidth_gbps_per_direction": 256.0,
+        "aggregate_directed_bandwidth_gbps": 165888.0,
+        "total_link_length_mm": 1296.0,
+        "mean_link_length_mm": 4.0
+      },
+      "topology_stats": {
+        "nodes": 162,
+        "avg_degree": 4.0,
+        "reachable_pairs": 26082,
+        "unreachable_pairs": 0,
+        "connected": true,
+        "avg_hops": 6.763975155279503,
+        "max_hops": 13,
+        "p99_hops": 13,
+        "p95_hops": 11
+      },
+      "uncontended_latency": {
+        "n_packets": 2000,
+        "failed": 0,
+        "avg_latency_ns": 68.22144,
+        "p50_latency_ns": 70.18666666666667,
+        "p95_latency_ns": 110.29333333333335,
+        "p99_latency_ns": 130.3466666666667,
+        "max_latency_ns": 130.3466666666667,
+        "avg_hops": 6.804,
+        "p99_hops": 13
+      },
+      "load_sweep": {
+        "aggregate_rates_pkts_per_ns": [
+          0.001,
+          0.01,
+          0.1,
+          0.5,
+          1.0,
+          2.0
+        ],
+        "mean_latency_ns": [
+          68.2214399997397,
+          68.22144000002406,
+          68.3836266666688,
+          68.96811999999986,
+          69.69829333333318,
+          72.43804999999989
+        ],
+        "p99_latency_ns": [
+          130.3466666659806,
+          130.34666666669,
+          130.34666666666635,
+          130.34666666666635,
+          130.48680000000002,
+          141.90259999999964
+        ]
+      },
+      "all_reduce": {
+        "per_rank_payload_flits": 1296,
+        "ring_chunk_flits": 8,
+        "tree_message_flits": 1296,
+        "ring_time_ns": 11609.173333333334,
+        "tree_time_ns": 67444.6933333333,
+        "semantics": "same full payload per rank; ideal reduce/broadcast schedules; no reduction compute"
+      },
+      "balanced_coordinate_cut": {
+        "partition_sizes": [
+          81,
+          81
+        ],
+        "crossing_links": 18,
+        "cut_bandwidth_gbps": 4608.0,
+        "method": "one balanced coordinate-median cut; not a minimum-cut search"
+      },
+      "hotspot": {
+        "n_packets": 2000,
+        "failed": 0,
+        "avg_latency_ns": 68.87405333333317,
+        "p50_latency_ns": 70.1866666666665,
+        "p95_latency_ns": 120.06666666666659,
+        "p99_latency_ns": 130.16026666666653,
+        "max_latency_ns": 142.1866666666665,
+        "avg_hops": 6.7585,
+        "p99_hops": 12
+      },
+      "assumed_path_energy_pj_per_bit": 14.027950310559007
     }
-  },
-  "uncontended_latency": {
-    "Sphere (162)": {
-      "n_packets": 5000,
-      "failed": 0,
-      "avg_latency_ns": 2138.5590203198485,
-      "p50_latency_ns": 2140.002389953428,
-      "p95_latency_ns": 4011.636654193157,
-      "p99_latency_ns": 4192.71439973171,
-      "max_latency_ns": 4456.9414241989,
-      "avg_hops": 5.69,
-      "p99_hops": 10
-    },
-    "Sphere+chords (162)": {
-      "n_packets": 5000,
-      "failed": 0,
-      "avg_latency_ns": 1423.4743006613278,
-      "p50_latency_ns": 1483.3623376825765,
-      "p95_latency_ns": 2764.6407269392753,
-      "p99_latency_ns": 2930.289616548274,
-      "max_latency_ns": 3049.4388820392155,
-      "avg_hops": 4.4004,
-      "p99_hops": 6
-    },
-    "Torus 13x13 (169)": {
-      "n_packets": 5000,
-      "failed": 0,
-      "avg_latency_ns": 3141.827178666662,
-      "p50_latency_ns": 2958.826666666662,
-      "p95_latency_ns": 6318.1866666666565,
-      "p99_latency_ns": 6606.738133333322,
-      "max_latency_ns": 6889.279999999988,
-      "avg_hops": 6.4642,
-      "p99_hops": 12
-    },
-    "Dragonfly 9x6 (54)": {
-      "n_packets": 5000,
-      "failed": 0,
-      "avg_latency_ns": 795.9427734143221,
-      "p50_latency_ns": 811.9577263900558,
-      "p95_latency_ns": 1518.135301734566,
-      "p99_latency_ns": 1631.0335614604023,
-      "max_latency_ns": 1708.024924610677,
-      "avg_hops": 2.3554,
-      "p99_hops": 3
-    }
-  },
-  "load_sweep": {
-    "Sphere (162)": {
-      "rates": [
-        0.001,
-        0.005,
-        0.01,
-        0.02,
-        0.05,
-        0.1,
-        0.2,
-        0.5,
-        1.0,
-        2.0
-      ],
-      "avg": [
-        57.621580907551305,
-        57.62158090752727,
-        57.621580907523224,
-        57.65437250022181,
-        57.86475932894208,
-        58.323350693948015,
-        59.60545243464954,
-        64.48196311095565,
-        84.77322792525612,
-        370.30673942147536
-      ],
-      "p99": [
-        100.83775804087054,
-        100.83775804087054,
-        100.83775804087054,
-        100.8377580409433,
-        100.83775804094348,
-        110.85198604588145,
-        122.58888905295551,
-        161.2880094998843,
-        271.6506542176215,
-        824.6599209253387
-      ]
-    },
-    "Sphere+chords (162)": {
-      "rates": [
-        0.001,
-        0.005,
-        0.01,
-        0.02,
-        0.05,
-        0.1,
-        0.2,
-        0.5,
-        1.0,
-        2.0
-      ],
-      "avg": [
-        44.907229057022064,
-        44.907229056996336,
-        44.90722905699696,
-        44.911800538790764,
-        45.00409728121081,
-        45.172149465114714,
-        45.605691932342765,
-        47.29166910315752,
-        51.520035527669236,
-        105.04153659870619
-      ],
-      "p99": [
-        61.25663706171326,
-        61.25663706142986,
-        61.25663706146588,
-        61.25663706143797,
-        61.25989224981822,
-        69.38278420290143,
-        74.35556417732674,
-        91.45304077891734,
-        118.45936655287393,
-        336.1621864486985
-      ]
-    },
-    "Torus 13x13 (169)": {
-      "rates": [
-        0.001,
-        0.005,
-        0.01,
-        0.02,
-        0.05,
-        0.1,
-        0.2,
-        0.5,
-        1.0,
-        2.0
-      ],
-      "avg": [
-        64.53663999975625,
-        64.5366400000289,
-        64.5407733333558,
-        64.71578666667679,
-        65.21264000000268,
-        65.97724000000201,
-        67.95942666666649,
-        77.08898666666646,
-        259.08116666666496,
-        719.9688733333314
-      ],
-      "p99": [
-        120.3199999993667,
-        120.32000000006519,
-        120.32000000006519,
-        120.32000000002154,
-        120.31999999999975,
-        120.32000000002154,
-        141.55173333333283,
-        186.82133333333303,
-        607.8202666666627,
-        1518.3669333333294
-      ]
-    },
-    "Dragonfly 9x6 (54)": {
-      "rates": [
-        0.001,
-        0.005,
-        0.01,
-        0.02,
-        0.05,
-        0.1,
-        0.2,
-        0.5,
-        1.0,
-        2.0
-      ],
-      "avg": [
-        24.81343355270015,
-        24.81343355273595,
-        24.81343355272645,
-        24.813433552725506,
-        24.82261861630286,
-        24.86300718380395,
-        24.97436045950895,
-        25.44684613112255,
-        26.590679684209157,
-        29.447616782357116
-      ],
-      "p99": [
-        32.74162406194955,
-        32.74162406194955,
-        32.741624061869516,
-        32.741624061869516,
-        32.74162406187054,
-        32.741802694666276,
-        35.12837543900427,
-        43.95141921508334,
-        52.84807004155291,
-        66.12029525666576
-      ]
-    }
-  },
-  "all_reduce": {
-    "Sphere (162)": {
-      "ring_us": 34.919430585566026,
-      "tree_us": 0.4339853379588386,
-      "best_us": 0.4339853379588386,
-      "n_nodes": 162
-    },
-    "Sphere+chords (162)": {
-      "ring_us": 23.29190323567543,
-      "tree_us": 0.22152744627274726,
-      "best_us": 0.22152744627274726,
-      "n_nodes": 162
-    },
-    "Torus 13x13 (169)": {
-      "ring_us": 12.113919999999986,
-      "tree_us": 0.4326399999999998,
-      "best_us": 0.4326399999999998,
-      "n_nodes": 169
-    },
-    "Dragonfly 9x6 (54)": {
-      "ring_us": 5.99782424520074,
-      "tree_us": 0.11325230801606512,
-      "best_us": 0.11325230801606512,
-      "n_nodes": 54
-    }
-  },
-  "bisection_gbps": {
-    "Sphere (162)": 11776.0,
-    "Sphere+chords (162)": 13824.0,
-    "Torus 13x13 (169)": 6656.0,
-    "Dragonfly 9x6 (54)": 8704.0
-  },
-  "hotspot": {
-    "Sphere (162)": {
-      "n_packets": 3000,
-      "failed": 0,
-      "avg_latency_ns": 65.20621447574314,
-      "p50_latency_ns": 60.50591001296016,
-      "p95_latency_ns": 113.20249778082257,
-      "p99_latency_ns": 151.2467521456095,
-      "max_latency_ns": 222.24201493143164,
-      "avg_hops": 5.6113333333333335,
-      "p99_hops": 10
-    },
-    "Sphere+chords (162)": {
-      "n_packets": 3000,
-      "failed": 0,
-      "avg_latency_ns": 48.22482740431709,
-      "p50_latency_ns": 50.412168319289776,
-      "p95_latency_ns": 70.73173378852707,
-      "p99_latency_ns": 95.5620004366451,
-      "max_latency_ns": 132.50735692077888,
-      "avg_hops": 4.414333333333333,
-      "p99_hops": 6
-    },
-    "Torus 13x13 (169)": {
-      "n_packets": 3000,
-      "failed": 0,
-      "avg_latency_ns": 85.07247111111086,
-      "p50_latency_ns": 80.21333333333314,
-      "p95_latency_ns": 156.63999999999942,
-      "p99_latency_ns": 203.1663999999985,
-      "max_latency_ns": 295.0133333333324,
-      "avg_hops": 6.530333333333333,
-      "p99_hops": 12
-    },
-    "Dragonfly 9x6 (54)": {
-      "n_packets": 3000,
-      "failed": 0,
-      "avg_latency_ns": 26.83141573968228,
-      "p50_latency_ns": 30.638163578271815,
-      "p95_latency_ns": 37.974569536259395,
-      "p99_latency_ns": 48.19431646925004,
-      "max_latency_ns": 69.05093755138114,
-      "avg_hops": 2.34,
-      "p99_hops": 3
-    }
-  },
-  "energy_pj_per_bit": {
-    "Sphere (162)": 11.829192546583851,
-    "Sphere+chords (162)": 9.31205429031516,
-    "Torus 13x13 (169)": 13.5,
-    "Dragonfly 9x6 (54)": 5.216981132075472
-  }
+  ]
 }

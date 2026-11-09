@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "publication_version": "1.1.0",
+  "publication_date": "2026-11-09",
+  "source_sha256": {
+    "paper/main.tex": "c12ea925c7a17b56a09b68e6f06f65c945fa826fa0aa0081c8ade8787f288d9f",
+    "paper/generated_results.tex": "07fbe46ad044cc1e0a3ea6ee699f7fe553f7e6044772633e5467031f09545679",
+    "CITATION.cff": "8cd1b39d5c59d9877bd3ada88f35b56b10352cf575c6ff499aaa4d9ae6584658",
+    "artifacts/publication_manifest.json": "58ca6d33be0b3658efc1f9bc8ec0b0135ecb8c5b1783d83fb462fed7cec3e989",
+    "scripts/build_paper.py": "73efe32fddbd4012f9994065dcefc4f928bc87b1bbe4648868899b9e66273470",
+    "figures/fig1_hop_cdf.pdf": "1629c47b44adae7e7edfa78194750a3bc439061a1e351132e2a9de9d69328ee5",
+    "figures/fig2_latency_cdf.pdf": "37e536ee722dd19db8bb0251a8a3dadb25b56b6f1d68edb0fffb7f988f27aba2",
+    "figures/fig3_latency_load.pdf": "18e22485e9e248a1804ccc2248d0fc3fd125ee76e6d631f174d78d3ced577809",
+    "figures/fig4_tail_ratio.pdf": "0fa95a0fd790deeaa60d248b911443b785882e77a8f97d23ad7c3578fb1810af",
+    "figures/fig5_allreduce.pdf": "e2188f839f07b783c768dfacae052135be286592c27d9ae516014be5f1aa1f03",
+    "figures/fig6_balanced_cut.pdf": "62cdeb39acfc5b6afec8c8986357d6de121e4433162c1f90b9945f08f9d51c83",
+    "figures/fig7_hotspot.pdf": "fcebd8f3708411fe124adefbdf3aa52ae3f359f42ed15511fa795efbb1488999",
+    "figures/fig8_energy_proxy.pdf": "1a661418634a88d80d7a3c6f412f1d081f2d1f835e33ffe08dfecd092d5bb1b3"
+  },
+  "output_sha256": {
+    "paper/main.pdf": "98d5bccaf58e08e8ac1dadc4daff0519b038f7d2feeaf44e5757e95954b20f09"
+  },
+  "environment": {
+    "latex_engine": "pdfTeX 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian)",
+    "python_version": "3.12.14",
+    "source_date_epoch": 1794182400,
+    "force_source_date": true,
+    "pdf_trailer_identifier": "omitted for deterministic staging-directory builds"
+  },
+  "build_command": "python scripts/build_paper.py",
+  "scope": "Exact authored paper, citation metadata, generated tables, figure PDFs and model manifest used to render this PDF. Visual review and scientific validity remain separate checks."
+}

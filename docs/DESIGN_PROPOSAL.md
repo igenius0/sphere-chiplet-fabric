@@ -1,6 +1,6 @@
 # iGenius accelerator: proposed architecture v0.2
 
-Engineering recommendation, 9 November 2026. This is a candidate to build and validate, not a claim to have found the world's fastest processor. The selection objective is useful application throughput and energy at a fixed numerical-accuracy and request-latency target, with manufacturable packaging and defined failure behaviour.
+Engineering recommendation, 9 November 2026. Publication/evidence revision: [v1.1.0](PUBLICATION_REVISION.md). This is a candidate to build and validate, not a claim to have found the world's fastest processor. The selection objective is useful application throughput and energy at a fixed numerical-accuracy and request-latency target, with manufacturable packaging and defined failure behaviour.
 
 ## Recommended architecture
 

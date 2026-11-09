@@ -10,14 +10,18 @@ From the repository root, with Python 3.10+:
 
 ```bash
 python -m pip install -r requirements.txt
+python scripts/rebuild_publication.py
+# To rebuild only this sensitivity report:
 python -m sim.run_sweep --n-packets 500 --seeds 7 19 42 73 101 --output examples/results/design_sweep.json
 ```
 
 The direct-script equivalent is `python sim/run_sweep.py` with the same arguments. For a small smoke run, use `--n-packets 2 --seeds 7`. Add `--json` to print the complete report. The runner permits 1–2,000 packets per profile and 1–10 unique seeds. Imports do not execute experiments or write files. The JSON contains no timestamps and repeats deterministically for the same configuration, code, and numerical environment.
 
-The committed run used **Python 3.12.14** and **NumPy 2.3.5**; these are the observed execution versions, while the project supports Python 3.10+.
+The committed run records its exact Python and NumPy versions in the report's `provenance`; the project supports Python 3.10+. The [publication manifest](../artifacts/publication_manifest.json) records the full rebuild environment, configurations, source hashes and generated-output hashes. The [revised paper](../paper/main.pdf) uses tables generated from the same JSON reports.
 
 The committed [JSON report](../examples/results/design_sweep.json) contains exact configurations, compact per-profile metrics, removed link IDs, resource budgets, and cohort summaries. Its `provenance` records the exact Python and NumPy versions and SHA-256 fingerprints of `sim/fabric.py`, `sim/topology.py`, `sim/validation.py`, `sim/workloads.py`, and `sim/run_sweep.py`. Source files are resolved relative to the runner, so fingerprints also work when invoked from another directory. There are no timestamps or self-referential commit IDs. A changed source fingerprint identifies a different code state even if a small smoke trace happens to return identical metrics.
+
+The separate [flat-topology evaluation](../artifacts/results.json) uses 162 nodes, seed 42, 2,000 packet pairs and equal total directed link bandwidth; its eight figure pairs are in `figures/`. The [capacity report](../artifacts/performance_model.json) contains assumed resource ceilings and incomplete component power. Those are distinct experiments and evidence types; values must not be mixed with the five-seed workload medians below.
 
 ## Experimental setup
 

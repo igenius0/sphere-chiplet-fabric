@@ -1,6 +1,6 @@
 # Research review and evidence status
 
-Review baseline: main commit `6440633e56af59fbefcb183736994769bd5bcd58`. The April 2026 paper, its PDF, root `figures/` and original `artifacts/` remain historical publication material. Corrected code changes the model and outputs; it does not retroactively validate those published figures or claims.
+Review baseline: original main commit `6440633e56af59fbefcb183736994769bd5bcd58`. Corrected publication revision **v1.1.0, 9 November 2026**, updates the paper, its PDF, root `figures/` and `artifacts/` to the current model and evidence. The original April 2026 bundle remains at [Git tag v1.0.1](https://github.com/igenius0/sphere-chiplet-fabric/tree/v1.0.1) and [DOI 10.5281/zenodo.19918238](https://doi.org/10.5281/zenodo.19918238). The revised evidence supersedes the affected original claims; it does not retroactively validate them. See the [publication revision record](PUBLICATION_REVISION.md).
 
 ## Findings addressed
 
@@ -19,11 +19,12 @@ Review baseline: main commit `6440633e56af59fbefcb183736994769bd5bcd58`. The Apr
 | HBM stack bandwidth bypassed fabric endpoint constraints in the analytical model | Expose 30 TB/s local stack sum and ≤4.8 TB/s remote endpoint ceiling | Makes compute/HBM locality a first-order requirement |
 | Component power was presented as system power | Report component subtotal and missing HBM/system terms | Full-system efficiency remains unknown |
 | Scripts wrote to an author's absolute path and executed on import | Import-safe CLIs with caller-selected output paths | Reproducible runs from arbitrary working directories |
+| Root publication assets and citation metadata referred to the original model | Rebuild current JSON/figures/generated tables and revise paper/citation metadata; record source and output hashes | Current repository publication and code share an explicit evidence trail |
 | No automated regressions or CI | Independent analytic, CLI, graph, workload, model and adversarial tests; Python 3.10/3.12 CI | Repeatable software correctness checks |
 
 ## Claims requiring further work
 
-The Python model has infinite output queues, deterministic shortest-hop BFS and independent full-duplex link capacity. Virtual-channel count is metadata. It does not implement the paper's adaptive/escape-VC routing, finite buffers, credit backpressure, channel-dependency proof, request/response network, epoch/commit frame protocol, reduction compute or endpoint shared-injection limits. The router is exploratory and event-driven, not cycle accurate.
+The Python model has infinite output queues, deterministic shortest-hop BFS and independent full-duplex link capacity. Virtual-channel count is metadata. It does not implement the original paper's proposed adaptive/escape-VC routing, finite buffers, credit backpressure, channel-dependency proof, request/response network, epoch/commit frame protocol, reduction compute or endpoint shared-injection limits. The router is exploratory and event-driven, not cycle accurate.
 
 The sphere has twelve degree-five vertices and other degree-six vertices at subdivision two; those vertices are not all graph-equivalent under rotation. Coordinate reorientation preserves distances, topology and ownership. Performance improvement requires an actual change to work/data placement or route policy, with its costs measured.
 

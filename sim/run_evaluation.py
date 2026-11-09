@@ -1,4 +1,8 @@
-"""Reproducible, equal-node topology experiments; historical figures stay intact."""
+"""Reproducible equal-node topology experiments with explicit resource budgets.
+
+The default output is generated/evaluation. scripts/rebuild_publication.py
+uses the same evaluator to synchronize the committed publication artifacts.
+"""
 import argparse
 import json
 from pathlib import Path

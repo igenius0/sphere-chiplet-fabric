@@ -1,5 +1,6 @@
 # Validation and iteration plan
 
+Publication/evidence revision **v1.1.0, 9 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
 This plan defines how to select a useful accelerator architecture from the
 spherical/geodesic concept and its alternatives. The thresholds below are
 **proposed engineering decision gates**, not achieved results or a claim that
@@ -36,7 +37,7 @@ peaks or selecting spherical packaging.
 
 ## First five affordable experiment bundles
 
-Run these from the repository root after installing `requirements.txt`.
+Rebuild the committed publication evidence with `python scripts/rebuild_publication.py`, then build the paper with `python scripts/build_paper.py`. Verify both builders with their `--check` modes and inspect `artifacts/publication_manifest.json` plus `paper/publication_manifest.json`. Run the experiments below from the repository root after installing `requirements.txt`.
 The commands are starting points; the complete matrices below are planned
 validation work and are not represented as already executed.
 
@@ -132,7 +133,7 @@ selection. Freeze or revise them openly with the product requirements before
 examining the held-out results. A successful application result does not waive
 physical signoff or transport correctness.
 
-For the paper's proposed escape VC plus adaptive VCs, the specification must
+For the original paper's proposed escape VC plus adaptive VCs, the specification must
 also define legal VC transitions, injection/ejection dependencies, request and
 response networks, fairness, and the channel-dependency behavior while failed
 links or routing epochs change. A path found by BFS is not a deadlock proof.

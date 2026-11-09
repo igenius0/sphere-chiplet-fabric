@@ -1,675 +1,790 @@
-\documentclass[10pt,twocolumn,a4paper]{article}
-
+\documentclass[11pt,a4paper]{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[a4paper, margin=20mm]{geometry}
+\usepackage[a4paper,margin=22mm]{geometry}
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
-\usepackage{booktabs}
+\usepackage{booktabs,array}
 \usepackage{url}
 \usepackage{hyperref}
-\usepackage{titlesec}
 \usepackage{caption}
-\captionsetup[figure]{font=small,labelfont=bf}
-\captionsetup[table]{font=small,labelfont=bf}
-
-\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue, urlcolor=blue}
-
-\titleformat*{\section}{\large\bfseries}
-\titleformat*{\subsection}{\normalsize\bfseries}
-
-\setlength{\columnsep}{6mm}
+\captionsetup{font=small,labelfont=bf}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue,
+  pdftitle={Spherical Chiplet Fabric: Corrected Simulation and Memory-Local Design Study},
+  pdfauthor={Musthafa Ali}}
+\graphicspath{{../figures/}}
 \setlength{\parindent}{1em}
-
-\title{\bfseries A Spherical Chiplet Fabric with Geodesic Topology, \\
-Planet-Style Coordinates, and Reorientable Frame Semantics \\
-for Large-Scale AI and HPC Workloads}
-
-\author{Musthafa Ali \\
-\small Independent Researcher, Sydney, Australia \\
-\small \texttt{mali@outlook.com.au}}
-\date{April 2026}
-
+\setlength{\parskip}{2pt}
+\setlength{\emergencystretch}{2em}
+\setcounter{topnumber}{2}
+\setcounter{totalnumber}{3}
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\Urlmuskip=0mu plus 1mu
+% Generated from committed JSON by scripts/rebuild_publication.py.
+\input{generated_results.tex}
+\title{\bfseries A Spherical Chiplet Fabric with Geodesic Topology,\newline
+Planet-Style Coordinates, and Reorientable Frame Semantics\newline
+for Large-Scale AI and HPC Workloads\\[8pt]
+\large Corrected Simulation and Memory-Local Design Study}
+\author{Musthafa Ali\\
+\normalsize Independent Researcher, Sydney, Australia\\
+\normalsize\texttt{mali@outlook.com.au}}
+\date{Publication revision \PublicationVersion\\9 November 2026}
 \begin{document}
-
-\twocolumn[
-\begin{@twocolumnfalse}
 \maketitle
 
 \begin{abstract}
-\noindent
-We present a chiplet-based processor architecture in which compute,
-memory-controller, and cache/IO tiles are arranged on the vertices of a
-geodesic icosphere, connected by short equal-length neighbor links over a
-rigid-flex interposer. The topology removes the corners of conventional flat
-meshes and tori, yielding more uniform hop-count and latency distributions and
-improving bisection bandwidth at fixed tile count. A planet-style coordinate
-system---latitude, longitude, and a local north/east compass---is exposed to
-software, and a quaternion-based reference frame can be reoriented at runtime
-through an epoch/commit protocol without disturbing in-flight traffic. We
-specify a 162-tile reference design (113 compute, 25 memory-controller, 24
-cache/IO tiles), a deadlock-free routing scheme using a Duato-style escape
-virtual channel layered under greedy great-circle routing, an HBM3e memory
-hierarchy organized as latitude belts with single-owner controller tiles, and
-a Gen-1 segmented cold-plate cooling solution with a future microfluidic path.
-We validate the architecture with an event-driven cycle-accurate fabric
-simulator that produces real latency CDFs, all-reduce timings, and bisection
-estimates against torus and dragonfly baselines, and we project workload
-performance using a roofline-style analytical model. Sphere-162 delivers an
-estimated 56.5~PFLOPS dense FP8, 30~TB/s HBM bandwidth, and 900~GB capacity
-within a 2.3~kW power envelope, achieving 24.8~PFLOPS/kW---approximately
-$5\times$ the energy efficiency of an 8-GPU H100 node at comparable aggregate
-compute, while fitting larger models in unified memory.
+We investigate a geodesic chiplet interconnect and revise the evidence for a
+proposed accelerator built around it. The implemented work is a Python
+store-and-forward communication model with chronological hop events,
+independent directed links and infinite output queues. It is not a
+cycle-accurate router, an inference runtime or a physical processor.
+Corrected experiments compare equal-size sphere and torus graphs, declare
+their bandwidth budgets, and separate isolated probes from contending
+traffic. A 40-profile study with five paired seeds covers synthetic
+mixture-of-experts (MoE) dispatch, a torus-local stencil and static single-link
+removals. Matching aggregate link bandwidth gives median sphere/torus MoE p99
+ratios of \MoeFortyTwoEqualTotalRatio{} at 42 ranks and
+\MoeOneSixtyTwoEqualTotalRatio{} at 162 ranks. Equal per-link rates reverse
+that ordering, with ratios of \MoeFortyTwoPerLinkRatio{} and
+\MoeOneSixtyTwoPerLinkRatio{}, while supplying the sphere with more links
+and aggregate bandwidth. These are model-specific results, not general
+hardware rankings. An analytical audit distinguishes \LocalHbmTbps{} TB/s
+of assumed local HBM bandwidth from at most \RemoteHbmTbps{} TB/s through
+the historical memory tiles' fabric ports. This motivates a four-island
+compute-near-HBM architecture with explicit memory ownership and a
+hierarchical network. That architecture remains a proposal. We retain
+planet-style coordinates as a mapping concept, specify required transport
+and physical evidence, and provide regenerated figures, machine-readable
+results and a reproducible publication build. Full-system power, application
+throughput, deadlock freedom and manufacturing feasibility have not been
+established.
 \end{abstract}
 
-\vspace{6pt}
-\end{@twocolumnfalse}
-]
+\noindent\fbox{\parbox{0.965\textwidth}{\small
+\textbf{Revision and evidence notice.} This revision supersedes the original
+paper's numerical results and hardware-comparison claims. The original
+April 2026 record remains available at
+\href{https://doi.org/10.5281/zenodo.19918238}{doi:10.5281/zenodo.19918238}.
+That identifier refers to the historical publication; no new DOI is claimed
+for this revision. Packet and collective experiment timings are simulated.
+Capacity, endpoint-transfer and power quantities are analytical bounds.}}
 
-\section{Introduction}
+\section{Research Question and Scope}\label{sec:scope}
 
-The end of monolithic die scaling has driven a transition to chiplet-based
-architectures in which a system-level processor is composed of many smaller
-silicon dies connected by an advanced package
-\cite{nvidia_b200, amd_mi300, intel_pondervein}. As the number of tiles per
-package grows, the on-package interconnect topology becomes a first-order
-determinant of performance: it sets the average and worst-case message
-latency, the bisection bandwidth available to collective operations, and the
-ease with which workloads can be scheduled to minimize communication
-\cite{kim2008flattened, ahn2014triplet}.
+A spherical or geodesic interconnect is an architectural idea to test against
+concrete workloads and physical costs. A graph can offer additional paths or
+shorter routes while consuming more ports, wires and energy. Neither visual
+symmetry nor a smaller hop count establishes a useful accelerator. The
+practical question is whether a particular organization improves completed
+application work at a fixed accuracy, request-latency objective and
+implementable resource budget.
 
-Existing chiplet packages are typically organized as 2D arrays connected
-through silicon bridges or interposers, exposing a rectangular mesh or torus
-topology to software. While planar meshes are well-matched to lithographic
-manufacturing, they suffer from two structural limitations. First, edges and
-corners create non-uniform hop distributions: corner tiles have measurably
-worse average reach than central tiles, producing tail-latency outliers in
-collective operations. Second, the bisection bandwidth of a rectangular array
-scales sub-linearly with the number of tiles along the cut dimension,
-limiting the throughput of all-to-all and reduce-scatter primitives that
-dominate large-model training.
+This revision separates three objects that the original study conflated.
+First, an implemented \emph{flat graph model} represents 42 or 162 logical
+ranks connected as a triangulated sphere or a two-dimensional torus. Second,
+a historical Sphere-162 capacity scenario assigns hypothetical compute,
+memory and IO tiles to 162 positions. Third, a \emph{new hardware proposal}
+places compute beside local HBM in four islands and uses a smaller global
+network for activations and explicit remote operations. The present software
+evaluates the first object and provides analytical constraints on the second.
+It does not implement or validate the third.
 
-This paper proposes a different geometric organization: place the chiplets on
-the vertices of a \emph{geodesic icosphere}, with each tile connected to its
-five or six nearest neighbors along approximately equal-length links. The
-topology has no corners; every vertex is interchangeable up to rotation, and
-the average path between vertex pairs scales as $O(\sqrt{N})$ with a smaller
-constant than a torus and a substantially shorter tail. We complement the
-topology with a coordinate system inspired by planetary geography---each tile
-exposes a (latitude, longitude) pair and a local east/north compass---and an
-operating-system-level primitive for rotating the reference frame, which lets
-schedulers re-orient workload placement without physically moving anything.
+The contribution is a corrected baseline and a testable next design. The
+software supplies deterministic routes, packet-event timing, paired
+synthetic workloads, delivery accounting and parameter checks. The paper
+reports both favorable and unfavorable topology outcomes. It also derives
+the memory-port bottleneck that makes local data placement a more urgent
+architectural decision than increasing aggregate compute peaks.
 
-\textbf{Contributions.} This work makes the following contributions:
+\subsection{Corrections to the Earlier Evaluation}
 
-\begin{itemize}
-\item A complete chiplet-package architecture (\S\ref{sec:arch}) including
-tile definitions, fabric topology, routing, memory hierarchy, power
-delivery, and cooling, organized around a 162-tile reference design.
-\item A planet-style coordinate system and quaternion-based frame-flip
-protocol (\S\ref{sec:coords}) with formal pole-handling and atomic commit
-semantics.
-\item A deadlock-free routing scheme (\S\ref{sec:routing}) layering greedy
-great-circle forwarding over a Duato-style escape virtual channel on an
-up\textsuperscript{*}/down\textsuperscript{*} spanning tree.
-\item An event-driven cycle-accurate fabric simulator and an analytical
-performance model (\S\ref{sec:methodology}) that produce real latency
-distributions and workload throughput estimates.
-\item A multi-axis evaluation (\S\ref{sec:eval}) against 2D torus and
-dragonfly baselines, showing improvements in p99 latency, bisection
-bandwidth, and energy per bit, and projections against H100, B200, MI300X,
-and 8-GPU NVLink nodes.
-\item An honest treatment of validation gaps, manufacturability risks, and
-unresolved design questions (\S\ref{sec:discussion}).
-\end{itemize}
+The earlier unloaded experiment submitted packets as a burst, allowing later
+probes to queue behind previous ones. The incremental scheduler reserved an
+entire route in packet-submission order, so a packet could claim a downstream
+link before a competitor that should arrive there first. The corrected
+unloaded path resets reservations for every probe; concurrent traffic uses
+chronological hop-arrival events. These changes invalidate direct reuse of
+the old latency distributions.
 
-We do not claim physical silicon validation; this paper reports a
-simulator-based and analytical evaluation in the tradition of architectural
-proposals such as the original dragonfly \cite{kim2008flattened} and
-hyperX \cite{ahn2009hyperx} papers. Section~\ref{sec:discussion} discusses
-what would be required to advance the design to silicon.
+Other corrections make the comparison auditable. Sphere and torus use equal
+rank counts. A selected balanced coordinate partition is described as a cut
+estimate rather than a minimum-bisection proof. Ring and tree collectives
+carry the same full payload per rank. Straight express chords use Euclidean
+distance. Invalid routes, disconnected collectives, numeric overflow and
+insufficient timestamp precision are handled explicitly. Performance bounds
+require matching precision and account for memory-tile egress. Component
+power is no longer presented as full-system power or used to rank commercial
+accelerators.
 
-\section{Background and Related Work}
+\section{Design Concepts and Reference Methods}\label{sec:concepts}
 
-\subsection{Chiplet Packaging}
+\subsection{Graph, Coordinates and Physical Package}
 
-Recent commercial accelerators integrate compute and memory dies through
-2.5D or 3D packaging. NVIDIA's B200 combines two reticle-sized GPU dies with
-HBM3e stacks on a CoWoS interposer \cite{nvidia_b200}. AMD's MI300X uses a
-3D-stacked design with eight compute dies and HBM stacks \cite{amd_mi300}.
-These designs exploit short on-package interconnect to scale beyond a single
-reticle but retain a fundamentally rectangular logical topology.
-
-\subsection{Network-on-Chip and Network-on-Package Topologies}
-
-The on-chip interconnect literature has explored mesh, torus, fat-tree,
-flattened butterfly, dragonfly, and hyperX topologies
-\cite{kim2008flattened, ahn2009hyperx, dally1990performance,
-dally2003principles}.
-For 2D-laid-out chiplets, mesh and torus dominate due to layout simplicity.
-Dragonfly is widely used at HPC system scale (e.g., Cray Slingshot) but
-typically requires multiple cabinet/board hierarchies that do not directly
-apply within a single package.
-
-\subsection{Geodesic and Spherical Networks}
-
-Geodesic networks have a long history in graph theory and computational
-geometry, motivated by their isotropy and bounded-degree regularity
-\cite{wenninger1971polyhedron}. Their use as an interconnect topology for
-silicon has been limited because lithography is planar, and a literally
-curved die is not manufacturable. We argue, however, that the
-\emph{logical} geodesic topology can be approximated by chiplets placed on
-folded interposer petals, capturing most of the benefit while remaining
-compatible with standard chiplet processes.
-
-\subsection{Deadlock-Free Routing}
-
-Duato's protocol \cite{duato1993new} establishes deadlock freedom by
-provisioning a deadlock-free escape sub-network alongside an adaptive
-routing function. We adopt this framework: an
-up\textsuperscript{*}/down\textsuperscript{*} spanning tree provides the
-escape VC, while greedy great-circle forwarding provides adaptive minimal
-routing.
-
-\section{Architecture}\label{sec:arch}
-
-\subsection{Reference Design}
-
-Sphere-162 places 162 chiplets on the vertices of a level-2 subdivided
-icosahedron (icosphere). The tile mix is:
-
-\begin{itemize}
-\item \textbf{113 Compute Tiles (CT)}, each containing 4 ARMv9/RVA23-class
-out-of-order cores at 3.5~GHz, one $256{\times}256$ FP8/FP16/BF16 systolic
-matrix engine at 2~GHz, 1~MB L1 per core, 8~MB shared L2, and an 8-port
-fabric router. Estimated area $\sim$25~mm\textsuperscript{2} at 3~nm,
-typical power 15~W.
-\item \textbf{25 Memory-Controller Tiles (MCT)}, each owning one HBM3e
-stack (36~GB, 1.2~TB/s), a directory shard for cache coherence, and
-near-memory compute units for gather/scatter, sparse decode, and reduction
-primitives. $\sim$20~mm\textsuperscript{2}, 12~W typical.
-\item \textbf{24 Cache/IO Tiles (CIT)}, each containing 64~MB of L3 SRAM
-and PCIe~6.0/CXL~3.0 controllers (on edge tiles only). 8~W typical.
-\end{itemize}
-
-Aggregate specifications: 56.5~PFLOPS dense FP8, 900~GB HBM3e capacity,
-30~TB/s HBM bandwidth, 1.5~GB total L3, and an estimated 2.3~kW typical
-power. Detailed power breakdown is presented in \S\ref{sec:eval}.
-
-\subsection{Fabric Topology}\label{sec:topology}
-
-Each chiplet sits at a vertex of the level-2 icosphere; edges of the
-underlying triangulation form 5- or 6-degree neighbor links. With unit-radius
-parameters scaled to a 40~mm package radius, neighbor-link arc lengths are
-4--7~mm, comparable to typical 2.5D interposer trace lengths.
-
-Optionally, up to 12 \emph{express chords} cut across the sphere (typically
-between near-antipodal vertices) to provide single-hop long-range links.
-Chords add roughly 8\% of the edge count but reduce average hop distance by
-22\% and 99th-percentile hops by 40\% in our reference design (see
-\S\ref{sec:eval}).
-
-\subsection{Memory Hierarchy and NUMA-by-Latitude}
-
-HBM stacks are organized as \emph{belts}---rings of MCTs at fixed latitudes.
-Each MCT exclusively owns one HBM stack and one directory shard, eliminating
-the multi-master controller designs that complicate sharing in conventional
-HBM systems. Compute tiles access HBM via the fabric, and the system exposes
-a per-tile NUMA distance based on the geodesic hop count to each MCT. This
-allows OS- and runtime-level placement engines to pin model-parallel shards
-to specific belts, bounding worst-case data-movement cost by the great-circle
-diameter ($\pi$ times the radius, or 6--7 hops for Sphere-162).
-
-\subsection{Power Delivery and Cooling}
-
-Power enters the package through pole-mounted bulk regulators and is
-distributed via concentric power planes routed through the rigid-flex petal
-stack to per-tile point-of-load converters. Five rails are
-defined---\texttt{VDD\_CORE}, \texttt{VDD\_SRAM}, \texttt{VDD\_SERDES},
-\texttt{VDD\_HBM}, \texttt{VSS}---with deep-trench and MLCC decoupling at
-each tile.
-
-For Gen-1, we specify a \emph{segmented spherical cold-plate}: 12--20
-faceted cold-plate sections with per-facet micro-channel coolant flow,
-sealed at seams with O-rings and connected through quick-disconnect
-manifolds at the poles. The hottest caps---typically the matrix-heavy
-compute tiles---are clustered near the polar manifolds where coolant flow
-rates are highest. A future Gen-2 microfluidic implementation, with
-dielectric coolant flowing through silicon-bonded microchannels directly
-beneath each chiplet, is sketched in \S\ref{sec:discussion}.
-
-\subsection{Clocking and DFT}
-
-The fabric uses globally-asynchronous, locally-synchronous (GALS) clocking.
-A single low-jitter reference (target $\leq 300$~fs RMS phase noise,
-12~kHz--20~MHz) is distributed to per-quad PLL fan-out buffers; each tile
-runs its own PLL and synchronizes to neighbors through mesochronous FIFOs.
-DFT uses segmented IEEE 1687 (iJTAG) chains organized by hemisphere, with
-PRBS31 BIST per fabric port and a $\geq 10^9$-bit dwell requirement for
-``link-good'' assertion.
-
-\section{Coordinate System and Frame Reorientation}\label{sec:coords}
-
-\subsection{Coordinates}
-
-Each tile $i$ is assigned a unit position vector $\mathbf{u}_i \in
-\mathbb{S}^2$. Latitude and longitude are derived as
-$\varphi_i = \arcsin(z_i)$ and $\lambda_i = \mathrm{atan2}(y_i, x_i)$. A
-local tangent basis at tile $i$ is
-\begin{align}
-\mathbf{e}_E(\lambda) &= (-\sin\lambda, \cos\lambda, 0), \\
-\mathbf{e}_N(\varphi, \lambda) &= (-\sin\varphi\cos\lambda,
--\sin\varphi\sin\lambda, \cos\varphi).
-\end{align}
-
-At the geometric poles ($|\cos\varphi| < \epsilon$), $\mathbf{e}_E$ becomes
-ill-defined; we resolve this by anchoring polar east to a fixed azimuth
-determined by the prime meridian and computing $\mathbf{e}_N = \mathbf{e}_E
-\times \mathbf{u}$.
-
-\subsection{Bearings and Compass}
-
-The bearing from tile $i$ to neighbor $j$ is computed by projecting
-$\mathbf{u}_j$ onto $i$'s tangent plane and resolving in the $(\mathbf{e}_N,
-\mathbf{e}_E)$ basis:
-\begin{align}
-\mathbf{t}_{ij} &= \mathbf{u}_j - (\mathbf{u}_j \cdot \mathbf{u}_i)\mathbf{u}_i,\\
-\alpha_{ij} &= \mathrm{atan2}(\mathbf{t}_{ij} \cdot \mathbf{e}_E,
-\mathbf{t}_{ij} \cdot \mathbf{e}_N).
-\end{align}
-Bearings are quantized to a small per-port LUT (typically 16 sectors).
-
-\subsection{Frame Reorientation Protocol}
-
-A global \emph{reference frame} is described by two orthonormal vectors
-$(\mathbf{Z}_0, \mathbf{X}_0)$: the north pole and prime meridian directions
-in package-physical coordinates. To reorient (``flip''), the management
-controller broadcasts a new frame and an epoch token. Each tile maintains
-both old and new bases; bearings, NUMA tables, and routing state under the
-new frame are precomputed locally. On receipt of the commit token, all tiles
-atomically switch at the next packet boundary. The protocol completes in a
-single fabric round-trip (under 1~$\mu$s for Sphere-162) and does not
-require draining in-flight traffic, since route correctness is invariant
-under rotation: greedy forwarding by dot-product is rotation-invariant when
-applied to the rotated $\mathbf{u}_j$.
-
-\section{Routing and Flow Control}\label{sec:routing}
-
-\subsection{Adaptive Layer: Greedy Great-Circle}
-
-The adaptive routing function selects the neighbor maximizing the dot
-product with the destination's unit vector:
+The logical sphere recursively subdivides an icosahedron and normalizes new
+vertices to a common radius. At subdivision level $s$, its vertex and edge
+counts are
 \begin{equation}
-\text{next}(i, d) = \arg\max_{j \in N(i)} \mathbf{u}_j \cdot \mathbf{u}_d.
+N_s=10\,4^s+2,\qquad E_s=30\,4^s.
 \end{equation}
+Levels one and two contain 42 and 162 vertices. Twelve vertices have degree
+five; the remaining vertices have degree six. The graph has no rectangular
+boundary, but its vertices are not all equivalent under rotation. A torus
+also lacks mesh boundaries, so a generic claim that spherical graphs remove
+a torus's corners is inappropriate.
 
-This is rotation-invariant and uses only local state (own coordinates,
-neighbor coordinates, destination coordinates). On the unmodified icosphere
-it converges to a minimal path; with chord links present, it remains a valid
-heuristic but is not always minimal.
+Logical connectivity is distinct from the physical arrangement of dies. A
+geodesic graph might be routed on a planar package or explored in a faceted
+assembly. Neither follows automatically from a graph generator. A physical
+study must price die-edge ports, routed lengths, crossings, PHYs, HBM
+placement, power delivery, assembly access and cooling. Current geometry is
+a model input rather than an extracted package route.
 
-\subsection{Escape Layer: Up\textsuperscript{*}/Down\textsuperscript{*} Spanning Tree}
+\subsection{Planet-Style Coordinates and Frame Reorientation}
 
-To guarantee deadlock freedom and forward progress under all traffic
-patterns, we provision a Duato-style escape virtual channel
-\cite{duato1993new} on a single up\textsuperscript{*}/down\textsuperscript{*}
-spanning tree rooted at a designated tile. The escape channel uses a
-deterministic shortest-path route on the tree and admits no cyclic
-dependencies. Three virtual channels per port are sufficient: VC0 escape,
-VC1--VC2 adaptive.
+Let a rank have unit position vector $\mathbf{u}_i=(x_i,y_i,z_i)$. The proposed
+coordinate interface assigns latitude and longitude as
+\begin{equation}
+\varphi_i=\arcsin z_i,\qquad
+\lambda_i=\operatorname{atan2}(y_i,x_i).
+\end{equation}
+Away from the poles, a local tangent basis is
+\begin{align}
+\mathbf{e}_E&=(-\sin\lambda,\cos\lambda,0),\\
+\mathbf{e}_N&=(-\sin\varphi\cos\lambda,
+              -\sin\varphi\sin\lambda,\cos\varphi).
+\end{align}
+A prime-meridian convention must define east at a pole. The right-handed
+convention above satisfies $\mathbf{e}_E\times\mathbf{e}_N=\mathbf{u}$, so a
+pole implementation can derive north as $\mathbf{u}\times\mathbf{e}_E$ after
+choosing east. These are proposed coordinate semantics; the present traffic
+model does not exercise a runtime coordinate interface.
 
-\subsection{Quality of Service}
+A rotation $R\in SO(3)$ preserves distances and dot products:
+\begin{equation}
+(R\mathbf{u}_i)^{\mathsf T}(R\mathbf{u}_j)
+=\mathbf{u}_i^{\mathsf T}\mathbf{u}_j.
+\end{equation}
+Changing reference-frame labels therefore neither increases bandwidth nor
+moves a tensor to another memory owner. Coordinates can support mapping and
+diagnostics, but performance improvement requires actual placement,
+migration or route-policy changes with their costs included. Runtime frame
+changes and epoch transitions remain proposed interfaces.
 
-Two traffic classes are partitioned across VCs: HBM/IO traffic (latency-
-sensitive memory accesses) and collective traffic (bandwidth-sensitive
-reductions). Age-based arbitration provides starvation freedom under
-sustained contention.
+\subsection{Reference Methods}
 
-\section{Methodology}\label{sec:methodology}
+Roofline analysis distinguishes a precision-specific compute ceiling from a
+bandwidth/intensity ceiling\cite{williams2009roofline}. It identifies
+constraints; it is not an inference-runtime prediction. Here, intensity and
+peak rates are explicit assumptions, with no empirical utilization factor
+that turns the bounds into measured tokens per second.
 
-\subsection{Cycle-Accurate Fabric Simulator}
+BookSim supplies a detailed cycle-accurate network-modeling
+reference\cite{jiang2013booksim,booksimrepo}. It has not been integrated with
+or used to calibrate this Python model. A future cross-check should include
+buffering, credit round trips, arbitration and endpoint constraints. Calling
+the present queue model cycle accurate would hide those missing behaviors.
 
-We implemented an event-driven simulator in Python that models per-flit
-serialization, wire propagation, router pipeline stages, and link contention.
-The router is parameterized as a 4-stage pipeline at 2~GHz (2~ns base
-latency); links use 8~lanes at 32~Gb/s NRZ for 256~Gb/s per link aggregate.
-Per-link wire delay uses 150~mm/ns propagation (approximately half $c$ in
-copper trace). Packets are 4 flits of 512 bits each (256~B). Source code
-is available at the artifact link.
+Adaptive routing with an escape subnetwork requires a specified routing and
+channel-dependency argument\cite{duato1993new}. The implementation uses
+deterministic shortest-hop breadth-first search (BFS), not the earlier
+adaptive/escape-VC proposal. A successful BFS route or random traffic test
+cannot prove deadlock freedom for a finite-buffer hardware router.
 
-\subsection{Topologies Compared}
+\section{Corrected Simulation Method}\label{sec:method}
 
-\begin{itemize}
-\item \textbf{Sphere (162)}: level-2 icosphere, 162 vertices, average degree
-5.93, no chords.
-\item \textbf{Sphere+chords (162)}: identical with 10 added antipodal chord
-links.
-\item \textbf{Torus 13$\times$13 (169)}: 2D torus, average degree 4, 4~mm
-uniform link length.
-\item \textbf{Dragonfly 9$\times$6 (54)}: 9 groups of 6 routers each;
-intra-group full mesh, inter-group round-robin assignment. Smaller node
-count by construction.
-\end{itemize}
+\subsection{Packet Events and Link Service}
 
-\subsection{Workload Model}
+Each directed link has a busy-until time. A packet is routed before
+simulation, then scheduled one hop at a time in increasing hop-arrival time.
+For arrival $a$, previous link release $b$, $F$ flits, $B$ bits per flit and
+directional rate $C$ in Gbit/s,
+\begin{equation}
+t_{\mathrm{start}}=\max(a,b),\qquad
+t_{\mathrm{end}}=t_{\mathrm{start}}+\frac{FB}{C}\ \mathrm{ns}.
+\end{equation}
+The next arrival adds propagation and, for an intermediate router, router
+delay. The reference delay is four stages at 2 GHz, or 2 ns. Propagation uses
+an assumed 150 mm/ns wire speed. Store-and-forward timing charges the full
+packet's serialization at every hop. Opposite directions have independent
+bandwidth, and simultaneous event ties use the input packet index. This tie
+rule is an explicit part of the model.
 
-For workload-level performance we use a roofline-style model
-\cite{williams2009roofline} that bounds throughput by the minimum of compute
-supply and memory-bandwidth supply, with a 0.3$\times$ penalty for working
-sets that exceed available HBM capacity (representing sharding overhead and
-PCIe spillover in conventional GPUs).
+The batch API requires a fresh simulator or a reset. Incremental
+single-packet calls retain reservations and suit isolated or deliberately
+sequential operations; they must not replace batch scheduling when packets
+compete. A same-rank transfer records zero network latency. Unreachable
+destinations remain visible in delivery accounting. The simulator rejects
+invalid rates, packet sizes, inconsistent topologies and derived timings
+that overflow or lose positive durations at large absolute timestamps.
 
-\section{Evaluation}\label{sec:eval}
+The model has infinite output queues. It omits input-queued switches,
+finite buffers, credit backpressure, VC allocation, shared endpoint
+injection, HBM transactions, compute and protocol overhead. Every finite
+trace can drain if routes remain reachable. Drain-inclusive payload rates
+and high-load latency curves therefore do not establish stable saturation
+throughput or bounded queue requirements for hardware.
 
-\subsection{Topology Properties}
+\subsection{Topology and Resource Budgets}
 
-Table~\ref{tab:topology} summarizes static topology metrics. Sphere delivers
-a lower 99th-percentile hop count (10) than the size-matched torus (12), and
-adding 10 chord links reduces it to 6, comparable to the 54-node dragonfly's
-3 hops despite having $3\times$ the nodes.
+The main evaluation uses 162 ranks: a level-two sphere with 480 undirected
+links, the same sphere with ten disjoint-endpoint antipodal chords, and a
+$9\times18$ torus with 324 links. The smaller sweep uses 42 ranks, comparing
+120 sphere links against an $6\times7$ torus with 84 links. Surface links
+follow arcs at an assumed 40 mm sphere radius; chords are straight Euclidean
+segments. All torus links, including wraps, are assigned 4 mm. These unequal
+geometry assumptions remain visible.
 
-\begin{table}[t]
+Under \texttt{per\_link}, every directional link has 256 Gbit/s; the sphere
+receives about 43--48\% more aggregate bandwidth than torus. Under
+\texttt{equal\_total}, sphere rates are reduced so the baseline sum of
+directed-link capacities matches torus. At 162 ranks, plain sphere uses
+172.8 Gbit/s per direction per link instead of 256 Gbit/s. This matches one
+resource total, not PHY area, power, wiring cost or endpoint rate per rank.
+Chords consume additional ports and length rather than providing free
+shortcuts. Neither bandwidth policy is a complete fair-hardware comparison.
+
+The sweep holds rank placement fixed for both graphs. Optimized placements
+require equal search effort and a separate experiment, especially when a
+workload naturally aligns with one candidate. A synthetic grouped topology
+exists in the source, but no radix-matched dragonfly comparison is part of
+the regenerated publication results.
+
+\subsection{Evaluation and Sweep Configurations}
+
+The eight general evaluation figures use \EvaluationPacketCount{} paired
+uniform-random packets, seed \EvaluationSeed{}, \EvaluationRankCount{}
+ranks and the \texttt{equal\_total} policy. Unloaded packets contain four
+512-bit flits (256 bytes) and are independent probes. The load sweep uses
+aggregate rates of 0.001, 0.01, 0.1, 0.5, 1 and 2 packets/ns. A separate
+hotspot trace runs at 0.5 aggregate packets/ns. Rates are across all ranks,
+not per rank. The hop CDF covers all reachable source/destination pairs;
+latency CDFs sample the seeded packet trace.
+
+The sensitivity study uses skewed expert dispatch and a periodic
+four-neighbor stencil. Two rank counts, two bandwidth policies and five
+paired seeds (7, 19, 42, 73 and 101) give 40 profiles. Each has 500 packets of
+16 flits (1,024 bytes) at 0.1 aggregate packets/ns. Candidates receive
+identical rank pairs and injection times. Offered payload is 819.2 Gbit/s
+across all ranks. The MoE proxy excludes gating, expert compute, combine and
+memory access. The stencil grid directly matches torus adjacency.
+
+Each profile also removes one seeded undirected edge in both directions
+before replaying traffic. The total is 160 candidate/scenario runs and
+80,000 attempted deliveries. One removed link is a different failure
+fraction in graphs with different edge counts. These are static reachability
+and rerouting probes, not live fault-detection, replay or recovery tests. No
+unreachable packets occurred in the recorded sweep; finite-buffer drops and
+retransmission are outside the model.
+
+Across seeds we report median and observed minimum--maximum paired ratios.
+These ranges are descriptive spreads, not confidence intervals. A median of
+per-seed ratios need not equal the ratio of median latencies. Held-out
+workload shapes and traces are required before claiming generality beyond
+these generators.
+
+\section{Regenerated Communication Results}\label{sec:results}
+
+\subsection{Hop Counts and Isolated Latency}
+
+Table~\ref{tab:eval} records the corrected evaluation. Isolated latency
+depends on serialization and wire assumptions as well as hops. A graph with
+fewer hops can lose latency when links slow to match aggregate bandwidth.
+Figure~\ref{fig:hops} describes graph distance;
+Figure~\ref{fig:latency} adds the declared timing model. Neither measures a
+fabricated package.
+
+\begin{table}[tbp]
 \centering
-\caption{Static topology metrics. N = node count, deg = average degree,
-avg/p95/p99/max = hop counts.}
-\label{tab:topology}
+\caption{Corrected 162-rank evaluation under equal aggregate baseline
+directed bandwidth. Latencies are isolated 256-byte simulated packets.
+Entries are generated from \texttt{artifacts/results.json}.}
+\label{tab:eval}
 \small
-\begin{tabular}{lrrrrrr}
+\begin{tabular}{lrrrrr}
 \toprule
-Topology & N & deg & avg & p95 & p99 & max \\
+Candidate & Mean hops & Max hops & p50 (ns) & p99 (ns) & p99/p50\\
 \midrule
-Sphere (162)         & 162 & 5.9 & 5.66 & 9  & 10 & 12 \\
-Sphere+chords        & 162 & 6.1 & 4.41 & 6  & 6  & 7  \\
-Torus 13$\times$13   & 169 & 4.0 & 6.50 & 11 & 12 & 12 \\
-Dragonfly 9$\times$6 & 54  & 7.0 & 2.36 & 3  & 3  & 3  \\
+\EvaluationSummaryRows
 \bottomrule
 \end{tabular}
 \end{table}
 
-Figure~\ref{fig:hop_cdf} shows the full hop-count CDF. The sphere has a
-shorter, less-tailed distribution than the torus.
-
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
-\includegraphics[width=\columnwidth]{../figures/fig1_hop_cdf.pdf}
-\caption{Hop-count CDF over all source-destination pairs.}
-\label{fig:hop_cdf}
+\includegraphics[width=0.84\textwidth]{fig1_hop_cdf.pdf}
+\caption{All-pairs shortest-hop CDF for equal-size 162-rank graphs. Chords
+change connectivity and resource cost. Graph distance alone does not
+establish latency or physical feasibility.}
+\label{fig:hops}
 \end{figure}
 
-\subsection{Latency Distributions}
-
-Under uncontended uniform-random traffic (Fig.~\ref{fig:lat_cdf}), Sphere
-exhibits average latency of 2139~ns and p99 of 4193~ns; with chords,
-1423~ns/2930~ns. Torus is 3142~ns/6607~ns. The p99/p50 tail-latency ratio
-(Fig.~\ref{fig:tail_ratio}) is 1.96 for Sphere, 2.23 for torus, confirming
-the more uniform distribution promised by the geodesic geometry.
-
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
-\includegraphics[width=\columnwidth]{../figures/fig2_latency_cdf.pdf}
-\caption{End-to-end packet latency CDF, uncontended uniform-random traffic,
-5000 packets per topology.}
-\label{fig:lat_cdf}
+\includegraphics[width=0.84\textwidth]{fig2_latency_cdf.pdf}
+\caption{Corrected isolated-packet latency CDF: 2,000 paired packets, seed
+42, 256 bytes each, \texttt{equal\_total} bandwidth. Link reservations reset
+for each packet; there is no inter-probe queueing.}
+\label{fig:latency}
 \end{figure}
 
-\begin{figure}[t]
+Isolated p99 values are \SphereIsolatedPninetyNineNs{} ns for sphere,
+\ChordSphereIsolatedPninetyNineNs{} ns for sphere with chords and
+\TorusIsolatedPninetyNineNs{} ns for torus. Corresponding p99/p50 ratios
+are \SphereIsolatedTailRatio{}, \ChordSphereIsolatedTailRatio{} and
+\TorusIsolatedTailRatio{}. The earlier burst-contaminated ratios are
+superseded. Isolated ratios describe this path distribution; they do not
+establish request p99 for a complete application.
+
+\subsection{Offered Load and Hotspots}
+
+Figures~\ref{fig:load} and \ref{fig:hotspot} exercise shared directed-link
+service under finite traces. Chronological scheduling allows a later
+submitted packet to reach a downstream link first when its route and
+injection require that order. This removes submission-order reservations
+that distorted the earlier congestion results. Simultaneous ties follow the
+documented deterministic rule.
+
+\begin{figure}[tbp]
 \centering
-\includegraphics[width=\columnwidth]{../figures/fig4_tail_ratio.pdf}
-\caption{Tail-latency ratio (p99/p50). Sphere has the lowest ratio,
-indicating most uniform latency distribution.}
-\label{fig:tail_ratio}
+\includegraphics[width=0.84\textwidth]{fig3_latency_load.pdf}
+\caption{Mean latency versus aggregate offered packet rate in the
+infinite-output-queue model. The finite trace drains after injection. Curves
+are not hardware saturation limits or proof of bounded steady-state queues.}
+\label{fig:load}
 \end{figure}
 
-\subsection{Saturation under Load}
-
-Figure~\ref{fig:lat_load} sweeps offered load from 0.001 to 2 packets/ns
-aggregate. Sphere saturates at higher load than torus; the chord-augmented
-sphere maintains low latency through the highest tested rate.
-
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
-\includegraphics[width=\columnwidth]{../figures/fig3_latency_load.pdf}
-\caption{Latency vs offered load (log-log). Saturation knee occurs at higher
-load for Sphere than Torus.}
-\label{fig:lat_load}
+\includegraphics[width=0.84\textwidth]{fig4_tail_ratio.pdf}
+\caption{Regenerated isolated latency p99/p50 ratios from the same
+2,000-packet trace. Ratios quantify the chosen path/timing distribution,
+not end-to-end inference request tails.}
+\label{fig:tail}
 \end{figure}
 
-\subsection{All-Reduce}
+A hotspot concentrates demand on fewer destinations, exposing how a total
+budget can hide local pressure. The model has no separate endpoint
+injection/ejection server, memory controller or expert compute queue. A
+real hot expert can therefore encounter a bottleneck missing from the
+network-only curves. Delivery counts and complete configuration must
+accompany every latency result.
 
-Figure~\ref{fig:allreduce} compares ring and BFS-tree all-reduce. For small
-messages (8 flits, $\sim$1~KB), tree all-reduce dominates due to its
-$O(\log N)$ depth. Sphere completes a tree all-reduce in 0.43~$\mu$s across
-162 nodes, comparable to torus despite the sphere's greater diameter,
-because tree depth is governed by BFS-tree depth (which is similar across
-topologies of comparable diameter). With chords, Sphere all-reduce drops to
-0.22~$\mu$s.
+\subsection{Collectives and the Selected Coordinate Cut}
 
-\begin{figure}[t]
+Ideal collective schedules use eight-flit ring chunks and a full
+$N\times8$-flit message per tree participant. At 162 ranks the per-rank full
+payload is 1,296 flits, or \EvaluationPayloadBytes{} bytes. Matching this
+payload corrects the earlier ring/tree mismatch. Timings omit reduction
+arithmetic, launch/software overhead, finite buffers and protocol costs.
+The schedules do not verify numerical reduction outputs. They are model
+experiments, not NCCL implementations or benchmarks. NCCL distinguishes
+algorithm from bus bandwidth, illustrating why payload and normalization
+must be explicit\cite{ncclperformance}.
+
+\begin{table}[tbp]
 \centering
-\includegraphics[width=\columnwidth]{../figures/fig5_allreduce.pdf}
-\caption{All-reduce time for ring and BFS-tree algorithms (8-flit messages).
-Tree all-reduce dominates for small messages.}
-\label{fig:allreduce}
-\end{figure}
-
-\subsection{Bisection Bandwidth}
-
-Figure~\ref{fig:bisection} shows estimated bisection bandwidth (cut count
-multiplied by 256~Gb/s per link). Sphere's equatorial cut yields 11.8~Tb/s;
-with chords, 13.8~Tb/s. The size-matched torus yields only 6.7~Tb/s. This
-$1.76\times$ improvement directly translates to collective-bound workload
-speedup.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{../figures/fig6_bisection.pdf}
-\caption{Estimated bisection bandwidth at 256~Gb/s per link.}
-\label{fig:bisection}
-\end{figure}
-
-\subsection{Energy per Bit}
-
-Using literature values of 1.5~pJ/bit for short-reach electrical SerDes and
-0.5~pJ/bit for the router stage \cite{liu2020serdes}, Sphere averages
-12.8~pJ/bit per packet vs. 14.5~pJ/bit for torus, an 11\% improvement driven
-by shorter average path length.
-
-\subsection{Workload-Level Projections}
-
-Table~\ref{tab:competitors} compares Sphere-162 against industry
-accelerators on aggregate metrics. Sphere-162 delivers
-24.8~PFLOPS/kW---approximately $5\times$ the 4.9~PFLOPS/kW of an 8-GPU
-H100 NVLink node and $2.7\times$ B200's 9.0~PFLOPS/kW.
-
-\begin{table*}[t]
-\centering
-\caption{Aggregate comparison against industry accelerators. FP8 figures
-are dense throughput. Source: vendor datasheets and announcements.}
-\label{tab:competitors}
+\caption{Ideal matched-payload collective schedules and one selected
+balanced coordinate cut. Cut bandwidth is per direction, not a
+minimum-bisection calculation. Values come from the current JSON.}
+\label{tab:collectives}
 \small
-\begin{tabular}{lrrrrrl}
+\begin{tabular}{lrrr}
 \toprule
-Chip & FP8 (PF) & HBM (GB) & HBM (TB/s) & Power (W) & PFLOPS/kW & Notes \\
+Candidate & Ring ($\mu$s) & Tree ($\mu$s) & Chosen cut (Gbit/s)\\
 \midrule
-NVIDIA H100 SXM         &   4.0 &  80 &   3.4  &   700 &  5.7 & single GPU \\
-NVIDIA B200             &   9.0 & 192 &   8.0  &  1000 &  9.0 & single GPU \\
-AMD MI300X              &   5.2 & 192 &   5.3  &   750 &  7.0 & single GPU \\
-Cerebras WSE-3          & 125.0 &  44 & 21000  & 23000 &  5.4 & wafer-scale, SRAM \\
-8$\times$H100 NVLink node &  31.7 & 640 &  26.8  &  6400 &  4.9 & multi-GPU \\
-\textbf{Sphere-162 (this work)} & \textbf{56.5} & \textbf{900} & \textbf{30.0} & \textbf{2280} & \textbf{24.8} & this work \\
+\CollectiveSummaryRows
 \bottomrule
 \end{tabular}
-\end{table*}
+\end{table}
 
-Figure~\ref{fig:workload} projects effective throughput on five workloads.
-Sphere's advantage is most pronounced for large memory-resident inference
-(Llama-405B), where conventional single-GPU cards must shard model weights
-and pay collective overhead, and for collective-bound training where
-bisection bandwidth dominates.
-
-\begin{figure*}[t]
+\begin{figure}[tbp]
 \centering
-\includegraphics[width=0.9\textwidth]{../figures/fig9_workload.pdf}
-\caption{Workload throughput headroom (multiple of demanded compute, capped
-at 30$\times$ for visualization). Higher is better; 1$\times$ = just
-sufficient.}
-\label{fig:workload}
-\end{figure*}
-
-\subsection{Power Breakdown}
-
-Figure~\ref{fig:power} shows the projected power breakdown of Sphere-162.
-Compute tiles dominate (74\%), with HBM controllers, cache/IO, and fabric
-SerDes accounting for the remainder. SerDes power is only 4\% of total,
-reflecting the short, low-energy neighbor links.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.85\columnwidth]{../figures/fig10_power.pdf}
-\caption{Sphere-162 projected power breakdown (2.3~kW total).}
-\label{fig:power}
+\includegraphics[width=0.84\textwidth]{fig5_allreduce.pdf}
+\caption{Ideal ring and reduce/broadcast tree schedules with the same
+82,944-byte per-rank payload. Compute, software, finite-buffer transport and
+numerical output validation are omitted. These are not hardware all-reduce
+timings.}
+\label{fig:collectives}
 \end{figure}
 
-\section{Discussion}\label{sec:discussion}
+The cut procedure sorts vertices on a chosen coordinate axis and places
+half on either side. Crossing undirected links are counted and multiplied
+by the directional rate. Different balanced partitions can have different
+capacities. No search proves that this cut minimizes capacity.
+Figure~\ref{fig:cut} therefore uses ``chosen balanced coordinate-cut''
+terminology. Neither the cut nor an arc-length sum establishes physical
+package routability.
 
-\subsection{Validation Gaps}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.84\textwidth]{fig6_balanced_cut.pdf}
+\caption{Capacity of one balanced coordinate-median cut per candidate
+under the declared directional rates. This selected-cut estimate is not a
+minimum-bisection proof.}
+\label{fig:cut}
+\end{figure}
 
-This is a simulator-and-analytical study; we have not built silicon, run
-SPICE-level signal integrity simulations, or performed thermal CFD on the
-proposed cold-plate. Specifically:
+\subsection{Workload Sensitivity and Static Failure Probes}
 
-\begin{itemize}
-\item \textbf{Simulator fidelity.} The contention model accounts for
-serialization on shared links but does not model VC starvation, head-of-line
-blocking under realistic packet-size mixes, or input-buffer overflow.
-Comparison with Garnet/BookSim \cite{jiang2013booksim} would strengthen
-the latency claims.
-\item \textbf{Thermal feasibility.} The 2.3~kW dissipation across a 40~mm
-radius sphere requires CFD validation to confirm cold-plate adequacy.
-\item \textbf{Mechanical reliability.} Rigid-flex petal interposers at
-chiplet density are an unproven mechanical assembly; cycle-life and
-contact-resistance aging measurements are required.
-\item \textbf{Yield.} 162 tiles at 3~nm represents $\sim$25--30~cm$^2$ of
-compute silicon. Spare tiles and disable mechanisms are sketched but not
-modeled.
-\end{itemize}
+Table~\ref{tab:sweep} presents every baseline cohort in the five-seed sweep.
+At equal total bandwidth, sphere has higher MoE p99 at both rank counts.
+Equal per-link rates lower sphere p99 while supplying approximately 1.429
+times torus aggregate bandwidth at 42 ranks and 1.481 times at 162 ranks.
+The resource policy changes the conclusion.
 
-\subsection{What Would Validate This Design}
+\begin{table}[tbp]
+\centering
+\caption{Five-seed baseline sweep. p99 columns are medians in ns. The last
+three columns summarize paired sphere/torus p99 ratios; greater than one
+means a slower sphere. Min/max are observed ranges, not confidence limits.
+Policies match either total directional capacity or individual link rates.}
+\label{tab:sweep}
+\setlength{\tabcolsep}{4pt}
+\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllr rrrr}
+\toprule
+Workload & Ranks & Policy & Sphere p99 & Torus p99 & Ratio median & Min & Max\\
+\midrule
+\SweepSummaryRows
+\bottomrule
+\end{tabular}}
+\end{table}
 
-A credible silicon path requires: (1) an evaluation petal with 6--8 tiles
-at the target node to validate SI/PI and assembly; (2) a thermal test
-vehicle for the segmented cold-plate; (3) RTL implementation of the router
-with formal proof of deadlock freedom (publishable separately); (4) a
-compiler/runtime integration, likely via OpenXLA or a custom MLIR dialect,
-mapping standard ML primitives to fabric collectives.
+The stencil favors torus by construction: neighbors in its periodic rank
+grid are physical torus neighbors. Sphere uses the same rank IDs without a
+placement search. Large stencil ratios identify a workload/mapping control,
+not a universal outcome for scientific computing. A geodesic-domain or
+unstructured-grid workload needs its own trace and equivalent placement
+optimization for every candidate.
 
-\subsection{Gen-2 Path: Microfluidic Cooling and Photonic Chords}
+Static single-edge removal left sampled graphs connected. Most p99 ratios
+stayed near one, consistent with rerouted traffic affecting too few packets
+to move the 99th percentile; affected-route fractions were not measured
+separately. A sampled 42-rank stencil torus case tripled p99. Some
+MoE cases had slightly lower latency after removal because deterministic
+BFS redistributed routes. This is not evidence that physical failures are
+beneficial. The JSON records each failed edge, delivery count and scenario
+so these effects can be inspected.
 
-Two upgrades preserve the Gen-1 architecture while improving performance
-density:
-\begin{itemize}
-\item \textbf{Microfluidic backside cooling.} Direct silicon-bonded
-microchannels under hot tiles \cite{microsoft_microfluidic} can sustain
-$\sim$3$\times$ the heat flux of cold-plate solutions, opening higher peak
-power and enabling 3D stacking on the inner shell.
-\item \textbf{Silicon-photonic chord links.} Replacing electrical chord
-SerDes with WDM photonic transceivers reduces chord energy from $\sim$5~pJ/bit
-(long electrical) to $<1$~pJ/bit and enables sub-nanosecond chord-traversal
-latency.
-\end{itemize}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.84\textwidth]{fig7_hotspot.pdf}
+\caption{Synthetic hotspot latency at 0.5 aggregate packets/ns. Directed-link
+contention is modeled; shared endpoint injection and memory-controller
+service are omitted and could constrain a real hot destination.}
+\label{fig:hotspot}
+\end{figure}
 
-\subsection{Honest Limitations}
+\subsection{Energy Proxy}
 
-Two claims in the original conception did not survive rigorous review and
-were removed:
+Figure~\ref{fig:energy} retains only an explicitly unvalidated path-count
+proxy. It assumes 1.5 pJ per link-bit and 0.5 pJ per router-bit at every rate
+and length, with an additional 0.5 pJ/bit term in the reported formula. These
+constants are not calibrated PHY measurements. The proxy omits static
+power, packet/control overhead, memory, compute, regulators, host and
+cooling. It cannot establish energy per token, PFLOPS/kW or superiority over
+a commercial accelerator.
 
-\begin{itemize}
-\item \textbf{Heat-to-electricity recovery.} Carnot efficiency at the
-70~$^\circ$C/25~$^\circ$C operating point is $\sim$13\%, and practical
-thermoelectric devices recover 1--3\%. We retain shell-mounted TEGs only as
-a fail-safe power source for the leak-detection and emergency-shutoff
-subsystem (10--30~W), not as a primary energy feature.
-\item \textbf{Single-shell ring all-reduce supremacy.} Naive ring all-reduce
-on the sphere is \emph{slower} than on the torus due to ring ordering:
-consecutive ring members are not always adjacent. Tree-based all-reduce
-performs comparably across topologies. The sphere's true collective
-advantage is in bisection-limited operations, not ring operations.
-\end{itemize}
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=0.84\textwidth]{fig8_energy_proxy.pdf}
+\caption{Assumed path-energy proxy from hop count and fixed unvalidated
+per-bit constants. It is neither a PHY measurement nor a full-system
+energy or efficiency comparison.}
+\label{fig:energy}
+\end{figure}
+
+\section{Capacity Bounds and the Locality Constraint}\label{sec:bounds}
+
+\subsection{Historical Reference Assumptions}
+
+The analytical scenario retains 113 compute tiles, 25 memory-controller
+tiles and 24 cache/IO tiles to expose the original assumptions. Each memory
+tile has one assumed 36 GB stack at 1.2 TB/s locally. The sum is
+\AssumedHbmCapacityGb{} GB and \LocalHbmTbps{} TB/s at the stacks. Neither
+quantity establishes uniform latency, coherent sharing, feasible stack
+placement or simultaneous remotely achievable bandwidth.
+
+Each memory tile has an optimistic six-port outward budget at 256 Gbit/s
+per direction. A port supplies 32 GB/s; six provide 192 GB/s. Summing over
+25 memory tiles gives
+\begin{equation}
+B_{\mathrm{remote}}\leq25\times6\times\frac{256}{8}\ \mathrm{GB/s}
+=\RemoteHbmTbps{}\ \mathrm{TB/s}.
+\end{equation}
+Cuts, protocol overhead, controller arbitration, placement and contention
+can tighten this endpoint ceiling. Not every sphere vertex has six surface
+links; the uniform six-port budget is deliberately optimistic. Routing
+alone cannot remove this bound.
+
+Consuming the full assumed stack aggregate while remote demand stays below
+that ceiling needs a local byte fraction of at least
+\begin{equation}
+f_{\mathrm{local}}\geq1-\frac{\RemoteHbmTbps}{\LocalHbmTbps}
+=\MinimumLocalPercent\%.
+\end{equation}
+This is necessary, not sufficient. A local access path, controller service,
+compute consumption and realizable package must still exist.
+
+\begin{table}[tbp]
+\centering
+\caption{Assumption-driven bounds regenerated from
+\texttt{artifacts/performance\_model.json}. Full-system power is unknown;
+summed stack capacity does not imply uniform remote service.}
+\label{tab:capacity}
+\small
+\begin{tabular}{p{0.68\textwidth}r}
+\toprule
+Quantity & Value\\
+\midrule
+\CapacitySummaryRows
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Compute, Precision and Power}
+
+Assuming 500 dense FP8 TFLOPS per compute tile sums to
+\AssumedDenseFpEightPflops{} PFLOPS. No synthesized engine or measured
+kernel establishes that peak. A single $256\times256$ array at 2 GHz,
+issuing one FMA per cell per cycle and counting two FLOPs per FMA, supplies
+262.144 TFLOPS. Array count, formats, accumulation, data supply and
+implementation power must be specified before accepting a different peak.
+FP8 cannot substitute for BF16, FP16 or FP64 work, and sparse rates cannot
+silently become dense rates.
+
+For intensity $I_p$ at precision $p$, the revised capacity code reports
+\begin{equation}
+P_p\leq\min(P_{p,\mathrm{compute}},B_{\mathrm{memory}}I_p).
+\end{equation}
+Precision must have a matching compute peak. Decimal TB/s times FLOP/byte
+gives TFLOPS. This does not model usable memory fit, tensor placement,
+kernel utilization, overlap, host overhead, collectives or numerical error.
+It is a constraint, not a workload benchmark or justification for an
+arbitrary spillover penalty.
+
+The power model reports \PartialPowerWatts{} W as a component subtotal
+under declared tile and dynamic-link assumptions. HBM stacks, static
+fabric, external IO/host, power conversion and cooling are missing.
+Full-system power is explicitly unknown. Dividing an assumed peak by this
+subtotal would overstate the evidence; no efficiency ranking is reported.
+
+\section{Proposed Compute-Near-HBM Accelerator}\label{sec:proposal}
+
+\subsection{Four-Island Planning Design}
+
+The next architecture study starts with four islands. Each has two compute
+chiplets, one local HBM stack, local SRAM and a memory/IO complex. Eight
+compute chiplets and four stacks define a study size, not a purchased
+component list or routed package. A wide local path serves resident weights
+and state. A separate hierarchical inter-island network carries activations,
+collectives and explicitly budgeted remote operations.
+
+Expert weights stay beside their compute; attention/KV shards have stable
+owners. The runtime exposes NUMA locality and admits work against the most
+constrained island rather than treating aggregate free bytes as immediately
+available to every rank. A geodesic graph, short-wire mesh/torus and switched
+hierarchy remain candidates. Selection needs the same application,
+local-memory budget and priced port/wiring constraints. This hierarchy has
+not been implemented or tested by the flat-graph experiments.
+
+Planar construction is the initial package study. A physical faceted sphere
+remains an optional mechanical/cooling experiment. The level-two,
+radius-40 mm graph has approximately 11--13 mm surface-neighbor arcs, not the
+earlier claimed 4--7 mm. Logical arcs do not establish PHY reach, die escape
+routing or equal per-bit energy. Package construction and connectivity must
+be evaluated separately.
+
+\subsection{Runtime and End-to-End Workload Contract}
+
+Memory-resident MoE inference supplies a concrete lead application. A full
+trace must include gating, dispatch, expert computation, combine,
+attention/KV access, tensor-parallel phases and host scheduling. DeepEP
+provides a reference for expert-parallel dispatch/combine on its supported
+platforms\cite{deepep}; it is not a backend for this hypothetical device.
+
+An execution generation should identify weights, tensor ownership,
+communicator participants and routes. Dispatch carries token/expert
+identity, bounds and generation. The receiver checks messages before expert
+execution. Combine must return each expected contribution exactly once and
+preserve numerical correctness. A timeout or reset must account for every
+outstanding operation and complete or explicitly abort its generation.
+These are proposed protocol requirements, not properties of static edge
+removal.
+
+Tiny-packet latency is not layer latency. With 128 tokens, width 8,192,
+top-$k=2$ and two-byte activations, all-remote assignments require at most
+4 MiB of dispatch payload. Returning equal-width outputs adds 4 MiB. An
+ideal 192 GB/s endpoint alone requires about 43.7 $\mu$s for the sequential
+payload transfers, before metadata, queueing, compute and software. A full
+byte ledger is required before converting network plots into tokens/s.
+
+\subsection{Transport, Control and Frame Semantics}
+
+Hardware transport needs bounded buffers, credit conservation, CRC/replay,
+ordering, timeouts, error containment and reset semantics. Adaptive routing
+needs legal VC transitions and a verified escape dependency graph including
+request/response and injection/ejection dependencies. Fault and epoch
+transitions must preserve the relevant properties. There is no claim that
+three VCs suffice without those specifications and proofs.
+
+Management should remain available during data-network degradation and
+control safe power/clock sequencing. Physical IDs and memory ownership
+should stay stable under coordinate reorientation. A prepare/commit scheme
+needs tests with old/new-generation traffic in flight, rollback and partial
+management failure. The original sub-microsecond frame-transition claim is
+withdrawn because the protocol is not modeled.
+
+\subsection{Physical, Electrical and Thermal Evidence}
+
+PHY selection needs actual channel construction, lengths, bends,
+connectors, layers and return paths. SI/PI analysis must cover the selected
+IP's requirements across process, voltage and temperature. An arbitrary
+eight-lane rate in Python does not establish compliance with an interface
+standard or feasibility on a spherical shell.
+
+Thermal acceptance needs local junction limits and workload hotspots, not
+average shell heat flux. A planar cold plate and any later segmented shell
+should use consistent inlet conditions, flow, allowable temperatures and
+measured wall power. Heater vehicles can test contact pressure, interfaces,
+pressure drop, leaks and fault responses before functional silicon. No
+thermal qualification, yield, serviceability assessment or silicon signoff
+has been completed.
+
+\section{Validation, Reproduction and Release Integrity}\label{sec:repro}
+
+\subsection{Software and Experiment Checks}
+
+Regressions cover hand-derived timing, chronological competition,
+full-duplex independence, disconnected inputs, graph invariants, geometry,
+workload accounting, precision checks and numeric adversarial cases. CI runs
+on Python 3.10 and 3.12. These verify software within its abstraction, not
+hardware routing, real inference output or application energy.
+
+The publication build regenerates evaluation and capacity JSON, the
+paired-seed sweep, eight figure pairs and this paper's numeric macros/table
+rows. A manifest records environment, configuration, source fingerprints and
+output hashes. Tables consume \texttt{paper/generated\_results.tex}, not
+manually transcribed JSON values. Source fingerprints identify the exact
+files used even if a working tree was not committed at calculation time.
+The separate paper-build manifest associates the PDF with its TeX inputs and
+figure files.
+
+Reference commands, from the repository root, are:
+\begin{quote}\small\ttfamily
+python -m pip install -r requirements.txt\\
+python -m unittest discover -s tests -v\\
+python scripts/rebuild\_publication.py\\
+python scripts/build\_paper.py\\
+python scripts/build\_paper.py --check
+\end{quote}
+The paper builder runs LaTeX from the correct working directory and checks
+its recorded inputs. Dependency versions can change percentile rounding or
+rendering. In a fixed numerical environment, repeated JSON should agree;
+source and output hashes make disagreements inspectable. Determinism is
+conditional on the recorded environment, not a promise across every Python,
+NumPy, Matplotlib or TeX version.
+
+\subsection{Progression Beyond the Model}
+
+The next revision should follow the dominant measured bottleneck and a
+frozen decision rule. The validation plan proposes at least 15\% more useful
+application throughput per joule at the same accuracy and service target,
+with at most 5\% p99 regression in required held-out cases. These are
+proposed gates, not achieved results. Estimated power supports screening,
+not proof of product efficiency. Revise goals openly before inspecting
+held-out results when requirements change.
+
+A practical sequence is:
+\begin{enumerate}
+\item Freeze workload shapes, precision/accuracy, budgets and held-out
+traces. Retain losing cases and failed runs alongside wins.
+\item Add local/remote memory, controller service, full MoE phases and
+placement sensitivity. Account for useful completed work and every byte.
+\item Cross-check a finite-buffer router and implement transport RTL with
+ordering, credit and fault-transition assertions.
+\item Build a small FPGA demonstrator with independent scoreboards,
+backpressure and injected faults. FPGA area/power is not ASIC package PPA.
+\item Measure representative channels, power-delivery transients, thermal
+interfaces and fault responses before committing to a package.
+\item Advance only with application, timing, CDC/RDC, PPA, DFT, SI/PI,
+thermal, yield and production-test evidence for every requirement.
+\end{enumerate}
+
+Each iteration needs source/config revision, raw per-run data, environment,
+owner and acceptance decision. Statistical inference should resample
+independent runs or trace windows rather than treat correlated packets as
+independent. Live recovery requires corruption, duplication, timeout and
+generation tests beyond connectivity.
+
+\subsection{Publication History and Availability}
+
+Source is available at
+\url{https://github.com/igenius0/sphere-chiplet-fabric}. This revision
+synchronizes the paper, figures, results and citation metadata with the
+corrected model. The April bundle remains recoverable through the original
+Git tags and DOI. Its old performance and efficiency claims are superseded
+and must not be reused as validated measurements. A future DOI deposit must
+identify its actual released version; the historical identifier is not
+relabeled as a deposit of this revision.
+
+Software is MIT-licensed; paper text is CC BY 4.0. Citation metadata
+identifies the current revision and preserves the historical record as
+prior work. Documentation separates implemented software, observed
+simulation outputs, analytical assumptions and planned hardware validation.
 
 \section{Conclusion}
 
-We have presented a chiplet-package architecture organized as a geodesic
-icosphere with planet-style coordinates and a reorientable reference frame.
-Simulator-based evaluation against torus and dragonfly baselines shows lower
-tail latency, higher bisection bandwidth, and lower average energy per bit
-at comparable node count. Analytical performance modeling projects
-$\sim$56~PFLOPS dense FP8 at 2.3~kW (24.8~PFLOPS/kW), approximately
-$5\times$ the energy efficiency of an 8-GPU NVLink node, in a single
-package with 900~GB unified HBM capacity. Substantial validation work
-remains---SPICE-level signal integrity, thermal CFD, silicon prototyping,
-and compiler integration---but the simulator and analytical results are
-sufficient to motivate further investigation.
+Corrected experiments make the spherical-interconnect hypothesis testable
+without presuming its outcome. The flat sphere loses tested synthetic MoE
+p99 comparisons when aggregate bandwidth is matched, and wins when equal
+link rates also supply more aggregate bandwidth. The stencil exposes
+placement effects. Static failed edges probe route sensitivity, not live
+recovery. These findings replace universal topology and efficiency claims.
 
-\section*{Artifacts}
+The strongest constraint is locality: \LocalHbmTbps{} TB/s of assumed
+stack bandwidth faces an optimistic \RemoteHbmTbps{} TB/s remote
+memory-port ceiling. Four compute/HBM islands with explicit ownership and a
+hierarchy provide a concrete next study. Geodesic connectivity and physical
+spherical packaging remain separate choices. The synchronized publication
+and software supply a reproducible baseline; application benefit and
+physical feasibility remain questions for the next measured iteration.
 
-The simulator, topology generators, and analysis scripts are provided as
-supplementary material. All figures in this paper are generated by the
-provided scripts from raw simulator output.
-
-\begin{thebibliography}{99}\small
-
-\bibitem{nvidia_b200} NVIDIA Corporation, ``NVIDIA Blackwell Architecture
-Technical Brief,'' 2024.
-
-\bibitem{amd_mi300} AMD, ``AMD Instinct MI300 Series Product Brief,'' 2024.
-
-\bibitem{intel_pondervein} Intel Corporation, ``Foveros and EMIB Advanced
-Packaging,'' Intel Technology Briefing, 2023.
-
-\bibitem{kim2008flattened} J. Kim, W. J. Dally, S. Scott, and D. Abts,
-``Technology-driven, highly-scalable dragonfly topology,'' in
-\emph{Proc. ISCA}, 2008, pp. 77--88.
-
-\bibitem{ahn2014triplet} J. H. Ahn, S. Yoo, and K. Choi, ``NoC-centric
-network architectures for chiplets,'' \emph{IEEE Micro}, 2014.
-
-\bibitem{ahn2009hyperx} J. H. Ahn, N. Binkert, A. Davis, M. McLaren, and
-R. S. Schreiber, ``HyperX: topology, routing, and packaging of efficient
-large-scale networks,'' in \emph{Proc. SC}, 2009.
-
-\bibitem{dally1990performance} W. J. Dally, ``Performance analysis of
-$k$-ary $n$-cube interconnection networks,'' \emph{IEEE Trans. Computers},
-vol. 39, no. 6, pp. 775--785, 1990.
-
-\bibitem{dally2003principles} W. J. Dally and B. Towles,
-\emph{Principles and Practices of Interconnection Networks},
-Morgan Kaufmann, 2003.
-
-\bibitem{wenninger1971polyhedron} M. Wenninger, \emph{Polyhedron Models},
-Cambridge University Press, 1971.
-
-\bibitem{duato1993new} J. Duato, ``A new theory of deadlock-free adaptive
-routing in wormhole networks,'' \emph{IEEE TPDS}, vol. 4, no. 12, pp.
-1320--1331, 1993.
-
-\bibitem{williams2009roofline} S. Williams, A. Waterman, and D. Patterson,
+\clearpage
+\begin{thebibliography}{9}\small
+\bibitem{williams2009roofline}
+S. Williams, A. Waterman, and D. Patterson,
 ``Roofline: an insightful visual performance model for multicore
-architectures,'' \emph{Comm. ACM}, vol. 52, no. 4, pp. 65--76, 2009.
-
-\bibitem{jiang2013booksim} N. Jiang, D. U. Becker, G. Michelogiannakis,
-J. Balfour, B. Towles, D. E. Shaw, J. Kim, and W. J. Dally, ``A detailed
-and flexible cycle-accurate network-on-chip simulator,'' in \emph{Proc.
-ISPASS}, 2013, pp. 86--96.
-
-\bibitem{liu2020serdes} F. Liu et al., ``Energy-efficient SerDes for
-chiplet interconnect,'' \emph{IEEE JSSC}, 2020.
-
-\bibitem{microsoft_microfluidic} Microsoft Research, ``In-chip microfluidic
-cooling for AI accelerators,'' technical brief, 2024.
-
+architectures,'' \emph{Communications of the ACM}, vol. 52, no. 4,
+pp. 65--76, 2009. \url{https://doi.org/10.1145/1498765.1498785}.
+\bibitem{jiang2013booksim}
+N. Jiang, D. U. Becker, G. Michelogiannakis, J. Balfour, B. Towles,
+J. Kim, and W. J. Dally,
+``A detailed and flexible cycle-accurate network-on-chip simulator,''
+in \emph{Proc. IEEE ISPASS}, 2013, pp. 86--96.
+\url{https://doi.org/10.1109/ISPASS.2013.6557149}.
+\bibitem{booksimrepo}
+BookSim developers, ``BookSim 2.0,'' official source repository.
+\url{https://github.com/booksim/booksim2}. Accessed 9 November 2026.
+\bibitem{duato1993new}
+J. Duato, ``A new theory of deadlock-free adaptive routing in wormhole
+networks,'' \emph{IEEE Transactions on Parallel and Distributed Systems},
+vol. 4, no. 12, pp. 1320--1331, 1993.
+\url{https://www.csl.cornell.edu/courses/ece5750/duato.tpds93.pdf}.
+\bibitem{ncclperformance}
+NVIDIA, ``Performance reported by NCCL tests,'' official documentation.
+\url{https://github.com/NVIDIA/nccl-tests/blob/master/doc/PERFORMANCE.md}.
+Accessed 9 November 2026.
+\bibitem{deepep}
+DeepSeek-AI, ``DeepEP: an efficient expert-parallel communication library,''
+official source repository. \url{https://github.com/deepseek-ai/DeepEP}.
+Accessed 9 November 2026.
 \end{thebibliography}
-
 \end{document}

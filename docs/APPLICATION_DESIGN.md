@@ -1,5 +1,6 @@
 # Application design: local-memory MoE inference accelerator
 
+Publication/evidence revision **v1.1.0, 9 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
 **Status:** proposed architecture and validation contract, 9 November 2026. The current implementation supplies synthetic fabric experiments. It does not implement this inference runtime or establish hardware performance.
 
 ## Recommended lead application
@@ -73,6 +74,7 @@ Track the byte ledger separately for weights, KV access, dispatch, combine, tens
 From the repository root:
 
 ```bash
+python scripts/rebuild_publication.py
 python -m sim.run_workloads --config examples/moe_dispatch.json --output generated/moe.json
 python -m sim.run_workloads --config examples/stencil.json --output generated/stencil.json
 python -m sim.performance_model --output generated/capacity_bounds.json

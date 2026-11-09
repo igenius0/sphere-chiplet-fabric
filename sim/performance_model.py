@@ -2,7 +2,8 @@
 
 The publication's historical model mixed precision and memory technologies.
 This replacement reports explicit input assumptions and endpoint bottlenecks.
-The archived paper/figures are unchanged; see docs/RESEARCH_REVIEW.md.
+The current paper and figures distinguish these bounds from simulation evidence;
+see docs/RESEARCH_REVIEW.md and docs/PUBLICATION_REVISION.md.
 """
 import argparse
 import json

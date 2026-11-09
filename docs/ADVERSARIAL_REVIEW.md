@@ -16,9 +16,11 @@ fabric. The regression tests accept an explicit `ValueError` for an
 unrepresentable simulation. Ordinary engineering configurations must continue
 to run. All three findings are resolved in this implementation: derived
 numbers and service durations are checked, and timestamp advances reject
-overflow or inadequate resolution. All nine adversarial tests pass locally.
-The table records the original failures so they remain reproducible. Remote
-CI is a separate check after publication.
+overflow or inadequate resolution. The adversarial regression suite covers
+these failures. The table records the original failures so they remain
+reproducible. Run the suite and inspect the exact commit's Python 3.10/3.12
+GitHub Actions results when validating a revision; an earlier passing run does
+not certify later changes.
 
 ## Independent invariants
 
@@ -58,8 +60,10 @@ oracles; graph comparisons do not hard-code a scientific winner.
    remotely accessible bandwidth. The endpoint ceiling in the reference
    model remains an optimistic bound before contention and cuts.
 7. A paper or archived figure does not inherit new validation merely because
-   the code has been corrected. Regenerated results require explicit model,
-   configuration and version attribution.
+   the code has been corrected. The current paper and figures are regenerated
+   with explicit model/configuration attribution and source/output hashes in
+   `artifacts/publication_manifest.json`. The original archive retains its
+   original evidence status; see [publication revision](PUBLICATION_REVISION.md).
 
 Run the focused review with:
 

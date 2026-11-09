@@ -1,20 +1,38 @@
 cff-version: 1.2.0
-message: "If you use this work, please cite it as below."
-title: "A Spherical Chiplet Fabric with Geodesic Topology, Planet-Style Coordinates, and Reorientable Frame Semantics for Large-Scale AI and HPC Workloads"
+message: "Cite this corrected software and publication revision by its version and repository URL. The DOI in references identifies the earlier publication; it does not identify this revision."
+title: "A Spherical Chiplet Fabric: Corrected Simulation and Memory-Local Design Study"
+type: software
+version: 1.1.0
 authors:
   - family-names: Ali
     given-names: Musthafa
     email: mali@outlook.com.au
     affiliation: "Independent Researcher, Sydney, Australia"
-date-released: 2026-04-29
+date-released: 2026-11-09
+repository-code: "https://github.com/igenius0/sphere-chiplet-fabric"
+url: "https://github.com/igenius0/sphere-chiplet-fabric"
+abstract: >-
+  Corrected exploratory store-and-forward fabric simulation, reproducible
+  equal-resource topology comparisons, assumption-driven capacity bounds and
+  a proposed compute-near-HBM accelerator architecture. Software and synthetic
+  simulation results do not establish implemented hardware performance,
+  full-system energy efficiency or physical feasibility.
 keywords:
   - chiplet
   - geodesic topology
   - network-on-package
   - AI accelerator
   - HBM
-  - deadlock-free routing
+  - network simulation
+  - memory locality
+  - reproducible research
   - all-reduce
 license: MIT
-doi: 10.5281/zenodo.19918238
-type: software
+references:
+  - type: report
+    title: "A Spherical Chiplet Fabric with Geodesic Topology, Planet-Style Coordinates, and Reorientable Frame Semantics for Large-Scale AI and HPC Workloads"
+    authors:
+      - family-names: Ali
+        given-names: Musthafa
+    year: 2026
+    doi: 10.5281/zenodo.19918238
