@@ -1,0 +1,5587 @@
+{
+  "schema_version": 1,
+  "experiment": "existing_flat_topology_paired_seed_sensitivity",
+  "provenance": {
+    "python_version": "3.12.14",
+    "numpy_version": "2.3.5",
+    "source_hash_algorithm": "sha256",
+    "source_sha256": {
+      "sim/fabric.py": "98e370a69294376c0f15d17b68059e79a8ab8127c92f74ef840c07dd2f41f745",
+      "sim/topology.py": "b05056931240c6b78866d5c8b60fdc285ea47f9b2c15305d89c1b42f52328a08",
+      "sim/validation.py": "086347faca1cee4b55a9065ca82cfe0ab6f3c2007f370cb32e529a0aba7dc221",
+      "sim/workloads.py": "8633fbcd9b1e74b0c3c66a1942a1dea0daea0652a61200f396896cd50988cfd1",
+      "sim/run_sweep.py": "5d9fcc8ad1a2b00cda1267b7eb5736497bdafc6be1d75d11b25b7c44d49124e9"
+    }
+  },
+  "settings": {
+    "seeds": [
+      7,
+      19,
+      42,
+      73,
+      101
+    ],
+    "n_packets_per_profile": 500,
+    "packet_size_flits": 16,
+    "payload_bytes_per_packet": 1024,
+    "aggregate_injection_rate_pkts_per_ns": 0.1,
+    "aggregate_offered_payload_gbps": 819.2,
+    "failed_undirected_links_per_candidate": 1,
+    "profile_count": 40,
+    "cohort_count": 8,
+    "total_packet_attempts": 80000
+  },
+  "method": {
+    "evidence": "exploratory synthetic communication simulation, not hardware measurements",
+    "pairing": "each seed shares rank pairs, injection times and packet size across both candidates and failure scenarios",
+    "spread": "median and minimum/maximum across seeds; not confidence intervals or a guarantee over traffic distributions",
+    "ratio": "sphere p99 / torus p99 calculated within each seed, then summarized; values above 1 mean higher sphere latency",
+    "bandwidth": "equal_total matches baseline sum of directed capacities; per_link matches each link rate, leaving sphere more total links and bandwidth",
+    "failure": "one seeded undirected link removed before traffic; no live detection, retry or failover tested",
+    "stencil_bias": "fixed logical periodic grid directly matches torus adjacency; sphere placement is not optimized",
+    "mapping": "rank IDs map directly to node IDs; results depend on placement, especially hotspot location",
+    "physical": "sphere surface arcs and configured torus link lengths differ; wire-length, power, package and pin costs are not equalized",
+    "scope": "only the existing flat sphere and torus models; proposed hierarchical/co-located-memory design is not implemented or tested",
+    "omissions": "no compute, HBM transactions, finite buffers, VC credits, protocol overhead, full-system power, or end-to-end application SLO"
+  },
+  "cohorts": [
+    {
+      "workload": "moe_dispatch",
+      "rank_count": 42,
+      "bandwidth_policy": "equal_total",
+      "seeds": [
+        7,
+        19,
+        42,
+        73,
+        101
+      ],
+      "resource_budgets": {
+        "sphere": {
+          "nodes": 42,
+          "undirected_links": 120,
+          "average_degree": 5.714285714285714,
+          "link_bandwidth_gbps_per_direction": 179.2,
+          "aggregate_directed_bandwidth_gbps": 43008.0,
+          "total_link_length_mm": 2836.54293507601,
+          "mean_link_length_mm": 23.637857792300085
+        },
+        "torus": {
+          "nodes": 42,
+          "undirected_links": 84,
+          "average_degree": 4.0,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 43008.0,
+          "total_link_length_mm": 336.0,
+          "mean_link_length_mm": 4.0
+        }
+      },
+      "baseline": {
+        "sphere_p99_latency_ns": {
+          "median": 280.76503090090637,
+          "min": 263.0688457191302,
+          "max": 287.17143325994766
+        },
+        "torus_p99_latency_ns": {
+          "median": 224.0994666666666,
+          "min": 214.0994666666666,
+          "max": 234.07999999999993
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 1.2257270330522518,
+          "min": 1.1430500139004145,
+          "max": 1.3148045020891717
+        }
+      },
+      "failure": {
+        "sphere_p99_latency_ns": {
+          "median": 281.4725048018206,
+          "min": 263.0688457191302,
+          "max": 287.17143325994766
+        },
+        "sphere_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0025198077504314
+        },
+        "torus_p99_latency_ns": {
+          "median": 220.2669333333331,
+          "min": 214.0994666666666,
+          "max": 234.07999999999993
+        },
+        "torus_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 0.9570731209931298,
+          "max": 1.008605702467833
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 1.2257270330522518,
+          "min": 1.1943183742474153,
+          "max": 1.3148045020891717
+        }
+      },
+      "total_unreachable_packets": {
+        "sphere_baseline": 0,
+        "sphere_failure": 0,
+        "torus_baseline": 0,
+        "torus_failure": 0
+      }
+    },
+    {
+      "workload": "moe_dispatch",
+      "rank_count": 42,
+      "bandwidth_policy": "per_link",
+      "seeds": [
+        7,
+        19,
+        42,
+        73,
+        101
+      ],
+      "resource_budgets": {
+        "sphere": {
+          "nodes": 42,
+          "undirected_links": 120,
+          "average_degree": 5.714285714285714,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 61440.0,
+          "total_link_length_mm": 2836.54293507601,
+          "mean_link_length_mm": 23.637857792300085
+        },
+        "torus": {
+          "nodes": 42,
+          "undirected_links": 84,
+          "average_degree": 4.0,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 43008.0,
+          "total_link_length_mm": 336.0,
+          "mean_link_length_mm": 4.0
+        }
+      },
+      "baseline": {
+        "sphere_p99_latency_ns": {
+          "median": 182.89501030691974,
+          "min": 178.60772623736787,
+          "max": 204.88571897423526
+        },
+        "torus_p99_latency_ns": {
+          "median": 224.0994666666666,
+          "min": 214.0994666666666,
+          "max": 234.07999999999993
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 0.8335967416058608,
+          "min": 0.7760613515456596,
+          "max": 0.9142624122305006
+        }
+      },
+      "failure": {
+        "sphere_p99_latency_ns": {
+          "median": 182.89501030691974,
+          "min": 178.60772623736787,
+          "max": 204.88571897423526
+        },
+        "sphere_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "torus_p99_latency_ns": {
+          "median": 220.2669333333331,
+          "min": 214.0994666666666,
+          "max": 234.07999999999993
+        },
+        "torus_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 0.9570731209931298,
+          "max": 1.008605702467833
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 0.8335967416058608,
+          "min": 0.8108694461509492,
+          "max": 0.9064616727760955
+        }
+      },
+      "total_unreachable_packets": {
+        "sphere_baseline": 0,
+        "sphere_failure": 0,
+        "torus_baseline": 0,
+        "torus_failure": 0
+      }
+    },
+    {
+      "workload": "moe_dispatch",
+      "rank_count": 162,
+      "bandwidth_policy": "equal_total",
+      "seeds": [
+        7,
+        19,
+        42,
+        73,
+        101
+      ],
+      "resource_budgets": {
+        "sphere": {
+          "nodes": 162,
+          "undirected_links": 480,
+          "average_degree": 5.925925925925926,
+          "link_bandwidth_gbps_per_direction": 172.8,
+          "aggregate_directed_bandwidth_gbps": 165888.0,
+          "total_link_length_mm": 5769.128408697569,
+          "mean_link_length_mm": 12.019017518119936
+        },
+        "torus": {
+          "nodes": 162,
+          "undirected_links": 324,
+          "average_degree": 4.0,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 165888.0,
+          "total_link_length_mm": 1296.0,
+          "mean_link_length_mm": 4.0
+        }
+      },
+      "baseline": {
+        "sphere_p99_latency_ns": {
+          "median": 512.360818825301,
+          "min": 494.91183211503085,
+          "max": 544.3332540995016
+        },
+        "torus_p99_latency_ns": {
+          "median": 442.34666666666635,
+          "min": 410.45893333333294,
+          "max": 442.3866666666663
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 1.1582789188539184,
+          "min": 1.118832511714111,
+          "max": 1.3261576491440363
+        }
+      },
+      "failure": {
+        "sphere_p99_latency_ns": {
+          "median": 519.7513417724394,
+          "min": 494.91183211503085,
+          "max": 544.3332540995016
+        },
+        "sphere_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.015864355673346
+        },
+        "torus_p99_latency_ns": {
+          "median": 442.34666666666635,
+          "min": 416.351733333333,
+          "max": 442.3866666666663
+        },
+        "torus_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0143566128580628
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 1.1748802143805717,
+          "min": 1.118832511714111,
+          "max": 1.3073879859741235
+        }
+      },
+      "total_unreachable_packets": {
+        "sphere_baseline": 0,
+        "sphere_failure": 0,
+        "torus_baseline": 0,
+        "torus_failure": 0
+      }
+    },
+    {
+      "workload": "moe_dispatch",
+      "rank_count": 162,
+      "bandwidth_policy": "per_link",
+      "seeds": [
+        7,
+        19,
+        42,
+        73,
+        101
+      ],
+      "resource_budgets": {
+        "sphere": {
+          "nodes": 162,
+          "undirected_links": 480,
+          "average_degree": 5.925925925925926,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 245760.0,
+          "total_link_length_mm": 5769.128408697569,
+          "mean_link_length_mm": 12.019017518119936
+        },
+        "torus": {
+          "nodes": 162,
+          "undirected_links": 324,
+          "average_degree": 4.0,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 165888.0,
+          "total_link_length_mm": 1296.0,
+          "mean_link_length_mm": 4.0
+        }
+      },
+      "baseline": {
+        "sphere_p99_latency_ns": {
+          "median": 344.7768117916842,
+          "min": 340.83775804095694,
+          "max": 360.7192178178829
+        },
+        "torus_p99_latency_ns": {
+          "median": 442.34666666666635,
+          "min": 410.45893333333294,
+          "max": 442.3866666666663
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 0.7793562459500388,
+          "min": 0.7705218185758316,
+          "max": 0.8788192643012681
+        }
+      },
+      "failure": {
+        "sphere_p99_latency_ns": {
+          "median": 344.7768117916842,
+          "min": 340.83775804095694,
+          "max": 364.63923231516605
+        },
+        "sphere_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0530514801374626
+        },
+        "torus_p99_latency_ns": {
+          "median": 442.34666666666635,
+          "min": 416.351733333333,
+          "max": 442.3866666666663
+        },
+        "torus_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0143566128580628
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 0.7793562459500388,
+          "min": 0.7705218185758316,
+          "max": 0.8663809681538891
+        }
+      },
+      "total_unreachable_packets": {
+        "sphere_baseline": 0,
+        "sphere_failure": 0,
+        "torus_baseline": 0,
+        "torus_failure": 0
+      }
+    },
+    {
+      "workload": "stencil",
+      "rank_count": 42,
+      "bandwidth_policy": "equal_total",
+      "seeds": [
+        7,
+        19,
+        42,
+        73,
+        101
+      ],
+      "resource_budgets": {
+        "sphere": {
+          "nodes": 42,
+          "undirected_links": 120,
+          "average_degree": 5.714285714285714,
+          "link_bandwidth_gbps_per_direction": 179.2,
+          "aggregate_directed_bandwidth_gbps": 43008.0,
+          "total_link_length_mm": 2836.54293507601,
+          "mean_link_length_mm": 23.637857792300085
+        },
+        "torus": {
+          "nodes": 42,
+          "undirected_links": 84,
+          "average_degree": 4.0,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 43008.0,
+          "total_link_length_mm": 336.0,
+          "mean_link_length_mm": 4.0
+        }
+      },
+      "baseline": {
+        "sphere_p99_latency_ns": {
+          "median": 287.1714332599504,
+          "min": 287.1714332599504,
+          "max": 301.4525730226689
+        },
+        "torus_p99_latency_ns": {
+          "median": 34.02666666666667,
+          "min": 34.02666666666667,
+          "max": 34.02666666666667
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 8.439599331699167,
+          "min": 8.439599331699167,
+          "max": 8.85930367425555
+        }
+      },
+      "failure": {
+        "sphere_p99_latency_ns": {
+          "median": 287.1714332599504,
+          "min": 287.1714332599504,
+          "max": 301.4525730226689
+        },
+        "sphere_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "torus_p99_latency_ns": {
+          "median": 34.0272,
+          "min": 34.02666666666667,
+          "max": 102.07999999999993
+        },
+        "torus_p99_ratio_vs_own_baseline": {
+          "median": 1.0000156739811912,
+          "min": 1.0,
+          "max": 2.9999999999999973
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 8.439599331699167,
+          "min": 2.8131997772330584,
+          "max": 8.859164815872857
+        }
+      },
+      "total_unreachable_packets": {
+        "sphere_baseline": 0,
+        "sphere_failure": 0,
+        "torus_baseline": 0,
+        "torus_failure": 0
+      }
+    },
+    {
+      "workload": "stencil",
+      "rank_count": 42,
+      "bandwidth_policy": "per_link",
+      "seeds": [
+        7,
+        19,
+        42,
+        73,
+        101
+      ],
+      "resource_budgets": {
+        "sphere": {
+          "nodes": 42,
+          "undirected_links": 120,
+          "average_degree": 5.714285714285714,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 61440.0,
+          "total_link_length_mm": 2836.54293507601,
+          "mean_link_length_mm": 23.637857792300085
+        },
+        "torus": {
+          "nodes": 42,
+          "undirected_links": 84,
+          "average_degree": 4.0,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 43008.0,
+          "total_link_length_mm": 336.0,
+          "mean_link_length_mm": 4.0
+        }
+      },
+      "baseline": {
+        "sphere_p99_latency_ns": {
+          "median": 204.88571897423571,
+          "min": 204.88571897423571,
+          "max": 204.88571897423571
+        },
+        "torus_p99_latency_ns": {
+          "median": 34.02666666666667,
+          "min": 34.02666666666667,
+          "max": 34.02666666666667
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 6.021327947910532,
+          "min": 6.021327947910532,
+          "max": 6.021327947910532
+        }
+      },
+      "failure": {
+        "sphere_p99_latency_ns": {
+          "median": 204.88571897423571,
+          "min": 204.88571897423571,
+          "max": 204.88571897423571
+        },
+        "sphere_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "torus_p99_latency_ns": {
+          "median": 34.0272,
+          "min": 34.02666666666667,
+          "max": 102.07999999999993
+        },
+        "torus_p99_ratio_vs_own_baseline": {
+          "median": 1.0000156739811912,
+          "min": 1.0,
+          "max": 2.9999999999999973
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 6.021233571208789,
+          "min": 2.0071093159701787,
+          "max": 6.021327947910532
+        }
+      },
+      "total_unreachable_packets": {
+        "sphere_baseline": 0,
+        "sphere_failure": 0,
+        "torus_baseline": 0,
+        "torus_failure": 0
+      }
+    },
+    {
+      "workload": "stencil",
+      "rank_count": 162,
+      "bandwidth_policy": "equal_total",
+      "seeds": [
+        7,
+        19,
+        42,
+        73,
+        101
+      ],
+      "resource_budgets": {
+        "sphere": {
+          "nodes": 162,
+          "undirected_links": 480,
+          "average_degree": 5.925925925925926,
+          "link_bandwidth_gbps_per_direction": 172.8,
+          "aggregate_directed_bandwidth_gbps": 165888.0,
+          "total_link_length_mm": 5769.128408697569,
+          "mean_link_length_mm": 12.019017518119936
+        },
+        "torus": {
+          "nodes": 162,
+          "undirected_links": 324,
+          "average_degree": 4.0,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 165888.0,
+          "total_link_length_mm": 1296.0,
+          "mean_link_length_mm": 4.0
+        }
+      },
+      "baseline": {
+        "sphere_p99_latency_ns": {
+          "median": 542.3209956257185,
+          "min": 517.1599285550232,
+          "max": 593.8543349797328
+        },
+        "torus_p99_latency_ns": {
+          "median": 34.02666666666667,
+          "min": 34.02666666666667,
+          "max": 34.02666666666667
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 15.938117034454892,
+          "min": 15.198665611922701,
+          "max": 17.452615643996847
+        }
+      },
+      "failure": {
+        "sphere_p99_latency_ns": {
+          "median": 542.3209956257185,
+          "min": 517.1599285550232,
+          "max": 593.8543349797328
+        },
+        "sphere_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "torus_p99_latency_ns": {
+          "median": 34.02666666666667,
+          "min": 34.02666666666667,
+          "max": 34.02666666666667
+        },
+        "torus_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 15.938117034454892,
+          "min": 15.198665611922701,
+          "max": 17.452615643996847
+        }
+      },
+      "total_unreachable_packets": {
+        "sphere_baseline": 0,
+        "sphere_failure": 0,
+        "torus_baseline": 0,
+        "torus_failure": 0
+      }
+    },
+    {
+      "workload": "stencil",
+      "rank_count": 162,
+      "bandwidth_policy": "per_link",
+      "seeds": [
+        7,
+        19,
+        42,
+        73,
+        101
+      ],
+      "resource_budgets": {
+        "sphere": {
+          "nodes": 162,
+          "undirected_links": 480,
+          "average_degree": 5.925925925925926,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 245760.0,
+          "total_link_length_mm": 5769.128408697569,
+          "mean_link_length_mm": 12.019017518119936
+        },
+        "torus": {
+          "nodes": 162,
+          "undirected_links": 324,
+          "average_degree": 4.0,
+          "link_bandwidth_gbps_per_direction": 256.0,
+          "aggregate_directed_bandwidth_gbps": 165888.0,
+          "total_link_length_mm": 1296.0,
+          "mean_link_length_mm": 4.0
+        }
+      },
+      "baseline": {
+        "sphere_p99_latency_ns": {
+          "median": 363.25801691739156,
+          "min": 341.51863628587665,
+          "max": 408.925981168123
+        },
+        "torus_p99_latency_ns": {
+          "median": 34.02666666666667,
+          "min": 34.02666666666667,
+          "max": 34.02666666666667
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 10.67568623385751,
+          "min": 10.036793777994022,
+          "max": 12.017809007683864
+        }
+      },
+      "failure": {
+        "sphere_p99_latency_ns": {
+          "median": 363.25801691739156,
+          "min": 341.51863628587665,
+          "max": 408.925981168123
+        },
+        "sphere_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "torus_p99_latency_ns": {
+          "median": 34.02666666666667,
+          "min": 34.02666666666667,
+          "max": 34.02666666666667
+        },
+        "torus_p99_ratio_vs_own_baseline": {
+          "median": 1.0,
+          "min": 1.0,
+          "max": 1.0
+        },
+        "paired_sphere_over_torus_p99_ratio": {
+          "median": 10.67568623385751,
+          "min": 10.036793777994022,
+          "max": 12.017809007683864
+        }
+      },
+      "total_unreachable_packets": {
+        "sphere_baseline": 0,
+        "sphere_failure": 0,
+        "torus_baseline": 0,
+        "torus_failure": 0
+      }
+    }
+  ],
+  "profiles": [
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 7,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 142.3816468263635,
+            "p50_latency_ns": 143.60564840912593,
+            "p99_latency_ns": 287.17143325994766,
+            "mean_hops": 2.91
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                5,
+                25
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 142.55998382818663,
+              "p50_latency_ns": 143.60564840912593,
+              "p99_latency_ns": 287.17143325994766,
+              "mean_hops": 2.912
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 118.14687999999991,
+            "p50_latency_ns": 110.14666666666653,
+            "p99_latency_ns": 224.0994666666666,
+            "mean_hops": 3.344
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                10,
+                17
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 118.33477333333326,
+              "p50_latency_ns": 112.13333333333321,
+              "p99_latency_ns": 226.02799999999996,
+              "mean_hops": 3.348
+            },
+            "p99_latency_ratio_vs_baseline": 1.008605702467833
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 19,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 143.62826296274747,
+            "p50_latency_ns": 143.60564840912693,
+            "p99_latency_ns": 281.4989426682238,
+            "mean_hops": 2.908
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                37,
+                38
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2811.4101938472913,
+              "mean_link_length_mm": 23.625295746615894
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 143.98372677967072,
+              "p50_latency_ns": 143.60564840912693,
+              "p99_latency_ns": 281.4989426682238,
+              "mean_hops": 2.916
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 114.34255999999992,
+            "p50_latency_ns": 102.07999999999993,
+            "p99_latency_ns": 214.0994666666666,
+            "mean_hops": 3.278
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                6,
+                13
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 114.55045333333325,
+              "p50_latency_ns": 102.07999999999993,
+              "p99_latency_ns": 214.0994666666666,
+              "mean_hops": 3.282
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 42,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 143.09950069471614,
+            "p50_latency_ns": 143.60564840912716,
+            "p99_latency_ns": 263.0688457191302,
+            "mean_hops": 2.892
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                0,
+                20
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 143.18701184925612,
+              "p50_latency_ns": 143.6056484091273,
+              "p99_latency_ns": 263.0688457191302,
+              "mean_hops": 2.892
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 112.81258666666658,
+            "p50_latency_ns": 102.07999999999993,
+            "p99_latency_ns": 230.14639999999986,
+            "mean_hops": 3.184
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                1,
+                2
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 112.81269333333326,
+              "p50_latency_ns": 102.07999999999993,
+              "p99_latency_ns": 220.2669333333331,
+              "mean_hops": 3.194
+            },
+            "p99_latency_ratio_vs_baseline": 0.9570731209931298
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 73,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 148.27377671887075,
+            "p50_latency_ns": 143.6255801882794,
+            "p99_latency_ns": 280.76503090090637,
+            "mean_hops": 3.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                34,
+                35
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2811.4101938472913,
+              "mean_link_length_mm": 23.625295746615894
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 149.35486804611628,
+              "p50_latency_ns": 143.6255801882794,
+              "p99_latency_ns": 281.4725048018206,
+              "mean_hops": 3.018
+            },
+            "p99_latency_ratio_vs_baseline": 1.0025198077504314
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 121.1308266666666,
+            "p50_latency_ns": 130.07999999999993,
+            "p99_latency_ns": 234.07999999999993,
+            "mean_hops": 3.428
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                35,
+                41
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 121.70314666666658,
+              "p50_latency_ns": 136.10666666666657,
+              "p99_latency_ns": 234.07999999999993,
+              "mean_hops": 3.444
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 101,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 141.1150791157818,
+            "p50_latency_ns": 143.6056484091273,
+            "p99_latency_ns": 265.10808736155224,
+            "mean_hops": 2.886
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                3,
+                38
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 141.3058650995067,
+              "p50_latency_ns": 143.6056484091273,
+              "p99_latency_ns": 265.10808736155224,
+              "mean_hops": 2.888
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 115.0572799999999,
+            "p50_latency_ns": 102.07999999999993,
+            "p99_latency_ns": 216.28639999999973,
+            "mean_hops": 3.274
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                5,
+                40
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 115.69365333333326,
+              "p50_latency_ns": 102.07999999999997,
+              "p99_latency_ns": 216.28639999999973,
+              "mean_hops": 3.294
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 7,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 100.79495308766043,
+            "p50_latency_ns": 102.45282537669385,
+            "p99_latency_ns": 204.88571897423526,
+            "mean_hops": 2.91
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                5,
+                25
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 100.8642847798344,
+              "p50_latency_ns": 102.46279126626987,
+              "p99_latency_ns": 204.88571897423526,
+              "mean_hops": 2.912
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 118.14687999999991,
+            "p50_latency_ns": 110.14666666666653,
+            "p99_latency_ns": 224.0994666666666,
+            "mean_hops": 3.344
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                10,
+                17
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 118.33477333333326,
+              "p50_latency_ns": 112.13333333333321,
+              "p99_latency_ns": 226.02799999999996,
+              "mean_hops": 3.348
+            },
+            "p99_latency_ratio_vs_baseline": 1.008605702467833
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 19,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 101.1352446504736,
+            "p50_latency_ns": 102.46279126626993,
+            "p99_latency_ns": 182.89501030691974,
+            "mean_hops": 2.908
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                37,
+                38
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2811.4101938472913,
+              "mean_link_length_mm": 23.625295746615894
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 101.41551622132332,
+              "p50_latency_ns": 102.46279126626993,
+              "p99_latency_ns": 182.89501030691974,
+              "mean_hops": 2.916
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 114.34255999999992,
+            "p50_latency_ns": 102.07999999999993,
+            "p99_latency_ns": 214.0994666666666,
+            "mean_hops": 3.278
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                6,
+                13
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 114.55045333333325,
+              "p50_latency_ns": 102.07999999999993,
+              "p99_latency_ns": 214.0994666666666,
+              "mean_hops": 3.282
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 42,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 100.57327875515712,
+            "p50_latency_ns": 102.46279126626996,
+            "p99_latency_ns": 178.60772623736787,
+            "mean_hops": 2.892
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                0,
+                20
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 100.60601249395654,
+              "p50_latency_ns": 102.46279126626996,
+              "p99_latency_ns": 178.60772623736787,
+              "mean_hops": 2.892
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 112.81258666666658,
+            "p50_latency_ns": 102.07999999999993,
+            "p99_latency_ns": 230.14639999999986,
+            "mean_hops": 3.184
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                1,
+                2
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 112.81269333333326,
+              "p50_latency_ns": 102.07999999999993,
+              "p99_latency_ns": 220.2669333333331,
+              "mean_hops": 3.194
+            },
+            "p99_latency_ratio_vs_baseline": 0.9570731209931298
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 73,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 104.1494859138533,
+            "p50_latency_ns": 102.46279126626996,
+            "p99_latency_ns": 192.82105154177714,
+            "mean_hops": 3.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                34,
+                35
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2811.4101938472913,
+              "mean_link_length_mm": 23.625295746615894
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 104.70630062640247,
+              "p50_latency_ns": 102.46279126626996,
+              "p99_latency_ns": 192.82105154177714,
+              "mean_hops": 3.018
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 121.1308266666666,
+            "p50_latency_ns": 130.07999999999993,
+            "p99_latency_ns": 234.07999999999993,
+            "mean_hops": 3.428
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                35,
+                41
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 121.70314666666658,
+              "p50_latency_ns": 136.10666666666657,
+              "p99_latency_ns": 234.07999999999993,
+              "mean_hops": 3.444
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 101,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 100.06016263283873,
+            "p50_latency_ns": 102.46279126626996,
+            "p99_latency_ns": 180.29563829366163,
+            "mean_hops": 2.886
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                3,
+                38
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 100.11755038332096,
+              "p50_latency_ns": 102.46279126626996,
+              "p99_latency_ns": 180.29563829366163,
+              "mean_hops": 2.888
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 115.0572799999999,
+            "p50_latency_ns": 102.07999999999993,
+            "p99_latency_ns": 216.28639999999973,
+            "mean_hops": 3.274
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                5,
+                40
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 115.69365333333326,
+              "p50_latency_ns": 102.07999999999997,
+              "p99_latency_ns": 216.28639999999973,
+              "mean_hops": 3.294
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 7,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 290.31853856348454,
+            "p50_latency_ns": 296.9275578561924,
+            "p99_latency_ns": 512.360818825301,
+            "mean_hops": 5.8
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                21,
+                75
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5756.562038083211,
+              "mean_link_length_mm": 12.017874818545325
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 291.00176195828743,
+              "p50_latency_ns": 296.9275578561924,
+              "p99_latency_ns": 520.4890930882323,
+              "mean_hops": 5.81
+            },
+            "p99_latency_ratio_vs_baseline": 1.015864355673346
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 236.46911999999983,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 442.34666666666635,
+            "mean_hops": 6.876
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                48,
+                66
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 236.47354666666652,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 442.34666666666635,
+              "mean_hops": 6.876
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 19,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 284.392898097439,
+            "p50_latency_ns": 296.89726982113825,
+            "p99_latency_ns": 500.80005135763855,
+            "mean_hops": 5.686
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                145,
+                146
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5757.670354416832,
+              "mean_link_length_mm": 12.020188631350381
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 284.7887079240455,
+              "p50_latency_ns": 296.89726982113825,
+              "p99_latency_ns": 500.80005135763855,
+              "mean_hops": 5.694
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 235.04650666666655,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 442.34666666666635,
+            "mean_hops": 6.848
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                29,
+                30
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 235.41866666666652,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 442.34666666666635,
+              "mean_hops": 6.856
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 42,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 284.99216053254776,
+            "p50_latency_ns": 296.8996893665226,
+            "p99_latency_ns": 544.3332540995016,
+            "mean_hops": 5.684
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                3,
+                136
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5758.056921519628,
+              "mean_link_length_mm": 12.020995660792543
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 285.0062827625292,
+              "p50_latency_ns": 296.9009779235316,
+              "p99_latency_ns": 544.3332540995016,
+              "mean_hops": 5.684
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 229.8223466666665,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 410.45893333333294,
+            "mean_hops": 6.686
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                6,
+                7
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 229.99269333333316,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 416.351733333333,
+              "mean_hops": 6.694
+            },
+            "p99_latency_ratio_vs_baseline": 1.0143566128580628
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 73,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 280.5808544962028,
+            "p50_latency_ns": 296.9096552560977,
+            "p99_latency_ns": 519.7513417724394,
+            "mean_hops": 5.602
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                132,
+                134
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5756.2227415709485,
+              "mean_link_length_mm": 12.017166475095927
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 280.49117532483325,
+              "p50_latency_ns": 296.90516891712855,
+              "p99_latency_ns": 519.7513417724394,
+              "mean_hops": 5.602
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 235.18383999999986,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 442.3866666666663,
+            "mean_hops": 6.842
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                149,
+                150
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 235.80415999999985,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 442.3866666666663,
+              "mean_hops": 6.858
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 101,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 281.0617522165623,
+            "p50_latency_ns": 296.9278729934631,
+            "p99_latency_ns": 494.91183211503085,
+            "mean_hops": 5.632
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                14,
+                49
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5756.562038083211,
+              "mean_link_length_mm": 12.017874818545325
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 281.2993343396185,
+              "p50_latency_ns": 296.9278729934631,
+              "p99_latency_ns": 494.91183211503085,
+              "mean_hops": 5.636
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 230.74543999999983,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 442.34666666666635,
+            "mean_hops": 6.72
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                28,
+                29
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 230.77727999999985,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 442.34666666666635,
+              "mean_hops": 6.724
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 7,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 198.67995242300367,
+            "p50_latency_ns": 204.48272304542252,
+            "p99_latency_ns": 346.2691418159034,
+            "mean_hops": 5.8
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                21,
+                75
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5756.562038083211,
+              "mean_link_length_mm": 12.017874818545325
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 199.09659046736456,
+              "p50_latency_ns": 204.48272304542252,
+              "p99_latency_ns": 364.63923231516605,
+              "mean_hops": 5.81
+            },
+            "p99_latency_ratio_vs_baseline": 1.0530514801374626
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 236.46911999999983,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 442.34666666666635,
+            "mean_hops": 6.876
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                48,
+                66
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 236.47354666666652,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 442.34666666666635,
+              "mean_hops": 6.876
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 19,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 195.0695647035833,
+            "p50_latency_ns": 204.44913098891516,
+            "p99_latency_ns": 342.4511828742816,
+            "mean_hops": 5.686
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                145,
+                146
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5757.670354416832,
+              "mean_link_length_mm": 12.020188631350381
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 195.3421152709305,
+              "p50_latency_ns": 204.44913098891516,
+              "p99_latency_ns": 342.4511828742816,
+              "mean_hops": 5.694
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 235.04650666666655,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 442.34666666666635,
+            "mean_hops": 6.848
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                29,
+                30
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 235.41866666666652,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 442.34666666666635,
+              "mean_hops": 6.856
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 42,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 195.09643506976988,
+            "p50_latency_ns": 204.45508735344242,
+            "p99_latency_ns": 360.7192178178829,
+            "mean_hops": 5.684
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                3,
+                136
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5758.056921519628,
+              "mean_link_length_mm": 12.020995660792543
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 195.09673042938527,
+              "p50_latency_ns": 204.45524492207687,
+              "p99_latency_ns": 360.7192178178829,
+              "mean_hops": 5.684
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 229.8223466666665,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 410.45893333333294,
+            "mean_hops": 6.686
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                6,
+                7
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 229.99269333333316,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 416.351733333333,
+              "mean_hops": 6.694
+            },
+            "p99_latency_ratio_vs_baseline": 1.0143566128580628
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 73,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 192.49132591643288,
+            "p50_latency_ns": 204.4607244726842,
+            "p99_latency_ns": 344.7768117916842,
+            "mean_hops": 5.602
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                132,
+                134
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5756.2227415709485,
+              "mean_link_length_mm": 12.017166475095927
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 192.49135610180966,
+              "p50_latency_ns": 204.4607244726842,
+              "p99_latency_ns": 344.7768117916842,
+              "mean_hops": 5.602
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 235.18383999999986,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 442.3866666666663,
+            "mean_hops": 6.842
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                149,
+                150
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 235.80415999999985,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 442.3866666666663,
+              "mean_hops": 6.858
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "moe_dispatch",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 101,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 193.2676457046325,
+            "p50_latency_ns": 204.48342854901782,
+            "p99_latency_ns": 340.83775804095694,
+            "mean_hops": 5.632
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                14,
+                49
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5756.562038083211,
+              "mean_link_length_mm": 12.017874818545325
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 193.3167580685236,
+              "p50_latency_ns": 204.48342854901782,
+              "p99_latency_ns": 340.83775804095694,
+              "mean_hops": 5.636
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 230.74543999999983,
+            "p50_latency_ns": 238.1866666666665,
+            "p99_latency_ns": 442.34666666666635,
+            "mean_hops": 6.72
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                28,
+                29
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 230.77727999999985,
+              "p50_latency_ns": 238.1866666666665,
+              "p99_latency_ns": 442.34666666666635,
+              "mean_hops": 6.724
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 7,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 118.92496743450482,
+            "p50_latency_ns": 95.76367464495343,
+            "p99_latency_ns": 287.1714332599504,
+            "mean_hops": 2.434
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                5,
+                25
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 120.45722785445125,
+              "p50_latency_ns": 95.76367464495434,
+              "p99_latency_ns": 287.1714332599504,
+              "mean_hops": 2.46
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                10,
+                17
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.298879999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 19,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 117.83002889211492,
+            "p50_latency_ns": 95.76367464495434,
+            "p99_latency_ns": 287.1714332599504,
+            "mean_hops": 2.428
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                37,
+                38
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2811.4101938472913,
+              "mean_link_length_mm": 23.625295746615894
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 118.55552128515527,
+              "p50_latency_ns": 95.76367464495434,
+              "p99_latency_ns": 287.1714332599504,
+              "mean_hops": 2.442
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                6,
+                13
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.84330666666664,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 102.07999999999993,
+              "mean_hops": 1.024
+            },
+            "p99_latency_ratio_vs_baseline": 2.9999999999999973
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 42,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 121.00784487473982,
+            "p50_latency_ns": 95.76367464495434,
+            "p99_latency_ns": 287.1714332599504,
+            "mean_hops": 2.474
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                0,
+                20
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 120.85411725027039,
+              "p50_latency_ns": 95.76367464495434,
+              "p99_latency_ns": 287.1714332599504,
+              "mean_hops": 2.474
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                1,
+                2
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.30287999999997,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 73,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 120.12373922790849,
+            "p50_latency_ns": 95.76367464495434,
+            "p99_latency_ns": 287.1714332599504,
+            "mean_hops": 2.456
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                34,
+                35
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2811.4101938472913,
+              "mean_link_length_mm": 23.625295746615894
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 121.4927070145584,
+              "p50_latency_ns": 95.76367464495434,
+              "p99_latency_ns": 287.1714332599504,
+              "mean_hops": 2.482
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                35,
+                41
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 35.11962666666664,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 102.07999999999993,
+              "mean_hops": 1.032
+            },
+            "p99_latency_ratio_vs_baseline": 2.9999999999999973
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 101,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 179.2,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 122.42337289217262,
+            "p50_latency_ns": 95.76367464495434,
+            "p99_latency_ns": 301.4525730226689,
+            "mean_hops": 2.512
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                3,
+                38
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 179.2,
+              "aggregate_directed_bandwidth_gbps": 42649.6,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 123.03851126778977,
+              "p50_latency_ns": 95.76367464495434,
+              "p99_latency_ns": 301.4525730226689,
+              "mean_hops": 2.526
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                5,
+                40
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.571199999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.0272,
+              "mean_hops": 1.016
+            },
+            "p99_latency_ratio_vs_baseline": 1.0000156739811912
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 7,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 83.89312579481219,
+            "p50_latency_ns": 68.31517143723067,
+            "p99_latency_ns": 204.88571897423571,
+            "mean_hops": 2.434
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                5,
+                25
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 84.98117070221716,
+              "p50_latency_ns": 68.33510321638278,
+              "p99_latency_ns": 204.88571897423571,
+              "mean_hops": 2.46
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                10,
+                17
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.298879999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 19,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 83.88388248739184,
+            "p50_latency_ns": 68.33510321638278,
+            "p99_latency_ns": 204.88571897423571,
+            "mean_hops": 2.428
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                37,
+                38
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2811.4101938472913,
+              "mean_link_length_mm": 23.625295746615894
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 84.4173748804322,
+              "p50_latency_ns": 68.33510321638278,
+              "p99_latency_ns": 204.88571897423571,
+              "mean_hops": 2.442
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                6,
+                13
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.84330666666664,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 102.07999999999993,
+              "mean_hops": 1.024
+            },
+            "p99_latency_ratio_vs_baseline": 2.9999999999999973
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 42,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 85.74516690500364,
+            "p50_latency_ns": 68.33510321638278,
+            "p99_latency_ns": 204.88571897423571,
+            "mean_hops": 2.474
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                0,
+                20
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 85.72172499481991,
+              "p50_latency_ns": 68.33510321638278,
+              "p99_latency_ns": 204.88571897423571,
+              "mean_hops": 2.474
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                1,
+                2
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.30287999999997,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 73,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 85.03152371536713,
+            "p50_latency_ns": 68.33510321638278,
+            "p99_latency_ns": 204.88571897423571,
+            "mean_hops": 2.456
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                34,
+                35
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2811.4101938472913,
+              "mean_link_length_mm": 23.625295746615894
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 85.98132006875709,
+              "p50_latency_ns": 68.33510321638278,
+              "p99_latency_ns": 204.88571897423571,
+              "mean_hops": 2.482
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                35,
+                41
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 35.11962666666664,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 102.07999999999993,
+              "mean_hops": 1.032
+            },
+            "p99_latency_ratio_vs_baseline": 2.9999999999999973
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 1,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 101,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 42,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s1",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 120,
+            "average_degree": 5.714285714285714,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 61440.0,
+            "total_link_length_mm": 2836.54293507601,
+            "mean_link_length_mm": 23.637857792300085
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 86.80955806652828,
+            "p50_latency_ns": 68.33510321638278,
+            "p99_latency_ns": 204.88571897423571,
+            "mean_hops": 2.512
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                3,
+                38
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 119,
+              "average_degree": 5.666666666666667,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 60928.0,
+              "total_link_length_mm": 2814.399960720128,
+              "mean_link_length_mm": 23.65041983798427
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 87.20526787071684,
+              "p50_latency_ns": 68.33510321638278,
+              "p99_latency_ns": 204.88571897423571,
+              "mean_hops": 2.526
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_6x7",
+          "resource_budget": {
+            "nodes": 42,
+            "undirected_links": 84,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 43008.0,
+            "total_link_length_mm": 336.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                5,
+                40
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 42,
+              "undirected_links": 83,
+              "average_degree": 3.9523809523809526,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 42496.0,
+              "total_link_length_mm": 332.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.571199999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.0272,
+              "mean_hops": 1.016
+            },
+            "p99_latency_ratio_vs_baseline": 1.0000156739811912
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 7,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 215.02388251769148,
+            "p50_latency_ns": 197.93967426805102,
+            "p99_latency_ns": 557.2709720634374,
+            "mean_hops": 4.32
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                21,
+                75
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5756.562038083211,
+              "mean_link_length_mm": 12.017874818545325
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 214.94678951115202,
+              "p50_latency_ns": 197.93967426805102,
+              "p99_latency_ns": 557.2709720634374,
+              "mean_hops": 4.32
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                48,
+                66
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.298879999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 19,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 218.55716384888248,
+            "p50_latency_ns": 197.9406674796894,
+            "p99_latency_ns": 524.0283890492366,
+            "mean_hops": 4.396
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                145,
+                146
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5757.670354416832,
+              "mean_link_length_mm": 12.020188631350381
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 219.2007424993746,
+              "p50_latency_ns": 197.9406674796894,
+              "p99_latency_ns": 524.0283890492366,
+              "mean_hops": 4.408
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                29,
+                30
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.43498666666664,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.012
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 42,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 218.77701739918342,
+            "p50_latency_ns": 197.94480106686024,
+            "p99_latency_ns": 542.3209956257185,
+            "mean_hops": 4.378
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                3,
+                136
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5758.056921519628,
+              "mean_link_length_mm": 12.020995660792543
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 218.77716476385388,
+              "p50_latency_ns": 197.94480106686115,
+              "p99_latency_ns": 542.3209956257185,
+              "mean_hops": 4.378
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                6,
+                7
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.162773333333305,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.004
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 73,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 224.64832643872853,
+            "p50_latency_ns": 197.94480106686024,
+            "p99_latency_ns": 593.8543349797328,
+            "mean_hops": 4.502
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                132,
+                134
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5756.2227415709485,
+              "mean_link_length_mm": 12.017166475095927
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 224.6483585149289,
+              "p50_latency_ns": 197.94480106686024,
+              "p99_latency_ns": 593.8543349797328,
+              "mean_hops": 4.502
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                149,
+                150
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.298879999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 101,
+        "failed_links": 1,
+        "bandwidth_policy": "equal_total",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 172.8,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 218.56913793346374,
+            "p50_latency_ns": 197.93725472266772,
+            "p99_latency_ns": 517.1599285550232,
+            "mean_hops": 4.384
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                14,
+                49
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 172.8,
+              "aggregate_directed_bandwidth_gbps": 165542.40000000002,
+              "total_link_length_mm": 5756.562038083211,
+              "mean_link_length_mm": 12.017874818545325
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 219.3461145972307,
+              "p50_latency_ns": 197.93725472266772,
+              "p99_latency_ns": 517.1599285550232,
+              "mean_hops": 4.4
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                28,
+                29
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.298879999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 7,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 148.05355725993667,
+            "p50_latency_ns": 136.30762509303804,
+            "p99_latency_ns": 363.25801691739156,
+            "mean_hops": 4.32
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                21,
+                75
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5756.562038083211,
+              "mean_link_length_mm": 12.017874818545325
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 148.03301004780093,
+              "p50_latency_ns": 136.30762509303804,
+              "p99_latency_ns": 363.25801691739156,
+              "mean_hops": 4.32
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                48,
+                66
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.298879999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 19,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 150.43152350550062,
+            "p50_latency_ns": 136.31103785005894,
+            "p99_latency_ns": 366.51219387137974,
+            "mean_hops": 4.396
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                145,
+                146
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5757.670354416832,
+              "mean_link_length_mm": 12.020188631350381
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 150.87640130831494,
+              "p50_latency_ns": 136.31103785005894,
+              "p99_latency_ns": 366.51219387137974,
+              "mean_hops": 4.408
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                29,
+                30
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.43498666666664,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.012
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 42,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 149.7963225511553,
+            "p50_latency_ns": 136.31517143723065,
+            "p99_latency_ns": 357.4321067368298,
+            "mean_hops": 4.378
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                3,
+                136
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5758.056921519628,
+              "mean_link_length_mm": 12.020995660792543
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 149.7964699158257,
+              "p50_latency_ns": 136.31517143723067,
+              "p99_latency_ns": 357.4321067368298,
+              "mean_hops": 4.378
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                6,
+                7
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.162773333333305,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.004
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 73,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 153.98147078735823,
+            "p50_latency_ns": 136.31517143723067,
+            "p99_latency_ns": 408.925981168123,
+            "mean_hops": 4.502
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                132,
+                134
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5756.2227415709485,
+              "mean_link_length_mm": 12.017166475095927
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 153.98150286355863,
+              "p50_latency_ns": 136.31517143723067,
+              "p99_latency_ns": 408.925981168123,
+              "mean_hops": 4.502
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                149,
+                150
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.298879999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "config": {
+        "subdivisions": 2,
+        "workload": "stencil",
+        "n_packets": 500,
+        "packet_size_flits": 16,
+        "injection_rate_pkts_per_ns": 0.1,
+        "seed": 101,
+        "failed_links": 1,
+        "bandwidth_policy": "per_link",
+        "expert_hotspot_share": 0.5,
+        "radius_mm": 40.0,
+        "torus_link_length_mm": 4.0,
+        "link_rate_gbps": 32.0,
+        "lanes_per_link": 8
+      },
+      "rank_count": 162,
+      "candidates": [
+        {
+          "candidate": "sphere",
+          "topology": "icosphere_s2",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 480,
+            "average_degree": 5.925925925925926,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 245760.0,
+            "total_link_length_mm": 5769.128408697569,
+            "mean_link_length_mm": 12.019017518119936
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 149.9607014647908,
+            "p50_latency_ns": 136.3076250930381,
+            "p99_latency_ns": 341.51863628587665,
+            "mean_hops": 4.384
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                14,
+                49
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 479,
+              "average_degree": 5.91358024691358,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 245248.0,
+              "total_link_length_mm": 5756.562038083211,
+              "mean_link_length_mm": 12.017874818545325
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 150.46287197823247,
+              "p50_latency_ns": 136.3076250930381,
+              "p99_latency_ns": 341.51863628587665,
+              "mean_hops": 4.4
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        },
+        {
+          "candidate": "torus",
+          "topology": "torus_9x18",
+          "resource_budget": {
+            "nodes": 162,
+            "undirected_links": 324,
+            "average_degree": 4.0,
+            "link_bandwidth_gbps_per_direction": 256.0,
+            "aggregate_directed_bandwidth_gbps": 165888.0,
+            "total_link_length_mm": 1296.0,
+            "mean_link_length_mm": 4.0
+          },
+          "baseline": {
+            "generated_packets": 500,
+            "delivered_packets": 500,
+            "unreachable_packets": 0,
+            "delivery_fraction": 1.0,
+            "mean_latency_ns": 34.02666666666664,
+            "p50_latency_ns": 34.02666666666664,
+            "p99_latency_ns": 34.02666666666667,
+            "mean_hops": 1.0
+          },
+          "failure": {
+            "removed_undirected_links": [
+              [
+                28,
+                29
+              ]
+            ],
+            "resource_budget": {
+              "nodes": 162,
+              "undirected_links": 323,
+              "average_degree": 3.9876543209876543,
+              "link_bandwidth_gbps_per_direction": 256.0,
+              "aggregate_directed_bandwidth_gbps": 165376.0,
+              "total_link_length_mm": 1292.0,
+              "mean_link_length_mm": 4.0
+            },
+            "metrics": {
+              "generated_packets": 500,
+              "delivered_packets": 500,
+              "unreachable_packets": 0,
+              "delivery_fraction": 1.0,
+              "mean_latency_ns": 34.298879999999976,
+              "p50_latency_ns": 34.02666666666664,
+              "p99_latency_ns": 34.02666666666667,
+              "mean_hops": 1.008
+            },
+            "p99_latency_ratio_vs_baseline": 1.0
+          }
+        }
+      ]
+    }
+  ]
+}

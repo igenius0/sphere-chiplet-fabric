@@ -1,0 +1,10 @@
+{
+  "subdivisions": 1,
+  "workload": "stencil",
+  "n_packets": 2000,
+  "packet_size_flits": 16,
+  "injection_rate_pkts_per_ns": 0.1,
+  "seed": 42,
+  "failed_links": 1,
+  "bandwidth_policy": "equal_total"
+}

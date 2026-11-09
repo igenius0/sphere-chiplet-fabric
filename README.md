@@ -1,146 +1,68 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19918238.svg)](https://doi.org/10.5281/zenodo.19918238)
+[![Historical DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.19918238.svg)](https://doi.org/10.5281/zenodo.19918238) (original April 2026 archive)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# Spherical Chiplet Fabric — Publication Bundle
+# Spherical Chiplet Fabric — iGenius accelerator research
 
-**Paper:** *A Spherical Chiplet Fabric with Geodesic Topology, Planet-Style
-Coordinates, and Reorientable Frame Semantics for Large-Scale AI and HPC
-Workloads*
+**Corrected publication revision v1.1.0, 9 November 2026.** Geodesic microprocessor research, a reproducible fabric workbench, and a proposed **compute-near-HBM modular AI accelerator**.
 
-**Author:** Musthafa Ali (Independent Researcher, Sydney, Australia)
-**Date:** April 2026
+The recommended next design uses four local compute/HBM islands, explicit NUMA memory ownership and a budgeted hierarchical network. Geodesic connectivity and spherical packaging are candidates to validate through application, electrical and thermal evidence. The implemented software supplies exploratory models and regression tests; the proposed accelerator still needs its runtime, RTL and physical implementation.
 
-This bundle contains everything needed to reproduce the paper's figures,
-re-run the simulator, and verify the analytical performance model.
+Start with the **[revised paper](paper/main.pdf)**, [publication revision and evidence map](docs/PUBLICATION_REVISION.md), [architecture recommendation](docs/DESIGN_PROPOSAL.md), [application design](docs/APPLICATION_DESIGN.md), [physical design](docs/PHYSICAL_DESIGN.md), and [validation plan](docs/VALIDATION_PLAN.md). The [changelog](CHANGELOG.md) records corrections to the original claims.
 
----
+## Rebuild the publication
 
-## Contents
-
-```
-sphere-chiplet-paper/
-├── paper/
-│   ├── main.tex            # LaTeX source
-│   └── main.pdf            # Compiled paper (7 pages)
-├── sim/
-│   ├── topology.py         # Icosphere / torus / dragonfly generators
-│   ├── fabric.py           # Cycle-accurate router + collective simulator
-│   ├── run_evaluation.py   # Reproduces all latency / bisection figures
-│   └── performance_model.py # Analytical roofline + competitor comparison
-├── figures/
-│   ├── fig1_hop_cdf.{pdf,png}      # Hop count CDF
-│   ├── fig2_latency_cdf.{pdf,png}  # Latency CDF (uncontended)
-│   ├── fig3_latency_load.{pdf,png} # Latency vs offered load
-│   ├── fig4_tail_ratio.{pdf,png}   # p99/p50 tail ratio
-│   ├── fig5_allreduce.{pdf,png}    # Ring vs tree all-reduce
-│   ├── fig6_bisection.{pdf,png}    # Bisection bandwidth
-│   ├── fig7_hotspot.{pdf,png}      # Hotspot traffic CDF
-│   ├── fig8_energy.{pdf,png}       # pJ/bit estimate
-│   ├── fig9_workload.{pdf,png}     # Workload throughput projections
-│   └── fig10_power.{pdf,png}       # Sphere-162 power breakdown
-├── artifacts/
-│   ├── results.json                # Raw simulator output
-│   └── performance_model.json      # Aggregate / competitor data
-├── README.md                       # This file
-├── LICENSE                         # MIT
-└── CITATION.cff                    # Citation metadata
-```
-
----
-
-## Quick start
-
-### Reproduce all figures
+Python 3.10+; no GPU required. From the repository root:
 
 ```bash
-cd sim/
-python3 run_evaluation.py        # produces fig1-fig8
-python3 performance_model.py     # produces fig9-fig10 + comparison tables
+python -m pip install -r requirements.txt
+python -m unittest discover -s tests -v
+python scripts/rebuild_publication.py
+python scripts/rebuild_publication.py --check
 ```
 
-Requires Python 3.9+, NumPy, Matplotlib. No GPU, no special packages.
-End-to-end runtime is roughly 30 seconds on a modern laptop.
+The `--check` mode verifies the current generated bundle; rerun it after changing sources or publication inputs. The explicit rebuild refreshes the current root JSON reports, the 40-profile workload sweep, eight PNG/PDF figure pairs, generated LaTeX result tables and a [publication manifest](artifacts/publication_manifest.json). To reproduce into a separate directory, use `python scripts/rebuild_publication.py --output-root /absolute/directory`. The manifest records exact source SHA-256 fingerprints, configurations, dependency versions and generated-output hashes; it does not substitute an earlier Git commit for uncommitted source.
 
-### Compile the paper
+With a LaTeX installation, build and verify the revised paper from the repository root:
 
 ```bash
-cd paper/
-pdflatex main.tex
-pdflatex main.tex   # second pass for cross-references
+python scripts/build_paper.py
+python scripts/build_paper.py --check
 ```
 
-Requires a TeX Live distribution with `texlive-latex-extra` (or equivalent).
+The committed `paper/main.pdf` is the rendered paper. The data rebuild and paper build are separate steps. The paper builder runs the required LaTeX passes with deterministic settings and writes [paper/publication_manifest.json](paper/publication_manifest.json), recording the exact paper sources, generated tables, citation metadata, current figure PDFs, model-manifest and build-script hashes, the PDF hash and LaTeX engine information. Run both `--check` commands after publication inputs change. Direct `pdflatex` compilation is possible, but does not refresh the paper manifest; use the builder to produce an attributed publication bundle.
 
----
+## Run individual experiments
 
-## Headline results
-
-| Metric | Value |
-|---|---|
-| FP8 dense throughput | 56.5 PFLOPS |
-| HBM3e capacity | 900 GB |
-| HBM bandwidth | 30 TB/s |
-| Typical power | 2.28 kW |
-| Energy efficiency | **24.8 PFLOPS/kW** |
-| vs 8×H100 NVLink node | **~5× more efficient** |
-| vs single B200 GPU | ~6× compute, ~5× memory |
-| Tail latency p99/p50 | 1.96 (sphere) vs 2.23 (torus) |
-| Bisection bandwidth | 11.8 Tb/s (1.76× torus at same node count) |
-| Tree all-reduce (162 nodes) | 0.43 µs (0.22 µs with chords) |
-
----
-
-## What this is, and what it isn't
-
-**This is** an architecture proposal evaluated through a custom event-driven
-fabric simulator and a roofline-style analytical performance model, in the
-tradition of the original dragonfly (Kim et al., ISCA 2008) and HyperX
-(Ahn et al., SC 2009) papers.
-
-**This is not** a tape-out, a silicon validation, or an SI/PI-verified
-implementation. The paper's Discussion section explicitly enumerates the
-validation gaps and what would be required to advance the design to silicon.
-
-Two original claims that did not survive review were removed:
-
-1. *Heat-to-electricity recovery* as a primary feature — Carnot-limited to a
-   few percent at the operating temperature; retained only as backup power
-   for safety subsystem.
-2. *Ring all-reduce supremacy* — naive ring on the icosphere is actually
-   slower than torus due to non-Hamiltonian neighbor ordering. The sphere's
-   collective advantage is in tree- and bisection-bound operations, not
-   ring operations.
-
----
-
-## License
-
-Code and figures: MIT License (see `LICENSE`).
-Paper text: CC-BY 4.0.
-
----
-
-## Citation
-
-```bibtex
-@misc{ali2026sphere,
-  title={A Spherical Chiplet Fabric with Geodesic Topology,
-         Planet-Style Coordinates, and Reorientable Frame Semantics
-         for Large-Scale AI and HPC Workloads},
-  author={Ali, Musthafa},
-  year={2026},
-  doi={10.5281/zenodo.19918238},
-  url={https://github.com/igenius0/sphere-chiplet-fabric}
-}
+```bash
+python -m sim.run_workloads --config examples/moe_dispatch.json --output generated/moe.json
+python -m sim.run_workloads --config examples/stencil.json --output generated/stencil.json
+python -m sim.run_sweep --output generated/design_sweep.json
+python -m sim.performance_model --output generated/capacity_bounds.json
+python -m sim.run_evaluation --output-dir generated/evaluation
 ```
 
-A `CITATION.cff` is included for GitHub / Zenodo automatic citation parsing.
+Direct execution such as `python sim/run_workloads.py --help` also works. The individual evaluation command writes JSON and eight PNG/PDF plots beneath the chosen output directory. Commands are deterministic for a fixed configuration and numerical environment; percentile rounding may differ across dependency versions.
 
----
+The workload CLI supports 42 or 162 equal ranks, aggregate injection rate, packet size, fixed seeds, static link failures and two bandwidth policies. `equal_total` matches the baseline sum of directed link capacities; `per_link` gives each link the same rate. Resource reports expose links, bandwidth and wiring length. Wiring, area and power are not normalized by these policies.
 
-## Contact and feedback
+## What the current experiments show
 
-This is independent research published openly to invite scrutiny and
-collaboration. Issues, corrections, and replication attempts are welcome.
+The committed [40-profile, five-seed sensitivity study](docs/EXPERIMENT_RESULTS.md) includes 80,000 packet attempts across both candidates and pre-failed scenarios. The current flat sphere has higher MoE p99 under equal total bandwidth in the tested cohorts. With equal per-link bandwidth, sphere has lower MoE p99 while using approximately 43–48% more aggregate network bandwidth. The periodic stencil maps directly onto torus wiring and favours that placement. These results do not test the proposed local-memory hierarchy or establish end-to-end application performance.
 
-Contact: **mali@outlook.com.au**
+The reference capacity model exposes an important bound: **30 TB/s of assumed local HBM stack bandwidth versus at most 4.8 TB/s through the memory tiles' outward fabric ports**. Compute/HBM locality must be designed before adding more compute or changing topology. The capacity values and component power subtotal are analytical assumptions, not measured hardware performance or full-system energy efficiency.
+
+## Evidence and limitations
+
+The simulator schedules chronological store-and-forward hop events with infinite output queues. It models directed-link serialization, propagation and queueing. Finite buffers, credit/VC arbitration, adaptive escape routing, endpoint shared-injection, HBM transactions, thermal behaviour and physical link feasibility require further work. Batch concurrent traffic must use `FabricSim.send_batch()`; `send_packet()` retains incremental reservations.
+
+See the [research review](docs/RESEARCH_REVIEW.md) and [independent adversarial review](docs/ADVERSARIAL_REVIEW.md) for corrected defects, superseded claims and remaining validation gaps. GitHub Actions runs the regression suite on Python 3.10 and 3.12. Successful software checks do not validate silicon, cooling or inference accuracy.
+
+## Publication history and citation
+
+**Author:** Musthafa Ali, Independent Researcher, Sydney, Australia.
+
+The current [paper](paper/main.pdf), [LaTeX source](paper/main.tex), `figures/` and `artifacts/` contain the corrected revision. The original April 2026 bundle remains accessible at [Git tag v1.0.1](https://github.com/igenius0/sphere-chiplet-fabric/tree/v1.0.1) and its [existing Zenodo DOI](https://doi.org/10.5281/zenodo.19918238). That DOI identifies the historical archive; this repository update does not create or claim a new Zenodo deposit or DOI.
+
+The corrected paper replaces the original timing, bisection, workload-ranking and efficiency presentation with reproducible model results and explicit limitations. Its changes do not retroactively validate the original claims. Use [CITATION.cff](CITATION.cff) for current repository citation metadata and the original DOI only when citing that archived record. Code and figures are MIT-licensed; paper text is CC-BY 4.0.
+
+Contact: **mali@outlook.com.au**.
