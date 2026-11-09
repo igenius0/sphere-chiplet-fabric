@@ -1,4 +1,4 @@
-"""Rebuild the v1.1.0 publication's simulation evidence and derived figures.
+"""Rebuild the v1.2.0 publication's baseline simulation evidence and figures.
 
 This explicit command replaces the current root evidence bundle. The historical
 publication remains available at Git tag v1.0.1 and its existing DOI. Importing
@@ -18,9 +18,9 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.1.0"
-PUBLICATION_DATE = "2026-11-09"
-SOURCE_DATE_EPOCH = int(datetime(2026, 11, 9, tzinfo=timezone.utc).timestamp())
+VERSION = "1.2.0"
+PUBLICATION_DATE = "2026-11-10"
+SOURCE_DATE_EPOCH = int(datetime(2026, 11, 10, tzinfo=timezone.utc).timestamp())
 EVALUATION_CONFIG = {"subdivisions": 2, "n_packets": 2000, "seed": 42,
                      "bandwidth_policy": "equal_total"}
 SWEEP_CONFIG = {"n_packets": 500, "seeds": [7, 19, 42, 73, 101]}

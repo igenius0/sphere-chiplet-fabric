@@ -1,8 +1,10 @@
 # Reproducible topology sensitivity experiment
 
+Publication/evidence revision **v1.2.0, 10 November 2026**. This report retains the baseline sensitivity experiment and its numerical interpretation; the new [prototype evidence](IMPLEMENTATION_STATUS.md) is separate.
+
 The existing **flat** sphere model has higher synthetic MoE p99 latency when total baseline link bandwidth is matched, but lower p99 when each link has the same rate and the sphere receives more total links and bandwidth. The choice of resource budget changes the conclusion. These results do not establish a best accelerator architecture.
 
-This experiment does **not** implement or test the proposed hierarchical, co-located-compute/HBM design. It does not measure a physical spherical microprocessor, silicon, or end-to-end application performance.
+This experiment does **not** implement or test the proposed hierarchical, co-located-compute/HBM design. The tiny CPU inference and bounded-network prototypes added in v1.2.0 are not used for these tables or the eight baseline plot pairs. This experiment does not measure a physical spherical microprocessor, silicon, or end-to-end application performance.
 
 ## Reproduce the report
 
@@ -86,4 +88,4 @@ The sampled failures leave these graphs connected. Many p99 values are unchanged
 
 The model uses chronological store-and-forward packet events, independent directed links, infinite output queues, shortest-hop BFS, and fixed rank-to-node mapping. It omits compute, actual HBM requests, memory-controller and endpoint injection limits, finite-buffer backpressure, VC credits, protocol overhead, precision/quality, and thermal/system power. Short synthetic traces and five seeds do not establish general application tail latency or reliability guarantees.
 
-Before selecting a physical topology, add application traces with compute phases, memory-locality and controller budgets; compare optimized placements under matched physical cost; and measure numerical correctness and complete application step latency. Evaluate the proposed hierarchical/local-memory architecture separately once it is implemented. Current simulator tests and this sweep provide evidence about the present communication model, not validation of that future design.
+Before selecting a physical topology, add real application traces with compute phases, memory-locality and controller budgets; compare optimized placements under matched physical cost; and measure numerical correctness and complete application step latency. The new tiny decoder supplies numerical and logical-ownership checks, not calibrated HBM or multi-device performance. Evaluate the proposed hierarchical/local-memory hardware separately. Tests for this baseline and this sweep remain evidence about its infinite-output-queue communication model.

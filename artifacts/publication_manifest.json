@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
   "publication": {
-    "version": "1.1.0",
-    "date": "2026-11-09",
+    "version": "1.2.0",
+    "date": "2026-11-10",
     "evidence": "exploratory simulation plus explicitly unvalidated analytical assumptions"
   },
   "configuration": {
@@ -30,41 +30,45 @@
     "python_version": "3.12.14",
     "numpy_version": "2.3.5",
     "matplotlib_version": "3.10.8",
-    "source_date_epoch": 1794182400
+    "source_date_epoch": 1794268800
   },
   "source_sha256": {
     "sim/fabric.py": "98e370a69294376c0f15d17b68059e79a8ab8127c92f74ef840c07dd2f41f745",
+    "sim/finite_buffer.py": "34a3083188ea6230e3a72a2b60d8e23b1ce206ad80b05254fc5fecc66880b78f",
+    "sim/moe_inference.py": "d3bd04d253bae35cd3942b873abc128f8fed583766c78fe032707e61b61fe747",
     "sim/performance_model.py": "17431240019ce1ca10e6c43e40c724f5f0bc84b012d54496f4172b77fced8785",
+    "sim/physical_validation.py": "e761555f860907335ecd62acc3d28537400c63cf3744ec00be744e0be4e4a5ab",
     "sim/run_evaluation.py": "cea1e179e11ff2738e8645d01bb7c3f6897ce554b5818dd5d2e99226962f3bde",
     "sim/run_sweep.py": "5d9fcc8ad1a2b00cda1267b7eb5736497bdafc6be1d75d11b25b7c44d49124e9",
     "sim/run_workloads.py": "07257f347c1de36c5beb5cba2357f25ae8c5b7d405b1efba45666a1778471342",
     "sim/topology.py": "b05056931240c6b78866d5c8b60fdc285ea47f9b2c15305d89c1b42f52328a08",
+    "sim/transport.py": "9f1374431793f9bb2946ff03639392ff51112c848aa0f31b826a8ae1c5d8b290",
     "sim/validation.py": "086347faca1cee4b55a9065ca82cfe0ab6f3c2007f370cb32e529a0aba7dc221",
     "sim/workloads.py": "8633fbcd9b1e74b0c3c66a1942a1dea0daea0652a61200f396896cd50988cfd1",
     "requirements.txt": "84f5adebc745706c410125781d91db59b59f4322870a2c53685e0aaefb9b8575",
-    "scripts/rebuild_publication.py": "b76cec7c4a24fb22d3385fa9a4c120f264c51eaf9156906084c4091391f51c4f"
+    "scripts/rebuild_publication.py": "d81af3e5dff145bb1f272d817da3204f6ed6d24b3a08fd20b9d21e1ca8068b48"
   },
   "output_sha256": {
     "artifacts/performance_model.json": "5abcb0aa81f0dfc762b47eac589c2b9c2991c58dffeb50bc4b1535c22fda4a86",
     "artifacts/results.json": "ad3a2bc8e21b6d7546be8c620f7414809eb7017c1bab76a0cca373e34179f324",
-    "examples/results/design_sweep.json": "d332486f8b2b97c9ea8be77efd60575ecc5503a80cc45ce2c819d96c230d5113",
-    "figures/fig1_hop_cdf.pdf": "1629c47b44adae7e7edfa78194750a3bc439061a1e351132e2a9de9d69328ee5",
+    "examples/results/design_sweep.json": "38e84551ce1f65986ef34313c2dddee80d9a6cf5b994626b52f0a7fd40f9c14a",
+    "figures/fig1_hop_cdf.pdf": "1e7295f0d6d4a0afcbb61933d24e4004e6dca37f58fd4e162edb5f0ec77525fb",
     "figures/fig1_hop_cdf.png": "35e39c86615a6acb18bb1b15e45231d09ae35fb6a883b2eb6980546e8276647b",
-    "figures/fig2_latency_cdf.pdf": "37e536ee722dd19db8bb0251a8a3dadb25b56b6f1d68edb0fffb7f988f27aba2",
+    "figures/fig2_latency_cdf.pdf": "b23022ec063a3be45574e7614f028769a05ec207041a8965378943a9709c3858",
     "figures/fig2_latency_cdf.png": "a03d66190eae533d3bac937fe503809e36040c55efd2d97ccfdd8fa8fec2d22c",
-    "figures/fig3_latency_load.pdf": "18e22485e9e248a1804ccc2248d0fc3fd125ee76e6d631f174d78d3ced577809",
+    "figures/fig3_latency_load.pdf": "6bb10ee7fdc6cd6f6f36053f88c955b23f26c723e012c53712c0437a1e50a6c0",
     "figures/fig3_latency_load.png": "31380f2f59bb6370104bfddf5a412641d89e38664f6f3d880b5bc6e9c041da87",
-    "figures/fig4_tail_ratio.pdf": "0fa95a0fd790deeaa60d248b911443b785882e77a8f97d23ad7c3578fb1810af",
+    "figures/fig4_tail_ratio.pdf": "4c5cb4a1c188bbb58333a11cafa6dafd74b1fedc1c03057293ca290953a637aa",
     "figures/fig4_tail_ratio.png": "768128b2249e6651521a35d44b1819ea6ddddf9c071fbee75e83b001a63a4ca3",
-    "figures/fig5_allreduce.pdf": "e2188f839f07b783c768dfacae052135be286592c27d9ae516014be5f1aa1f03",
+    "figures/fig5_allreduce.pdf": "cc2e866229a483ae935e6a9b7c646e6efa1b296c73f044598ebfb9c7cd721bda",
     "figures/fig5_allreduce.png": "0981bf512980c40d5e084ab97f238b251f67e2a34d4f37fc57be9de4d07adc64",
-    "figures/fig6_balanced_cut.pdf": "62cdeb39acfc5b6afec8c8986357d6de121e4433162c1f90b9945f08f9d51c83",
+    "figures/fig6_balanced_cut.pdf": "c63474bd5926c3525cafd426c4b8eeef71ce67a127ea733bfc05c578ac846016",
     "figures/fig6_balanced_cut.png": "635ee0013c728fc55c88082dbdf3d55b38328226fa163c2b5c6d4a8de18906f3",
-    "figures/fig7_hotspot.pdf": "fcebd8f3708411fe124adefbdf3aa52ae3f359f42ed15511fa795efbb1488999",
+    "figures/fig7_hotspot.pdf": "c7759f2b577f6ad875357a51ce71b2bcb1eaf27106b3d774e92105bec483c594",
     "figures/fig7_hotspot.png": "5d5a4bc4461cce3ade0c0fa5ce762a72e7d80f65a716c28de9335d0fe9d2118a",
-    "figures/fig8_energy_proxy.pdf": "1a661418634a88d80d7a3c6f412f1d081f2d1f835e33ffe08dfecd092d5bb1b3",
+    "figures/fig8_energy_proxy.pdf": "7215f6ef245399941a7c24e3bf7fa2e60ed22b741be7122ab980a3dcfdc713de",
     "figures/fig8_energy_proxy.png": "d6b5aab669cca1a773f7b803f8a9cd21b46c5240a3495b37cddfed9ce37f6f39",
-    "paper/generated_results.tex": "07fbe46ad044cc1e0a3ea6ee699f7fe553f7e6044772633e5467031f09545679"
+    "paper/generated_results.tex": "4a96605c5568447b1b6ff5cd89f4674065068f938e88679bc4661e4d629c01ef"
   },
   "retired_figure_paths": [
     "figures/fig6_bisection.png",

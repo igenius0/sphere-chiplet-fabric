@@ -1,22 +1,22 @@
 cff-version: 1.2.0
 message: "Cite this corrected software and publication revision by its version and repository URL. The DOI in references identifies the earlier publication; it does not identify this revision."
-title: "A Spherical Chiplet Fabric: Corrected Simulation and Memory-Local Design Study"
+title: "A Spherical Chiplet Fabric: Finite-Buffer, Inference and RTL Prototypes"
 type: software
-version: 1.1.0
+version: 1.2.0
 authors:
   - family-names: Ali
     given-names: Musthafa
     email: mali@outlook.com.au
     affiliation: "Independent Researcher, Sydney, Australia"
-date-released: 2026-11-09
+date-released: 2026-11-10
 repository-code: "https://github.com/igenius0/sphere-chiplet-fabric"
 url: "https://github.com/igenius0/sphere-chiplet-fabric"
 abstract: >-
-  Corrected exploratory store-and-forward fabric simulation, reproducible
-  equal-resource topology comparisons, assumption-driven capacity bounds and
-  a proposed compute-near-HBM accelerator architecture. Software and synthetic
-  simulation results do not establish implemented hardware performance,
-  full-system energy efficiency or physical feasibility.
+  Exploratory fabric simulation, a finite-buffer network model, a numerical
+  CPU mixture-of-experts inference prototype, a bounded transport reference,
+  synthesizable RTL and a physical-measurement validation harness. Synthetic
+  software and RTL simulation results do not establish physical hardware
+  performance, full-system energy efficiency or manufacturing feasibility.
 keywords:
   - chiplet
   - geodesic topology

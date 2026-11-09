@@ -1,7 +1,7 @@
 # Application design: local-memory MoE inference accelerator
 
-Publication/evidence revision **v1.1.0, 9 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
-**Status:** proposed architecture and validation contract, 9 November 2026. The current implementation supplies synthetic fabric experiments. It does not implement this inference runtime or establish hardware performance.
+Publication/evidence revision **v1.2.0, 10 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
+**Status:** product architecture and validation contract, with a scoped tiny CPU implementation added on 10 November 2026. The [inference prototype](INFERENCE_PROTOTYPE.md) executes causal attention, KV cache, expert dispatch/compute/combine and generation with synthetic weights and logical island ownership. Production runtime, trained-model quality and hardware performance remain unvalidated.
 
 ## Recommended lead application
 
@@ -36,7 +36,7 @@ A collective operation is a distributed agreement about counts, datatypes and pa
 6. Combine returns outputs to the original token owner. The owner applies the agreed weighting/reduction exactly once and verifies that all expected contributions arrived.
 7. The scheduler advances dependent work and returns the token. It records queueing, attention, dispatch, expert, combine and host overhead separately.
 
-A failure during steps 3–6 aborts the affected execution generation. The host can retry the request from a known state after rebuilding the communicator and reservations. Automatic rerouting alone does not make duplicate expert outputs or partially completed collectives correct. Live recovery, replay suppression and generation changes require explicit protocol tests.
+A failure during steps 3–6 aborts the affected execution generation. The host can retry the request from a known state after rebuilding the communicator and reservations. Automatic rerouting alone does not make duplicate expert outputs or partially completed collectives correct. The bounded [transport reference](TRANSPORT_PROTOCOL.md) now tests recovery, replay suppression, generation abort and uncertain delivery. Distributed crash recovery and the production runtime still require their own protocol/RTL validation.
 
 ## Capacity plan: illustrative workload, not a model or chip specification
 
@@ -81,9 +81,11 @@ python -m sim.performance_model --output generated/capacity_bounds.json
 python -m unittest discover -s tests -v
 ```
 
-The MoE proxy generates seeded skewed dispatch pairs. It excludes combine, gating, compute, memory access, tensor-parallel phases and request scheduling. The stencil proxy is a control workload whose logical grid directly matches torus wiring. Equal-total bandwidth normalizes the sum of link capacities; it does not normalize wiring, area, power or port cost.
+The new tiny decoder can be run with `python -m sim.moe_inference --config examples/moe_inference.json --output generated/inference.json`; it is checked against an independent full-prefix numerical reference. The aggregate `python scripts/run_prototype_validation.py` also exercises actual expert-output recovery, bounded network, transport and RTL scenarios. Its expert-output fault case permits a token to commit only after all remote outputs are acknowledged; ACK exhaustion leaves the token's cache and logits uncommitted. Transport ticks do not contribute to the modeled network-cycle performance estimate.
 
-For the supplied 42-rank, seed-42 MoE example, the current model gives approximately 277.21 ns p99 for sphere and 230.11 ns for torus. These are finite synthetic-stream estimates with fixed rank placement. They establish a baseline to improve; they do not demonstrate a spherical advantage. Re-run the committed configuration after simulator changes rather than treating these rounded values as a performance guarantee.
+The original MoE proxy generates seeded skewed dispatch pairs. It excludes combine, gating, compute, memory access, tensor-parallel phases and request scheduling. The stencil proxy is a control workload whose logical grid directly matches torus wiring. Equal-total bandwidth normalizes the sum of link capacities; it does not normalize wiring, area, power or port cost.
+
+For the supplied 42-rank, seed-42 MoE example, the original baseline model gives approximately 277.21 ns p99 for sphere and 230.11 ns for torus. These are finite-length synthetic traces with infinite output queues and fixed rank placement. They establish a baseline to improve; they do not demonstrate a spherical advantage or validate the separate bounded model. Re-run the committed configuration after simulator changes rather than treating these rounded values as a performance guarantee.
 
 ## Experiment and iteration contract
 
@@ -96,7 +98,7 @@ For the supplied 42-rank, seed-42 MoE example, the current model gives approxima
 | Memory-locality extension | Local/remote HBM bytes; hot-expert replicas; per-island memory fit; KV head replication | Evaluate bandwidth and capacity together; reject overcommitted placement |
 | Hardware/emulator calibration | Pairwise size sweeps, concurrent injection, queue limits, local-memory bandwidth and power at wall input | Fit model parameters on one data set and validate against held-out traces |
 
-Run small cases first, then the matrix. Record configuration, software revision, model revision, seeds, warm-up policy, measured interval and failures. The present simulator has infinite output queues and finite traces; saturation and steady-state conclusions require queue-limit and warm-up support before they become acceptance evidence.
+Run small cases first, then the matrix. Record configuration, software revision, model revision, seeds, warm-up policy, measured interval and failures. The original proxy uses infinite output queues and finite traces. The new bounded model permits queue/backpressure experiments, but finite drain-inclusive rates alone still do not establish sustained steady-state capacity.
 
 Proposed go/no-go thresholds for the next design iteration:
 

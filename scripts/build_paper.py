@@ -18,9 +18,9 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSION = "1.1.0"
-PUBLICATION_DATE = "2026-11-09"
-SOURCE_DATE_EPOCH = int(datetime(2026, 11, 9, tzinfo=timezone.utc).timestamp())
+VERSION = "1.2.0"
+PUBLICATION_DATE = "2026-11-10"
+SOURCE_DATE_EPOCH = int(datetime(2026, 11, 10, tzinfo=timezone.utc).timestamp())
 MANIFEST_PATH = ROOT / "paper" / "publication_manifest.json"
 PDF_PATH = ROOT / "paper" / "main.pdf"
 
@@ -32,7 +32,9 @@ def _sha256(path):
 def source_hashes():
     """Include the exact authored source, generated evidence and build recipe."""
     paths = [ROOT / "paper" / "main.tex", ROOT / "paper" / "generated_results.tex",
+             ROOT / "paper" / "prototype_results.tex",
              ROOT / "CITATION.cff", ROOT / "artifacts" / "publication_manifest.json",
+             ROOT / "artifacts" / "prototype_manifest.json",
              Path(__file__).resolve()]
     paths.extend(sorted((ROOT / "figures").glob("*.pdf")))
     return {path.relative_to(ROOT).as_posix(): _sha256(path) for path in paths}
@@ -55,6 +57,8 @@ def build_paper():
         raise ValueError("pdflatex is required to render the paper; --check needs no TeX")
     # Fail before compilation when generated tables or charts do not match code.
     subprocess.run([sys.executable, str(ROOT / "scripts" / "rebuild_publication.py"),
+                    "--check"], cwd=ROOT, check=True)
+    subprocess.run([sys.executable, str(ROOT / "scripts" / "run_prototype_validation.py"),
                     "--check"], cwd=ROOT, check=True)
     sources_before = source_hashes()
     environment = os.environ.copy()

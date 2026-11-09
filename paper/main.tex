@@ -13,7 +13,7 @@
 \usepackage{caption}
 \captionsetup{font=small,labelfont=bf}
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue,
-  pdftitle={Spherical Chiplet Fabric: Corrected Simulation and Memory-Local Design Study},
+  pdftitle={Spherical Chiplet Fabric: Finite-Buffer, Inference and RTL Prototypes},
   pdfauthor={Musthafa Ali}}
 \graphicspath{{../figures/}}
 \setlength{\parindent}{1em}
@@ -27,23 +27,26 @@
 \Urlmuskip=0mu plus 1mu
 % Generated from committed JSON by scripts/rebuild_publication.py.
 \input{generated_results.tex}
+% Separate software/RTL evidence; never substituted for the baseline plots.
+\input{prototype_results.tex}
 \title{\bfseries A Spherical Chiplet Fabric with Geodesic Topology,\newline
 Planet-Style Coordinates, and Reorientable Frame Semantics\newline
 for Large-Scale AI and HPC Workloads\\[8pt]
-\large Corrected Simulation and Memory-Local Design Study}
+\large Finite-Buffer, Inference and RTL Prototypes}
 \author{Musthafa Ali\\
 \normalsize Independent Researcher, Sydney, Australia\\
 \normalsize\texttt{mali@outlook.com.au}}
-\date{Publication revision \PublicationVersion\\9 November 2026}
+\date{Publication revision v\PrototypeVersion\\10 November 2026}
 \begin{document}
 \maketitle
 
 \begin{abstract}
 We investigate a geodesic chiplet interconnect and revise the evidence for a
-proposed accelerator built around it. The implemented work is a Python
-store-and-forward communication model with chronological hop events,
-independent directed links and infinite output queues. It is not a
-cycle-accurate router, an inference runtime or a physical processor.
+proposed accelerator built around it. A corrected Python store-and-forward
+baseline uses chronological hop events, independent directed links and
+infinite output queues. Separate executable prototypes add bounded flit
+buffers and credits, a tiny causal NumPy MoE decoder with a KV cache, a bounded
+DATA/ACK recovery protocol, and a synthesizable local word fabric.
 Corrected experiments compare equal-size sphere and torus graphs, declare
 their bandwidth budgets, and separate isolated probes from contending
 traffic. A 40-profile study with five paired seeds covers synthetic
@@ -58,12 +61,16 @@ hardware rankings. An analytical audit distinguishes \LocalHbmTbps{} TB/s
 of assumed local HBM bandwidth from at most \RemoteHbmTbps{} TB/s through
 the historical memory tiles' fabric ports. This motivates a four-island
 compute-near-HBM architecture with explicit memory ownership and a
-hierarchical network. That architecture remains a proposal. We retain
-planet-style coordinates as a mapping concept, specify required transport
-and physical evidence, and provide regenerated figures, machine-readable
-results and a reproducible publication build. Full-system power, application
-throughput, deadlock freedom and manufacturing feasibility have not been
-established.
+hierarchical network. The decoder exercises logical ownership on four islands
+and agrees with an independent full-prefix numerical reference; all arithmetic
+runs in one CPU process with synthetic weights. A fixed-tree channel-dependency
+certificate covers the bounded network's actual routes. RTL simulation and
+generic synthesis establish a small switch baseline, without an FPGA board or
+ASIC implementation. The original eight communication plots remain results of
+the infinite-queue baseline. Physical measurements are absent and their
+assessment reports insufficient evidence. Trained-model quality, calibrated
+application throughput and energy, formal RTL liveness, and manufacturing
+feasibility remain unestablished.
 \end{abstract}
 
 \noindent\fbox{\parbox{0.965\textwidth}{\small
@@ -72,8 +79,10 @@ paper's numerical results and hardware-comparison claims. The original
 April 2026 record remains available at
 \href{https://doi.org/10.5281/zenodo.19918238}{doi:10.5281/zenodo.19918238}.
 That identifier refers to the historical publication; no new DOI is claimed
-for this revision. Packet and collective experiment timings are simulated.
-Capacity, endpoint-transfer and power quantities are analytical bounds.}}
+for this revision. Baseline packet and collective timings are simulated.
+Prototype network cycles and transport ticks are distinct uncalibrated units.
+CPU numerics, RTL simulation and generic synthesis are executable evidence;
+capacity, endpoint-transfer and power quantities remain analytical bounds.}}
 
 \section{Research Question and Scope}\label{sec:scope}
 
@@ -85,22 +94,28 @@ practical question is whether a particular organization improves completed
 application work at a fixed accuracy, request-latency objective and
 implementable resource budget.
 
-This revision separates three objects that the original study conflated.
+This revision distinguishes four objects and their evidence requirements.
 First, an implemented \emph{flat graph model} represents 42 or 162 logical
 ranks connected as a triangulated sphere or a two-dimensional torus. Second,
 a historical Sphere-162 capacity scenario assigns hypothetical compute,
 memory and IO tiles to 162 positions. Third, a \emph{new hardware proposal}
 places compute beside local HBM in four islands and uses a smaller global
-network for activations and explicit remote operations. The present software
-evaluates the first object and provides analytical constraints on the second.
-It does not implement or validate the third.
+network for activations and explicit remote operations. Fourth, independent
+\emph{executable prototypes} test bounded communication, numerical inference,
+fault semantics and local-switch RTL. The software evaluates the first object,
+constrains the second, and implements limited reference behaviors relevant to
+the third. Logical islands do not constitute a physical implementation of the
+proposed accelerator.
 
-The contribution is a corrected baseline and a testable next design. The
-software supplies deterministic routes, packet-event timing, paired
+The contribution is a corrected baseline, executable reference components and
+a testable next design. The software supplies deterministic routes,
+packet-event timing, paired
 synthetic workloads, delivery accounting and parameter checks. The paper
 reports both favorable and unfavorable topology outcomes. It also derives
 the memory-port bottleneck that makes local data placement a more urgent
-architectural decision than increasing aggregate compute peaks.
+architectural decision than increasing aggregate compute peaks. Prototype
+correctness evidence is reported separately from topology performance and
+physical qualification.
 
 \subsection{Corrections to the Earlier Evaluation}
 
@@ -186,15 +201,17 @@ that turns the bounds into measured tokens per second.
 
 BookSim supplies a detailed cycle-accurate network-modeling
 reference\cite{jiang2013booksim,booksimrepo}. It has not been integrated with
-or used to calibrate this Python model. A future cross-check should include
-buffering, credit round trips, arbitration and endpoint constraints. Calling
-the present queue model cycle accurate would hide those missing behaviors.
+or used to calibrate the Python baseline. The separate bounded-network
+prototype now includes buffering, delayed credits, arbitration and endpoint
+constraints. Its discrete cycles are uncalibrated, and it does not reproduce
+a hardware router pipeline or establish cycle-accurate chiplet performance.
 
 Adaptive routing with an escape subnetwork requires a specified routing and
-channel-dependency argument\cite{duato1993new}. The implementation uses
-deterministic shortest-hop breadth-first search (BFS), not the earlier
-adaptive/escape-VC proposal. A successful BFS route or random traffic test
-cannot prove deadlock freedom for a finite-buffer hardware router.
+channel-dependency argument\cite{duato1993new}. The baseline uses deterministic
+shortest-hop breadth-first search (BFS). The bounded prototype instead uses
+fixed spanning-tree up/down routes with a checkable channel order. Neither
+implements the earlier adaptive/escape-VC proposal. The resulting fixed-route
+certificate is narrower than a formal hardware deadlock or liveness proof.
 
 \section{Corrected Simulation Method}\label{sec:method}
 
@@ -223,12 +240,14 @@ destinations remain visible in delivery accounting. The simulator rejects
 invalid rates, packet sizes, inconsistent topologies and derived timings
 that overflow or lose positive durations at large absolute timestamps.
 
-The model has infinite output queues. It omits input-queued switches,
+This baseline has infinite output queues. It omits input-queued switches,
 finite buffers, credit backpressure, VC allocation, shared endpoint
 injection, HBM transactions, compute and protocol overhead. Every finite
 trace can drain if routes remain reachable. Drain-inclusive payload rates
 and high-load latency curves therefore do not establish stable saturation
-throughput or bounded queue requirements for hardware.
+throughput or bounded queue requirements for hardware. Section~\ref{sec:prototypes}
+describes a separate bounded-buffer implementation; none of the eight baseline
+plots or their tables are reinterpreted as outputs of that implementation.
 
 \subsection{Topology and Resource Budgets}
 
@@ -592,8 +611,10 @@ owners. The runtime exposes NUMA locality and admits work against the most
 constrained island rather than treating aggregate free bytes as immediately
 available to every rank. A geodesic graph, short-wire mesh/torus and switched
 hierarchy remain candidates. Selection needs the same application,
-local-memory budget and priced port/wiring constraints. This hierarchy has
-not been implemented or tested by the flat-graph experiments.
+local-memory budget and priced port/wiring constraints. The flat-graph
+experiments do not test this hierarchy. The new numerical prototype implements
+four logical owners and a small tree network; it does not implement separate
+compute devices, HBM controllers or a physical hierarchical package.
 
 Planar construction is the initial package study. A physical faceted sphere
 remains an optional mechanical/cooling experiment. The level-two,
@@ -616,8 +637,9 @@ identity, bounds and generation. The receiver checks messages before expert
 execution. Combine must return each expected contribution exactly once and
 preserve numerical correctness. A timeout or reset must account for every
 outstanding operation and complete or explicitly abort its generation.
-These are proposed protocol requirements, not properties of static edge
-removal.
+The transport and inference prototypes exercise a bounded subset of these
+requirements in software. Static edge removal itself establishes none of
+these live protocol properties.
 
 Tiny-packet latency is not layer latency. With 128 tokens, width 8,192,
 top-$k=2$ and two-byte activations, all-remote assignments require at most
@@ -633,7 +655,9 @@ ordering, timeouts, error containment and reset semantics. Adaptive routing
 needs legal VC transitions and a verified escape dependency graph including
 request/response and injection/ejection dependencies. Fault and epoch
 transitions must preserve the relevant properties. There is no claim that
-three VCs suffice without those specifications and proofs.
+three VCs suffice without those specifications and proofs. The reference
+components in Section~\ref{sec:prototypes} test finite queues and bounded
+recovery separately; they are not an integrated adaptive hardware transport.
 
 Management should remain available during data-network degradation and
 control safe power/clock sequencing. Physical IDs and memory ownership
@@ -658,6 +682,181 @@ pressure drop, leaks and fault responses before functional silicon. No
 thermal qualification, yield, serviceability assessment or silicon signoff
 has been completed.
 
+\section{Executable Prototype Implementations and Evidence}\label{sec:prototypes}
+
+Version v\PrototypeVersion{} adds independent implementation evidence dated
+\PrototypeDate{}. Table~\ref{tab:prototype-status} summarizes the generated
+status, while Table~\ref{tab:prototype-metrics} reports selected executed
+counts. The source is \texttt{artifacts/prototype\_validation.json}; its
+manifest identifies the source, configuration and test bytes. These results
+do not replace the infinite-output-queue sphere/torus experiments or calibrate
+their nanosecond timing assumptions.
+
+\begin{table}[tbp]
+\centering
+\caption{Generated implementation status for v\PrototypeVersion{}. Passing
+software/RTL checks does not close the physical or application-value gates.}
+\label{tab:prototype-status}
+\small
+\begin{tabular}{p{0.24\textwidth}p{0.68\textwidth}}
+\toprule
+Component & Executed evidence and boundary\\
+\midrule
+\PrototypeStatusRows
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[tbp]
+\centering
+\caption{Selected generated prototype results. Network cycles include credit
+drain; protocol ticks and RTL clock cycles are separate units. Generic cells
+are synthesis statistics, not physical area.}
+\label{tab:prototype-metrics}
+\small
+\begin{tabular}{p{0.69\textwidth}r}
+\toprule
+Quantity & Result\\
+\midrule
+Bounded-network baseline packets delivered & \PrototypePackets\\
+Bounded-network elapsed model cycles & \PrototypeNetworkCycles\\
+Numerically processed prompt and generated tokens & \PrototypeTokens\\
+Completed weighted expert contributions & \PrototypeContributions\\
+Maximum absolute cached/reference logit error & \texttt{\PrototypeLogitError}\\
+Executed RTL fabric configurations & \PrototypeRtlConfigurations\\
+Delivered RTL words across those configurations & \PrototypeRtlTransfers\\
+Default word-fabric generic synthesized cells & \PrototypeRtlCells\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Bounded Flit Queues, Credits and Fixed Routes}
+
+\texttt{sim/finite\_buffer.py} has a finite FIFO for each physical input
+and VC, explicit flits in flight, delayed credit return, bounded endpoint
+injection/ejection and sink backpressure. Each physical input supplies at most
+one flit per cycle across its VCs, and each directed link sends at most one.
+Only FIFO heads compete. Deterministic round-robin arbitration and positive
+router/link delays make contention and head-of-line blocking observable.
+Per-link/VC conservation requires
+\begin{equation}
+c_{\mathrm{available}}+n_{\mathrm{resident}}+n_{\mathrm{flight}}
++n_{\mathrm{return}}=c_{\mathrm{capacity}}.
+\end{equation}
+The model checks this identity and exact flit residency after every cycle.
+Completion requires all accepted packets delivered, all buffers and link
+events empty, and every credit returned. A maximum-cycle cutoff preserves
+pending and uninjected flits in its report; disconnected requests are
+explicitly rejected. A completed subset is never silently reported as full
+delivery.
+
+Routes follow a deterministic spanning forest, up to the least common
+ancestor and then down to the destination. Non-tree links carry no traffic.
+For maximum forest depth $H$, a child at depth $d$ has upward channel rank
+$H-d$ and downward rank $H+d$. Every consecutive channel dependency on an
+allowed route strictly increases in rank. The generated certificate enumerates
+the actual channels and dependencies, giving a checkable acyclic order for
+this fixed policy. Packets retain their initial VC. This is not adaptive
+routing, wormhole header/body allocation, a VC-transition proof, a formal RTL
+proof or a progress guarantee under a permanently stalled sink.
+
+The executed scenarios include an ordinary drain, a finite sink pause, an
+indefinitely paused sink stopped at the configured cutoff, and an unreachable
+cross-component request. Independent trace replay verifies FIFO actions,
+physical-port limits and exact flit/credit accounting; a separate graph
+traversal checks the reported dependency graph. No clock period, PHY bandwidth
+or hardware latency is inferred from these logical cycles.
+
+\subsection{Actual Tiny Causal MoE Inference}
+
+\texttt{sim/moe\_inference.py} executes token and positional embeddings,
+normalization, multi-head causal attention, a bounded KV cache, stable
+top-$k$ routing, expert MLPs, weighted combination, vocabulary logits and
+greedy generation in NumPy float64. The checked configuration uses a small
+synthetic model, not pretrained weights or a language-quality benchmark.
+An independent full-prefix implementation recomputes vectorized causal
+attention and all expert intermediates without using the cached decoder,
+its schedule or its numerical helpers. The comparison checks every prefill
+logit, logits after each generated token, and matching greedy tokens at
+absolute and relative tolerances of $10^{-10}$.
+
+All arithmetic runs in one CPU process. Four logical islands own resident
+expert views, with expert $e$ assigned to island $e\bmod4$. Island zero owns
+attention, embeddings, the head and the full KV cache; the KV cache is not
+distributed across devices. Dispatch and combine use fixed tree links
+$0$--$1$, $0$--$2$ and $2$--$3$. Actual activation/output bytes are staged
+on the host and made available to their logical destination only after the
+finite-buffer model validates each required packet. Local experts bypass
+the network. Each phase drains its credits before dependent work proceeds;
+the next token waits for complete combination and cache commit.
+
+A per-owner inventory counts actual NumPy array sizes for resident weights,
+KV arrays and reserved workspaces. Admission enforces those declared tensor
+budgets. The inventory excludes Python overhead, BLAS temporaries, staged
+payloads and reference computation, so it is not a bound on process peak
+memory or evidence of physical device allocation. Separate byte ledgers
+record payload, flit padding, hop-weighted traffic, local bypass, expert-weight
+reads and KV reads/writes. Configurable operation-count proxies supply assumed
+compute cycles. Neither those cycles nor the CPU calculation establish
+accelerator tokens/s, trained-model accuracy, energy or multidevice speedup.
+
+\subsection{Payload Recovery and Uncertain Outcomes}
+
+\texttt{sim/transport.py} carries actual immutable payload bytes in bounded
+DATA/ACK sessions. CRC32 covers identity and payload; generation, request,
+sequence and endpoint checks reject mismatches. Duplicate suppression accepts
+each admitted contribution once, while retransmitted copies can elicit a new
+ACK. Retries, request/event capacity and reservations have explicit bounds.
+Retry exhaustion or a generation barrier terminates old work and releases
+its reservation exactly once. The shared sender/receiver admission oracle
+and retained deduplication state are explicit reference-model assumptions.
+
+The executed recovery cases inject drops, corruption, duplication and
+reordering, plus partition, all-ACK-loss and generation-transition cases.
+An additional inference experiment transports three actual remote expert
+output vectors, alongside one local output, under DATA loss, corruption,
+duplication and retry-ACK loss. Unique acknowledged outputs combine once and
+match the independent numerical reference. When all ACKs are lost, receiver
+acceptance can occur even though the sender ultimately aborts. The decoder
+then refuses combination and cache commit; it does not claim that an abort
+rolled back the receiver or established global exactly-once execution.
+
+Transport ticks are separate from bounded-network cycles and RTL clock cycles.
+The implementation provides neither authenticated messaging nor durable
+recovery after endpoint restart. Reconciliation of uncertain application
+effects, distributed commit and a refinement into hardware transport remain
+open integration work.
+
+\subsection{Local Word-Fabric RTL and Physical Evidence Gate}
+
+\texttt{rtl/word\_fabric\_top.sv} and \texttt{rtl/sync\_fifo.sv} implement
+a single-clock word switch with finite ingress FIFOs, ready/valid
+backpressure, round-robin output service and identity metadata. A stalled
+output retains its data and metadata; synchronous reset explicitly cancels
+queued words. Actual Icarus Verilog simulations compare cycle-level outputs
+with an independent Python oracle, including contention, stalls, pointer and
+sequence wrap, reset while full, and non-power-of-two parameters. Yosys runs
+generic flattened synthesis and structural checks. The evidence records tool
+versions, source/trace hashes, transfer counts and generic cells.
+
+This RTL is a local word-switch baseline, not a bit-for-bit realization of the
+Python multi-hop flit network or reliable protocol. Its generic cell count is
+not ASIC area, FPGA LUT usage, frequency, power or timing closure. No target
+board, pin constraints, routed bitstream, FPGA bring-up or measured hardware
+result is supplied. Formal liveness, CDC/RDC, PHYs, HBM and full accelerator
+integration remain outside this implementation.
+
+The physical measurement harness loads declared records and checks their
+provenance, calibration metadata, configured lane and corner limits, and
+required coverage. It computes one-sided BER confidence bounds and checks
+temperature, power, voltage and coolant samples.
+The bounds assume independent bit trials; instrument uncertainty is recorded
+without automatic guard-banding, and provenance authenticity needs independent
+review. Missing, malformed or synthetic inputs cannot qualify as physical
+evidence. The supplied missing-hardware scenario reports
+\path{INSUFFICIENT_EVIDENCE}. No hardware measurements were supplied, so
+this gate remains open; the harness itself is not compliance certification.
+
 \section{Validation, Reproduction and Release Integrity}\label{sec:repro}
 
 \subsection{Software and Experiment Checks}
@@ -665,15 +864,24 @@ has been completed.
 Regressions cover hand-derived timing, chronological competition,
 full-duplex independence, disconnected inputs, graph invariants, geometry,
 workload accounting, precision checks and numeric adversarial cases. CI runs
-on Python 3.10 and 3.12. These verify software within its abstraction, not
-hardware routing, real inference output or application energy.
+on Python 3.10 and 3.12. Additional checks exercise bounded-network invariants,
+independent numerical inference, actual contribution recovery and RTL contracts.
+They verify the scoped implementations rather than hardware application
+performance or energy. Dedicated RTL validation requires actual simulator and
+synthesis tools; an absent tool cannot count as executed RTL evidence.
 
 The publication build regenerates evaluation and capacity JSON, the
 paired-seed sweep, eight figure pairs and this paper's numeric macros/table
-rows. A manifest records environment, configuration, source fingerprints and
-output hashes. Tables consume \texttt{paper/generated\_results.tex}, not
-manually transcribed JSON values. Source fingerprints identify the exact
-files used even if a working tree was not committed at calculation time.
+rows. A separate prototype runner executes the bounded-network, inference,
+fault, transport and actual-tool RTL scenarios and generates its own JSON,
+macros and source/output manifest. Tables consume
+\texttt{paper/generated\_results.tex} and
+\texttt{paper/prototype\_results.tex}, not manually transcribed JSON values.
+Manifests record environment, configuration, source fingerprints and output
+hashes. Prototype test files are identified by hash; the experiment runner
+does not substitute for separately executing the unit suite. Fingerprints
+identify the exact files used even if a working tree was not committed at
+calculation time.
 The separate paper-build manifest associates the PDF with its TeX inputs and
 figure files.
 
@@ -682,6 +890,8 @@ Reference commands, from the repository root, are:
 python -m pip install -r requirements.txt\\
 python -m unittest discover -s tests -v\\
 python scripts/rebuild\_publication.py\\
+python scripts/run\_prototype\_validation.py\\
+python scripts/run\_prototype\_validation.py --check\\
 python scripts/build\_paper.py\\
 python scripts/build\_paper.py --check
 \end{quote}
@@ -706,12 +916,15 @@ A practical sequence is:
 \begin{enumerate}
 \item Freeze workload shapes, precision/accuracy, budgets and held-out
 traces. Retain losing cases and failed runs alongside wins.
-\item Add local/remote memory, controller service, full MoE phases and
-placement sensitivity. Account for useful completed work and every byte.
-\item Cross-check a finite-buffer router and implement transport RTL with
-ordering, credit and fault-transition assertions.
-\item Build a small FPGA demonstrator with independent scoreboards,
-backpressure and injected faults. FPGA area/power is not ASIC package PPA.
+\item Extend the tiny numerical reference to trained models and calibrated
+compute/HBM service, broader workload traces and placement sensitivity.
+Retain complete byte accounting and independently checked outputs.
+\item Cross-check the bounded network against detailed router models and
+refine transport into RTL with formal ordering, credit, liveness and
+fault-transition assertions under explicit assumptions.
+\item Integrate the local word-fabric baseline into a target-board FPGA
+demonstrator with constraints, trace I/O and independent scoreboards.
+Measure bring-up; FPGA area/power is not ASIC package PPA.
 \item Measure representative channels, power-delivery transients, thermal
 interfaces and fault responses before committing to a package.
 \item Advance only with application, timing, CDC/RDC, PPA, DFT, SI/PI,
@@ -729,8 +942,9 @@ generation tests beyond connectivity.
 Source is available at
 \url{https://github.com/igenius0/sphere-chiplet-fabric}. This revision
 synchronizes the paper, figures, results and citation metadata with the
-corrected model. The April bundle remains recoverable through the original
-Git tags and DOI. Its old performance and efficiency claims are superseded
+corrected baseline and separate executable prototypes. The April bundle
+remains recoverable through the original Git tags and DOI. Its old
+performance and efficiency claims are superseded
 and must not be reused as validated measurements. A future DOI deposit must
 identify its actual released version; the historical identifier is not
 relabeled as a deposit of this revision.
@@ -756,6 +970,11 @@ hierarchy provide a concrete next study. Geodesic connectivity and physical
 spherical packaging remain separate choices. The synchronized publication
 and software supply a reproducible baseline; application benefit and
 physical feasibility remain questions for the next measured iteration.
+The new bounded-network, actual numerical inference, recovery and local RTL
+components make selected behaviors executable and independently checkable.
+They do not turn logical cycles into calibrated performance, fixed-route
+acyclicity into a formal accelerator proof, or missing measurements into a
+physical validation result.
 
 \clearpage
 \begin{thebibliography}{9}\small

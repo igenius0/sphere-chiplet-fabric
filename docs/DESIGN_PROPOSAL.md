@@ -1,6 +1,6 @@
 # iGenius accelerator: proposed architecture v0.2
 
-Engineering recommendation, 9 November 2026. Publication/evidence revision: [v1.1.0](PUBLICATION_REVISION.md). This is a candidate to build and validate, not a claim to have found the world's fastest processor. The selection objective is useful application throughput and energy at a fixed numerical-accuracy and request-latency target, with manufacturable packaging and defined failure behaviour.
+Engineering recommendation, 10 November 2026. Publication/evidence revision: [v1.2.0](PUBLICATION_REVISION.md). This is a candidate to build and validate, not a claim to have found the world's fastest processor. The selection objective is useful application throughput and energy at a fixed numerical-accuracy and request-latency target, with manufacturable packaging and defined failure behaviour.
 
 ## Recommended architecture
 
@@ -33,23 +33,24 @@ The former 500 TFLOPS/tile and 15 W/tile assumptions also require implementation
 
 The committed [paired-seed study](EXPERIMENT_RESULTS.md) compares the existing flat sphere and torus models. At equal total directed bandwidth, sphere's MoE p99 is higher in the tested cohorts. With equal bandwidth per link, sphere's MoE p99 is lower, while its aggregate network bandwidth is approximately 43–48% greater. The torus-local stencil favours torus by construction.
 
-These results make the resource trade-off visible. They do not establish the proposed island hierarchy's performance: that architecture, its finite-buffer router and its inference runtime still need implementation and trace validation. The Python work in this revision supplies a corrected baseline and repeatable experiments for selecting the next change.
+These results make the resource trade-off visible. They do not establish the proposed island hierarchy's performance. Revision v1.2.0 now adds a bounded flit model, a tiny actual CPU inference path with logical four-island ownership, a bounded protocol reference and small RTL. These are implementation starting points, documented in the [implementation status](IMPLEMENTATION_STATUS.md); a calibrated production hierarchy and physical package still need validation.
 
 | Implemented in this revision | Planned hardware/application work |
 |---|---|
-| Chronological store-and-forward traffic scheduling and isolated probes | Finite-buffer/credit/VC router and controller model |
+| Chronological baseline scheduling and isolated probes; separate bounded flit/credit model with fixed-route dependency analysis | Calibrated router pipelines, wormhole VC allocation, adaptive-routing transitions and memory-controller contention |
 | Equal-node, configurable network-budget comparisons | Costed and routed island/hierarchical/spherical package alternatives |
-| Seeded MoE dispatch and periodic-stencil proxies | Complete inference and geodesic scientific-mesh traces |
-| Static failed-link comparisons with delivery accounting | Live failure detection, replay, epoch changes and recovery |
+| Tiny causal MoE inference with actual CPU arithmetic, KV cache, logical ownership and an independent reference; legacy dispatch/stencil proxies | Real trained-model and scientific-mesh traces, multi-device execution and calibrated application performance |
+| Static failed-link comparisons; bounded transport fault injection, replay suppression, generation abort and actual contribution recovery | Physical failure detection, crash recovery, durable replay history and hardware protocol integration |
 | Precision-matched capacity/Roofline bounds | Measured kernels, achieved HBM rates and full-system energy |
-| Independent regression/adversarial tests and GitHub CI | RTL, FPGA demonstrator, SI/PI, thermal and manufacturing signoff |
+| Synthesizable local word-switch RTL with independent simulation oracles and generic synthesis | Formal RTL/liveness proof, target constraints, FPGA place/route, timing closure and board bring-up |
+| Independent regression/adversarial tests, GitHub CI and strict physical-measurement assessment | Measured SI/PI, BER, voltage, power and thermal evidence; packaging and manufacturing signoff |
 
 ## Iteration and go/no-go rule
 
 1. Freeze workload shapes, accuracy/SLO requirements, budgets and held-out traces before tuning.
-2. Build a trace-based local/remote memory and full inference model; compare candidate graphs under the same compute, HBM, usable capacity and priced port/wiring budgets.
+2. Extend the tiny numerical path to real application traces and calibrated local/remote memory service; compare candidate graphs under the same compute, HBM, usable capacity and priced port/wiring budgets.
 3. Change the dominant measured bottleneck, then rerun the same regression and held-out experiments. Retain losing cases and failed runs.
-4. Advance the candidate to finite-buffer RTL/FPGA and physical coupons only after correctness and budget checks pass.
+4. Refine the software/protocol contract into the selected router RTL, then advance to FPGA integration and physical coupons after correctness and budget checks pass.
 5. Use a proposed selection gate of at least 15% improvement in useful application throughput/J with no more than 5% p99 regression at the same accuracy and SLO on pre-registered target cases. Freeze or revise that goal before held-out results; estimated power supports screening only.
 
 See [application design](APPLICATION_DESIGN.md), [physical design](PHYSICAL_DESIGN.md) and [validation plan](VALIDATION_PLAN.md) for the requirements, byte budgets, experiments and acceptance artifacts. A design may progress on an agreed latency objective instead of energy when no reliable energy measurement exists, but the decision must state that objective explicitly.

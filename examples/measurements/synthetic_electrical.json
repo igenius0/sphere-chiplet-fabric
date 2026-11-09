@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "origin": "synthetic",
+  "capture_id": "SYNTHETIC-DEMO-ONLY-001",
+  "records": [
+    {
+      "corner": "nominal",
+      "origin": "synthetic",
+      "capture_id": "SYNTHETIC-DEMO-ONLY-001",
+      "instrument_id": "SYNTHETIC-INSTRUMENT",
+      "lane": "lane0",
+      "start_s": 0,
+      "end_s": 10,
+      "errors": 0,
+      "trial_bits": 10000
+    },
+    {
+      "corner": "nominal",
+      "origin": "synthetic",
+      "capture_id": "SYNTHETIC-DEMO-ONLY-001",
+      "instrument_id": "SYNTHETIC-INSTRUMENT",
+      "lane": "lane1",
+      "start_s": 0,
+      "end_s": 10,
+      "errors": 0,
+      "trial_bits": 10000
+    }
+  ]
+}

@@ -1,29 +1,31 @@
 {
   "schema_version": 1,
-  "publication_version": "1.1.0",
-  "publication_date": "2026-11-09",
+  "publication_version": "1.2.0",
+  "publication_date": "2026-11-10",
   "source_sha256": {
-    "paper/main.tex": "c12ea925c7a17b56a09b68e6f06f65c945fa826fa0aa0081c8ade8787f288d9f",
-    "paper/generated_results.tex": "07fbe46ad044cc1e0a3ea6ee699f7fe553f7e6044772633e5467031f09545679",
-    "CITATION.cff": "8cd1b39d5c59d9877bd3ada88f35b56b10352cf575c6ff499aaa4d9ae6584658",
-    "artifacts/publication_manifest.json": "58ca6d33be0b3658efc1f9bc8ec0b0135ecb8c5b1783d83fb462fed7cec3e989",
-    "scripts/build_paper.py": "73efe32fddbd4012f9994065dcefc4f928bc87b1bbe4648868899b9e66273470",
-    "figures/fig1_hop_cdf.pdf": "1629c47b44adae7e7edfa78194750a3bc439061a1e351132e2a9de9d69328ee5",
-    "figures/fig2_latency_cdf.pdf": "37e536ee722dd19db8bb0251a8a3dadb25b56b6f1d68edb0fffb7f988f27aba2",
-    "figures/fig3_latency_load.pdf": "18e22485e9e248a1804ccc2248d0fc3fd125ee76e6d631f174d78d3ced577809",
-    "figures/fig4_tail_ratio.pdf": "0fa95a0fd790deeaa60d248b911443b785882e77a8f97d23ad7c3578fb1810af",
-    "figures/fig5_allreduce.pdf": "e2188f839f07b783c768dfacae052135be286592c27d9ae516014be5f1aa1f03",
-    "figures/fig6_balanced_cut.pdf": "62cdeb39acfc5b6afec8c8986357d6de121e4433162c1f90b9945f08f9d51c83",
-    "figures/fig7_hotspot.pdf": "fcebd8f3708411fe124adefbdf3aa52ae3f359f42ed15511fa795efbb1488999",
-    "figures/fig8_energy_proxy.pdf": "1a661418634a88d80d7a3c6f412f1d081f2d1f835e33ffe08dfecd092d5bb1b3"
+    "paper/main.tex": "a6bb9bd419a574a7d4f620af788d5f0d908636c470025130678c6ee20979f1ab",
+    "paper/generated_results.tex": "4a96605c5568447b1b6ff5cd89f4674065068f938e88679bc4661e4d629c01ef",
+    "paper/prototype_results.tex": "0c578c9971768f6caa9880801159fe80b3b346a30f5d46c26ced76f3cad9a476",
+    "CITATION.cff": "c94781fef28d7502208d28e4f5d98ef60a8b3caa65c3ec042eff5d0c2961000e",
+    "artifacts/publication_manifest.json": "3c732dc034d344d723efae2efbcb4157fc56b8d19f09625fa159ea87775d3146",
+    "artifacts/prototype_manifest.json": "51652c966b2f8a083b4d5b6ac89df8cdb1cfd2bc62debc42b005310118bd3883",
+    "scripts/build_paper.py": "0dddd85ff1735014de6abc5ed2a1da8478f73f847e88f25d5171292233b3f1e7",
+    "figures/fig1_hop_cdf.pdf": "1e7295f0d6d4a0afcbb61933d24e4004e6dca37f58fd4e162edb5f0ec77525fb",
+    "figures/fig2_latency_cdf.pdf": "b23022ec063a3be45574e7614f028769a05ec207041a8965378943a9709c3858",
+    "figures/fig3_latency_load.pdf": "6bb10ee7fdc6cd6f6f36053f88c955b23f26c723e012c53712c0437a1e50a6c0",
+    "figures/fig4_tail_ratio.pdf": "4c5cb4a1c188bbb58333a11cafa6dafd74b1fedc1c03057293ca290953a637aa",
+    "figures/fig5_allreduce.pdf": "cc2e866229a483ae935e6a9b7c646e6efa1b296c73f044598ebfb9c7cd721bda",
+    "figures/fig6_balanced_cut.pdf": "c63474bd5926c3525cafd426c4b8eeef71ce67a127ea733bfc05c578ac846016",
+    "figures/fig7_hotspot.pdf": "c7759f2b577f6ad875357a51ce71b2bcb1eaf27106b3d774e92105bec483c594",
+    "figures/fig8_energy_proxy.pdf": "7215f6ef245399941a7c24e3bf7fa2e60ed22b741be7122ab980a3dcfdc713de"
   },
   "output_sha256": {
-    "paper/main.pdf": "98d5bccaf58e08e8ac1dadc4daff0519b038f7d2feeaf44e5757e95954b20f09"
+    "paper/main.pdf": "589fd6f65ab1ad9bf4068edf2c3fcefffe5106bb6c4f507cc2425581a1e7e209"
   },
   "environment": {
     "latex_engine": "pdfTeX 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian)",
     "python_version": "3.12.14",
-    "source_date_epoch": 1794182400,
+    "source_date_epoch": 1794268800,
     "force_source_date": true,
     "pdf_trailer_identifier": "omitted for deterministic staging-directory builds"
   },
