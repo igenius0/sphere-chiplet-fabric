@@ -1,0 +1,19 @@
+{
+  "seed": 107,
+  "vocab_size": 32,
+  "model_dim": 16,
+  "attention_heads": 2,
+  "expert_hidden": 32,
+  "num_experts": 8,
+  "top_k": 2,
+  "num_islands": 4,
+  "max_seq_len": 16,
+  "prompt_tokens": [1, 4, 7, 2],
+  "decode_tokens": 4,
+  "generation": 1,
+  "layer_norm_epsilon": 0.00001,
+  "compute_ops_per_cycle": 256,
+  "island_capacity_bytes": [1048576, 1048576, 1048576, 1048576],
+  "flit_bytes": 64,
+  "buffer_flits_per_vc": 4
+}

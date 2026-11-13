@@ -1,7 +1,7 @@
 # Physical architecture recommendation
 
-Publication/evidence revision **v1.1.0, 9 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
-Status: engineering proposal, 9 November 2026. No placement, routing, package extraction, silicon implementation or thermal qualification has been completed. Numbers derived from the repository are analytical bounds. External examples establish available technology classes, not access to compatible chiplets or a manufacturing quotation.
+Publication/evidence revision **v1.2.0, 10 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
+Status: engineering proposal, 10 November 2026. No placement, routing, package extraction, silicon implementation or thermal qualification has been completed. Numbers derived from the repository are analytical bounds. External examples establish available technology classes, not access to compatible chiplets or a manufacturing quotation.
 
 ## Recommended direction
 
@@ -56,8 +56,8 @@ The power-distribution model must include rail-specific load steps, allowable dr
 ## Reliability and software contract
 
 - Give every tile a stable physical ID and every memory range a single owner. Expose locality and remote bandwidth to the runtime; avoid implying uniform memory latency or coherence.
-- Put link training, health counters, CRC/retry and bounded timeout semantics in the interface contract. Static graph-edge removal in the current simulator does not validate live failover.
-- Verify a deadlock-free escape network, finite-buffer credits, request/response channel dependencies and starvation bounds in RTL before adaptive routing is enabled. The Python BFS simulator does not establish those properties.
+- Put link training, health counters, CRC/retry and bounded timeout semantics in the interface contract. The transport reference tests bounded software recovery and explicit uncertain outcomes; static graph-edge removal and injected software faults do not validate physical live failover.
+- Verify a deadlock-free escape network, finite-buffer credits, request/response channel dependencies and starvation bounds in RTL before adaptive routing is enabled. The separate Python model certifies only its fixed tree-route dependency graph; the baseline BFS simulator and local word-switch RTL do not establish the proposed adaptive router's properties.
 - Keep a management path available when the data network degrades. Define safe clock/power sequencing, link isolation, reset and error containment. Define the fate of outstanding DMA on every reset.
 - Design for known-good-die testing, boundary access, replaceable modules, calibration records and traceable faults. Obtain packaging/assembly yield and rework assumptions before computing cost per usable accelerator.
 
@@ -72,4 +72,4 @@ The power-distribution model must include rail-specific load steps, allowable dr
 | P4: island prototype | Four-island planning design, or a smaller equivalent if component access requires it | Measured application speed/energy at a fixed accuracy and latency target; local/remote bandwidth; failure-mode behaviour; signed-off manufacturable floorplan and BOM |
 | P5: scale and packaging decision | Increase island count; compare planar and optional shell packaging | Application benefit exceeds additional wiring, power, assembly and service costs under a pre-registered decision rule |
 
-FPGA time-multiplexing can validate protocols and scheduling but cannot establish ASIC link bandwidth, silicon area, timing closure or power. No gate above has been claimed complete by this document. The implemented Python regression suite supports P0 correctness only; hardware work remains a separate deliverable.
+FPGA time-multiplexing can validate protocols and scheduling but cannot establish ASIC link bandwidth, silicon area, timing closure or power. No gate above has been claimed complete by this document. The tiny inference and bounded-network references add scoped P0 evidence, while RTL simulation and generic synthesis address part of P1. No FPGA board, extracted channel or physical measurement is supplied. The [measurement harness](PHYSICAL_VALIDATION_PROTOCOL.md) makes the missing electrical/thermal evidence explicit.

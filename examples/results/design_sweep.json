@@ -63,8 +63,8 @@
           "average_degree": 5.714285714285714,
           "link_bandwidth_gbps_per_direction": 179.2,
           "aggregate_directed_bandwidth_gbps": 43008.0,
-          "total_link_length_mm": 2836.54293507601,
-          "mean_link_length_mm": 23.637857792300085
+          "total_link_length_mm": 2836.5429350760096,
+          "mean_link_length_mm": 23.63785779230008
         },
         "torus": {
           "nodes": 42,
@@ -145,8 +145,8 @@
           "average_degree": 5.714285714285714,
           "link_bandwidth_gbps_per_direction": 256.0,
           "aggregate_directed_bandwidth_gbps": 61440.0,
-          "total_link_length_mm": 2836.54293507601,
-          "mean_link_length_mm": 23.637857792300085
+          "total_link_length_mm": 2836.5429350760096,
+          "mean_link_length_mm": 23.63785779230008
         },
         "torus": {
           "nodes": 42,
@@ -391,8 +391,8 @@
           "average_degree": 5.714285714285714,
           "link_bandwidth_gbps_per_direction": 179.2,
           "aggregate_directed_bandwidth_gbps": 43008.0,
-          "total_link_length_mm": 2836.54293507601,
-          "mean_link_length_mm": 23.637857792300085
+          "total_link_length_mm": 2836.5429350760096,
+          "mean_link_length_mm": 23.63785779230008
         },
         "torus": {
           "nodes": 42,
@@ -473,8 +473,8 @@
           "average_degree": 5.714285714285714,
           "link_bandwidth_gbps_per_direction": 256.0,
           "aggregate_directed_bandwidth_gbps": 61440.0,
-          "total_link_length_mm": 2836.54293507601,
-          "mean_link_length_mm": 23.637857792300085
+          "total_link_length_mm": 2836.5429350760096,
+          "mean_link_length_mm": 23.63785779230008
         },
         "torus": {
           "nodes": 42,
@@ -730,8 +730,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -852,8 +852,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -974,8 +974,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -1096,8 +1096,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -1218,8 +1218,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -1340,8 +1340,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -1462,8 +1462,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -1584,8 +1584,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -1706,8 +1706,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -1828,8 +1828,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -1976,8 +1976,8 @@
               "average_degree": 5.91358024691358,
               "link_bandwidth_gbps_per_direction": 172.8,
               "aggregate_directed_bandwidth_gbps": 165542.40000000002,
-              "total_link_length_mm": 5756.562038083211,
-              "mean_link_length_mm": 12.017874818545325
+              "total_link_length_mm": 5756.56203808321,
+              "mean_link_length_mm": 12.017874818545323
             },
             "metrics": {
               "generated_packets": 500,
@@ -2464,8 +2464,8 @@
               "average_degree": 5.91358024691358,
               "link_bandwidth_gbps_per_direction": 172.8,
               "aggregate_directed_bandwidth_gbps": 165542.40000000002,
-              "total_link_length_mm": 5756.562038083211,
-              "mean_link_length_mm": 12.017874818545325
+              "total_link_length_mm": 5756.56203808321,
+              "mean_link_length_mm": 12.017874818545323
             },
             "metrics": {
               "generated_packets": 500,
@@ -2586,8 +2586,8 @@
               "average_degree": 5.91358024691358,
               "link_bandwidth_gbps_per_direction": 256.0,
               "aggregate_directed_bandwidth_gbps": 245248.0,
-              "total_link_length_mm": 5756.562038083211,
-              "mean_link_length_mm": 12.017874818545325
+              "total_link_length_mm": 5756.56203808321,
+              "mean_link_length_mm": 12.017874818545323
             },
             "metrics": {
               "generated_packets": 500,
@@ -3074,8 +3074,8 @@
               "average_degree": 5.91358024691358,
               "link_bandwidth_gbps_per_direction": 256.0,
               "aggregate_directed_bandwidth_gbps": 245248.0,
-              "total_link_length_mm": 5756.562038083211,
-              "mean_link_length_mm": 12.017874818545325
+              "total_link_length_mm": 5756.56203808321,
+              "mean_link_length_mm": 12.017874818545323
             },
             "metrics": {
               "generated_packets": 500,
@@ -3170,8 +3170,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -3292,8 +3292,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -3414,8 +3414,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -3536,8 +3536,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -3658,8 +3658,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 179.2,
             "aggregate_directed_bandwidth_gbps": 43008.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -3780,8 +3780,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -3902,8 +3902,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -4024,8 +4024,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -4146,8 +4146,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -4268,8 +4268,8 @@
             "average_degree": 5.714285714285714,
             "link_bandwidth_gbps_per_direction": 256.0,
             "aggregate_directed_bandwidth_gbps": 61440.0,
-            "total_link_length_mm": 2836.54293507601,
-            "mean_link_length_mm": 23.637857792300085
+            "total_link_length_mm": 2836.5429350760096,
+            "mean_link_length_mm": 23.63785779230008
           },
           "baseline": {
             "generated_packets": 500,
@@ -4416,8 +4416,8 @@
               "average_degree": 5.91358024691358,
               "link_bandwidth_gbps_per_direction": 172.8,
               "aggregate_directed_bandwidth_gbps": 165542.40000000002,
-              "total_link_length_mm": 5756.562038083211,
-              "mean_link_length_mm": 12.017874818545325
+              "total_link_length_mm": 5756.56203808321,
+              "mean_link_length_mm": 12.017874818545323
             },
             "metrics": {
               "generated_packets": 500,
@@ -4904,8 +4904,8 @@
               "average_degree": 5.91358024691358,
               "link_bandwidth_gbps_per_direction": 172.8,
               "aggregate_directed_bandwidth_gbps": 165542.40000000002,
-              "total_link_length_mm": 5756.562038083211,
-              "mean_link_length_mm": 12.017874818545325
+              "total_link_length_mm": 5756.56203808321,
+              "mean_link_length_mm": 12.017874818545323
             },
             "metrics": {
               "generated_packets": 500,
@@ -5026,8 +5026,8 @@
               "average_degree": 5.91358024691358,
               "link_bandwidth_gbps_per_direction": 256.0,
               "aggregate_directed_bandwidth_gbps": 245248.0,
-              "total_link_length_mm": 5756.562038083211,
-              "mean_link_length_mm": 12.017874818545325
+              "total_link_length_mm": 5756.56203808321,
+              "mean_link_length_mm": 12.017874818545323
             },
             "metrics": {
               "generated_packets": 500,
@@ -5514,8 +5514,8 @@
               "average_degree": 5.91358024691358,
               "link_bandwidth_gbps_per_direction": 256.0,
               "aggregate_directed_bandwidth_gbps": 245248.0,
-              "total_link_length_mm": 5756.562038083211,
-              "mean_link_length_mm": 12.017874818545325
+              "total_link_length_mm": 5756.56203808321,
+              "mean_link_length_mm": 12.017874818545323
             },
             "metrics": {
               "generated_packets": 500,

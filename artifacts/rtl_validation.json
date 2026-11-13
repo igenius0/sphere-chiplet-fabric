@@ -1,0 +1,220 @@
+{
+  "checks": {
+    "backpressure_stable_output": "passed",
+    "exact_once_identity_and_order": "passed",
+    "fifo_full_simultaneous_push_pop": "passed",
+    "independent_cycle_reference": "passed",
+    "invalid_destination_rejected": "passed",
+    "invalid_parameters_rejected": "passed",
+    "non_power_of_two_wraparound": "passed",
+    "reset_flush_and_generation": "passed",
+    "round_robin_no_starvation": "passed",
+    "yosys_no_latches_multidrivers_or_combinational_loops": "passed"
+  },
+  "fifo_simulations": [
+    {
+      "cycles": 2052,
+      "depth": 1,
+      "pops": 659,
+      "pushes": 660,
+      "resets_with_data": 1,
+      "simultaneous_full": 342
+    },
+    {
+      "cycles": 2060,
+      "depth": 3,
+      "pops": 864,
+      "pushes": 867,
+      "resets_with_data": 1,
+      "simultaneous_full": 171
+    },
+    {
+      "cycles": 2064,
+      "depth": 4,
+      "pops": 895,
+      "pushes": 899,
+      "resets_with_data": 1,
+      "simultaneous_full": 149
+    }
+  ],
+  "limitations": [
+    "generic synthesis only; no FPGA board build or bitstream",
+    "no placement, routing, timing closure, power, thermal, PHY or silicon validation",
+    "word-level local switch; no HBM protocol, CDC, flit/credit network or complete accelerator"
+  ],
+  "parameter_rejections": [
+    {
+      "module": "sync_fifo",
+      "parameter": "WIDTH",
+      "status": "rejected",
+      "value": 0
+    },
+    {
+      "module": "sync_fifo",
+      "parameter": "DEPTH",
+      "status": "rejected",
+      "value": 0
+    },
+    {
+      "module": "sync_fifo",
+      "parameter": "DEPTH",
+      "status": "rejected",
+      "value": -1
+    },
+    {
+      "module": "sync_fifo",
+      "parameter": "PTR_WIDTH",
+      "status": "rejected",
+      "value": 1
+    },
+    {
+      "module": "sync_fifo",
+      "parameter": "COUNT_WIDTH",
+      "status": "rejected",
+      "value": 1
+    },
+    {
+      "module": "word_fabric_top",
+      "parameter": "PORTS",
+      "status": "rejected",
+      "value": 1
+    },
+    {
+      "module": "word_fabric_top",
+      "parameter": "FIFO_DEPTH",
+      "status": "rejected",
+      "value": 0
+    },
+    {
+      "module": "word_fabric_top",
+      "parameter": "PAYLOAD_WIDTH",
+      "status": "rejected",
+      "value": 0
+    },
+    {
+      "module": "word_fabric_top",
+      "parameter": "SEQUENCE_WIDTH",
+      "status": "rejected",
+      "value": 0
+    },
+    {
+      "module": "word_fabric_top",
+      "parameter": "GENERATION_WIDTH",
+      "status": "rejected",
+      "value": 0
+    },
+    {
+      "module": "word_fabric_top",
+      "parameter": "PORT_WIDTH",
+      "status": "rejected",
+      "value": 1
+    }
+  ],
+  "prototype": "board_agnostic_word_fabric",
+  "schema_version": 1,
+  "simulations": [
+    {
+      "accepted": 4425,
+      "cycles": 3492,
+      "delivered": 4421,
+      "fifo_depth": 1,
+      "full_replacements": 4238,
+      "hotspot_delivered": 1280,
+      "invalid_destination_rejections": 0,
+      "max_fairness_bypasses": 3,
+      "ports": 4,
+      "reset_flushed": 4,
+      "stall_checks": 1627,
+      "trace_sha256": "66680d06d3fd35b1f189333b7ba745572a9ac66c2934f0f98f06895548a7257e"
+    },
+    {
+      "accepted": 4460,
+      "cycles": 3504,
+      "delivered": 4448,
+      "fifo_depth": 3,
+      "full_replacements": 4091,
+      "hotspot_delivered": 1280,
+      "invalid_destination_rejections": 0,
+      "max_fairness_bypasses": 3,
+      "ports": 4,
+      "reset_flushed": 12,
+      "stall_checks": 1632,
+      "trace_sha256": "1f98af878e54d385a635e2e4b040853b079f4924598813ce775efa0764f317e0"
+    },
+    {
+      "accepted": 4529,
+      "cycles": 3510,
+      "delivered": 4513,
+      "fifo_depth": 4,
+      "full_replacements": 4163,
+      "hotspot_delivered": 1280,
+      "invalid_destination_rejections": 0,
+      "max_fairness_bypasses": 3,
+      "ports": 4,
+      "reset_flushed": 16,
+      "stall_checks": 1667,
+      "trace_sha256": "83d809d47398c761e3c6a7762713ac43f47113ea1cc0d3548a3515690b962b53"
+    },
+    {
+      "accepted": 3815,
+      "cycles": 3507,
+      "delivered": 3806,
+      "fifo_depth": 3,
+      "full_replacements": 3536,
+      "hotspot_delivered": 1280,
+      "invalid_destination_rejections": 8,
+      "max_fairness_bypasses": 2,
+      "ports": 3,
+      "reset_flushed": 9,
+      "stall_checks": 1425,
+      "trace_sha256": "beeada7d2d0b0eb3e2b4e2960fdec8736ea5ea39713e519f1f47265b5284b489"
+    }
+  ],
+  "source_hashes": {
+    "docs/RTL_PROTOTYPE.md": "26377228f0442416c012e99d6301aab7b9598cb3c775ee1373d20813479123be",
+    "rtl/sync_fifo.sv": "2e0645b45765f36efa5ccb5563f0bd6dc21faf50df25841108b0f0b8120ec491",
+    "rtl/tb_sync_fifo.sv": "d32ad0cee9d99366f0dd024b5ee6444868dba17f8c41cfde6df0a957705b525e",
+    "rtl/tb_word_fabric.sv": "79ddc5a49c44af47a773bdfe040e3819fa417cf99d92ec2e97c0ee1f277c4493",
+    "rtl/word_fabric_top.sv": "4071bd007e84aab73e6cd456e6a280bf70983e82728127b605faf6ecda2192ae",
+    "scripts/run_rtl_validation.py": "275335a290d01082031832e7897d5b6f93477fcd131795aa7579c3238d36660a",
+    "tests/test_rtl_contract.py": "cb5a3587fcb06b2f7b58b06a2d7de91b189611a0bf430d81ad683b78f196bb9c"
+  },
+  "status": "passed",
+  "synthesis": {
+    "cell_count": 4913,
+    "cells_by_type": {
+      "$_ANDNOT_": 1418,
+      "$_AND_": 38,
+      "$_DFFE_PP_": 928,
+      "$_MUX_": 1080,
+      "$_NAND_": 32,
+      "$_NOR_": 19,
+      "$_NOT_": 948,
+      "$_ORNOT_": 25,
+      "$_OR_": 337,
+      "$_SDFFE_PP0N_": 10,
+      "$_SDFFE_PP0P_": 38,
+      "$_SDFF_PP0_": 8,
+      "$_XNOR_": 9,
+      "$_XOR_": 23
+    },
+    "check": "passed",
+    "memory_bits": 0,
+    "parameters": {
+      "FIFO_DEPTH": 4,
+      "GENERATION_WIDTH": 8,
+      "PAYLOAD_WIDTH": 32,
+      "PORTS": 4,
+      "SEQUENCE_WIDTH": 16
+    },
+    "sequential_cell_count": 984,
+    "top": "word_fabric_top",
+    "warning_count": 6,
+    "wire_bits": 5399
+  },
+  "tool_versions": {
+    "iverilog": "Icarus Verilog version 12.0 (stable) ()",
+    "vvp": "Icarus Verilog runtime version 12.0 (stable) ()",
+    "yosys": "Yosys 0.33 (git sha1 2584903a060)"
+  }
+}

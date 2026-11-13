@@ -1,8 +1,8 @@
 # Research review and evidence status
 
-Review baseline: original main commit `6440633e56af59fbefcb183736994769bd5bcd58`. Corrected publication revision **v1.1.0, 9 November 2026**, updates the paper, its PDF, root `figures/` and `artifacts/` to the current model and evidence. The original April 2026 bundle remains at [Git tag v1.0.1](https://github.com/igenius0/sphere-chiplet-fabric/tree/v1.0.1) and [DOI 10.5281/zenodo.19918238](https://doi.org/10.5281/zenodo.19918238). The revised evidence supersedes the affected original claims; it does not retroactively validate them. See the [publication revision record](PUBLICATION_REVISION.md).
+Review baseline: original main commit `6440633e56af59fbefcb183736994769bd5bcd58`. Corrected publication revision **v1.2.0, 10 November 2026**, updates the paper, its PDF, root `figures/` and `artifacts/` to the current model and evidence. The original April 2026 bundle remains at [Git tag v1.0.1](https://github.com/igenius0/sphere-chiplet-fabric/tree/v1.0.1) and [DOI 10.5281/zenodo.19918238](https://doi.org/10.5281/zenodo.19918238). The revised evidence supersedes the affected original claims; it does not retroactively validate them. See the [publication revision record](PUBLICATION_REVISION.md).
 
-## Findings addressed
+## Baseline findings addressed
 
 | Finding | Correction in this revision | Consequence |
 |---|---|---|
@@ -22,13 +22,17 @@ Review baseline: original main commit `6440633e56af59fbefcb183736994769bd5bcd58`
 | Root publication assets and citation metadata referred to the original model | Rebuild current JSON/figures/generated tables and revise paper/citation metadata; record source and output hashes | Current repository publication and code share an explicit evidence trail |
 | No automated regressions or CI | Independent analytic, CLI, graph, workload, model and adversarial tests; Python 3.10/3.12 CI | Repeatable software correctness checks |
 
+## Prototype implementation added in v1.2.0
+
+The [implementation status](IMPLEMENTATION_STATUS.md) records the new finite-buffer flit model, tiny actual CPU MoE decoder, bounded CRC/retry/generation protocol, synthesizable four-endpoint RTL and physical-measurement harness. [Independent validation](INDEPENDENT_VALIDATION.md) checks event replay, hand-derived timings, numerical references and fault cases. Actual expert-output payloads pass through the transport reference in a separate recovery case; lost ACKs prevent cache/logit commit rather than silently accepting uncertain work. These additions are separate from the flat-topology plots and do not validate physical hardware claims.
+
 ## Claims requiring further work
 
-The Python model has infinite output queues, deterministic shortest-hop BFS and independent full-duplex link capacity. Virtual-channel count is metadata. It does not implement the original paper's proposed adaptive/escape-VC routing, finite buffers, credit backpressure, channel-dependency proof, request/response network, epoch/commit frame protocol, reduction compute or endpoint shared-injection limits. The router is exploratory and event-driven, not cycle accurate.
+The original FabricSim baseline has infinite output queues, shortest-hop BFS and independent full-duplex links; its VC count remains metadata. The separate finite-buffer model adds bounded input queues, credits, endpoint limits and a fixed-route dependency certificate. It does not implement arbitrary adaptive VC transitions or wormhole VC allocation. The bounded transport generation barrier is not the original distributed coordinate-frame prepare/commit protocol. Neither model is a calibrated physical router.
 
 The sphere has twelve degree-five vertices and other degree-six vertices at subdivision two; those vertices are not all graph-equivalent under rotation. Coordinate reorientation preserves distances, topology and ownership. Performance improvement requires an actual change to work/data placement or route policy, with its costs measured.
 
-Synthetic dispatch is not full MoE inference. Periodic-grid stencil placement is aligned with torus wiring. Finite-trace average payload delivery is not a sustained saturation measurement. Static failed edges are not live fault recovery. Delivered-only percentiles must always be read with loss counts.
+The legacy synthetic dispatch proxy is not full MoE inference. The new tiny decoder actually evaluates causal attention, experts and combine against an independent CPU reference, with synthetic weights and logical four-island ownership. It does not establish trained-model quality, multi-device execution or accelerator throughput. Periodic-grid stencil placement is aligned with torus wiring. Finite-trace average payload delivery is not a sustained saturation measurement. Static failed edges are not live fault recovery. Delivered-only percentiles must always be read with loss counts.
 
 The historical 56.5 PFLOPS, 900 GB, 30 TB/s and approximately 2.3 kW describe assumptions/projections, not an implemented processor. The former efficiency ratio and headline timing comparisons should not be reused as validated results. In particular, NVIDIA's H100 datasheet marks 3,958 FP8 TFLOPS with sparsity; assigning that number to a dense field was inconsistent. [NVIDIA source](https://resources.nvidia.com/en-us-gpu/h100-datasheet-24306).
 

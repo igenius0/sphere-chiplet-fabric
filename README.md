@@ -3,9 +3,11 @@
 
 # Spherical Chiplet Fabric — iGenius accelerator research
 
-**Corrected publication revision v1.1.0, 9 November 2026.** Geodesic microprocessor research, a reproducible fabric workbench, and a proposed **compute-near-HBM modular AI accelerator**.
+**Prototype and publication revision v1.2.0, 10 November 2026.** Geodesic microprocessor research, reproducible network experiments, and executable prototypes for a proposed **compute-near-HBM modular AI accelerator**.
 
-The recommended next design uses four local compute/HBM islands, explicit NUMA memory ownership and a budgeted hierarchical network. Geodesic connectivity and spherical packaging are candidates to validate through application, electrical and thermal evidence. The implemented software supplies exploratory models and regression tests; the proposed accelerator still needs its runtime, RTL and physical implementation.
+The design study uses four logical compute/memory islands, explicit ownership and a hierarchical network. This revision adds a bounded flit/credit model, a tiny actual CPU MoE decoder, a fault-injectable transport reference, synthesizable four-endpoint RTL, and a measurement-validation harness. These are scoped reference implementations. FPGA board operation, real HBM/PHY performance, power/cooling measurements and manufactured hardware remain outstanding.
+
+See the **[implementation status](docs/IMPLEMENTATION_STATUS.md)** for exactly what is implemented, what has been tested, and what evidence is still missing. The [independent validation](docs/INDEPENDENT_VALIDATION.md) describes checks that do not rely on the implementation's own assertions.
 
 Start with the **[revised paper](paper/main.pdf)**, [publication revision and evidence map](docs/PUBLICATION_REVISION.md), [architecture recommendation](docs/DESIGN_PROPOSAL.md), [application design](docs/APPLICATION_DESIGN.md), [physical design](docs/PHYSICAL_DESIGN.md), and [validation plan](docs/VALIDATION_PLAN.md). The [changelog](CHANGELOG.md) records corrections to the original claims.
 
@@ -15,12 +17,17 @@ Python 3.10+; no GPU required. From the repository root:
 
 ```bash
 python -m pip install -r requirements.txt
-python -m unittest discover -s tests -v
 python scripts/rebuild_publication.py
+python scripts/run_prototype_validation.py
 python scripts/rebuild_publication.py --check
+python scripts/run_prototype_validation.py --check
+python scripts/build_paper.py
+python -m unittest discover -s tests -v
 ```
 
-The `--check` mode verifies the current generated bundle; rerun it after changing sources or publication inputs. The explicit rebuild refreshes the current root JSON reports, the 40-profile workload sweep, eight PNG/PDF figure pairs, generated LaTeX result tables and a [publication manifest](artifacts/publication_manifest.json). To reproduce into a separate directory, use `python scripts/rebuild_publication.py --output-root /absolute/directory`. The manifest records exact source SHA-256 fingerprints, configurations, dependency versions and generated-output hashes; it does not substitute an earlier Git commit for uncommitted source.
+The prototype rebuild requires **Icarus Verilog** (`iverilog`, `vvp`) and **Yosys** on `PATH`; the paper build requires `pdflatex`. Reading the committed JSON or running the three builders' `--check` modes does not require the hardware tools or TeX. Individual numerical inference uses NumPy. CI installs the external tools and executes the RTL checks instead of relying on optional local skips.
+
+The baseline rebuild refreshes the current root JSON reports, 40-profile workload sweep, eight PNG/PDF figure pairs, generated tables and [model manifest](artifacts/publication_manifest.json). The prototype runner refreshes [prototype evidence](artifacts/prototype_validation.json), [RTL evidence](artifacts/rtl_validation.json), generated prototype macros and a separate [prototype manifest](artifacts/prototype_manifest.json). Both evidence builders accept `--output-root /absolute/directory` for isolated reproduction. Manifests record exact source bytes, inputs, dependency/tool versions and output hashes; they do not attribute uncommitted changes to an earlier Git commit.
 
 With a LaTeX installation, build and verify the revised paper from the repository root:
 
@@ -29,7 +36,26 @@ python scripts/build_paper.py
 python scripts/build_paper.py --check
 ```
 
-The committed `paper/main.pdf` is the rendered paper. The data rebuild and paper build are separate steps. The paper builder runs the required LaTeX passes with deterministic settings and writes [paper/publication_manifest.json](paper/publication_manifest.json), recording the exact paper sources, generated tables, citation metadata, current figure PDFs, model-manifest and build-script hashes, the PDF hash and LaTeX engine information. Run both `--check` commands after publication inputs change. Direct `pdflatex` compilation is possible, but does not refresh the paper manifest; use the builder to produce an attributed publication bundle.
+The committed `paper/main.pdf` is the rendered paper. Its [manifest](paper/publication_manifest.json) ties the exact paper, baseline/prototype tables, citation metadata, figure PDFs, both evidence manifests and build script to the PDF hash and TeX version. Run all three builders' `--check` modes after changing inputs. Direct `pdflatex` is useful for drafting; use the builder to refresh the paper's provenance.
+
+## Run the new prototypes
+
+```bash
+python -m sim.moe_inference --config examples/moe_inference.json --output generated/inference.json
+python -m sim.transport --output generated/transport.json
+python -m sim.physical_validation --manifest examples/measurements/missing_hardware.json --output generated/physical.json
+python scripts/run_rtl_validation.py --output generated/rtl.json
+```
+
+| Component | Implemented scope | Detail |
+|---|---|---|
+| Finite network | Per-input/VC flit buffers, delayed credits, bounded endpoints, fair arbitration, explicit cutoffs and fixed-route dependency certificate | [Model contract](docs/FINITE_BUFFER_MODEL.md) |
+| Tiny inference | Actual synthetic-weight causal attention, KV cache, top-k experts and combine on one CPU with four logical owners; independent full-prefix reference and actual expert-payload fault recovery | [Inference prototype](docs/INFERENCE_PROTOTYPE.md) |
+| Transport | CRC32, bounded retries, duplicate suppression, generation aborts and explicit uncertain delivery after ACK loss | [Protocol reference](docs/TRANSPORT_PROTOCOL.md) |
+| RTL | Synchronous buffers and fair four-endpoint word fabric; simulation and generic synthesis | [RTL prototype](docs/RTL_PROTOTYPE.md) |
+| Physical evidence | Strict BER, voltage, power, temperature and coverage assessment of supplied measurements | [Measurement protocol](docs/PHYSICAL_VALIDATION_PROTOCOL.md) |
+
+The supplied missing-hardware manifest returns `INSUFFICIENT_EVIDENCE` with expected CLI exit status 2. Synthetic fixtures are never evidence of measured hardware. CRC32 is accidental-error detection, not authentication; the Python transport, flit model and RTL switch have separate documented timing/architecture contracts. In the optional reliable inference path, an uncertain expert contribution prevents token combine, accepted logits and KV-cache commit.
 
 ## Run individual experiments
 
@@ -53,9 +79,9 @@ The reference capacity model exposes an important bound: **30 TB/s of assumed lo
 
 ## Evidence and limitations
 
-The simulator schedules chronological store-and-forward hop events with infinite output queues. It models directed-link serialization, propagation and queueing. Finite buffers, credit/VC arbitration, adaptive escape routing, endpoint shared-injection, HBM transactions, thermal behaviour and physical link feasibility require further work. Batch concurrent traffic must use `FabricSim.send_batch()`; `send_packet()` retains incremental reservations.
+The original `FabricSim` used by the eight publication plots remains an infinite-output-queue store-and-forward baseline. `sim.finite_buffer` is a separate clocked, bounded-input model; its fixed spanning-tree routes leave non-tree links unused, and its per-flit metadata does not implement wormhole header/VC allocation or adaptive routing. Its dependency certificate applies to those fixed routes. Batch baseline traffic uses `FabricSim.send_batch()`; `send_packet()` retains incremental reservations.
 
-See the [research review](docs/RESEARCH_REVIEW.md) and [independent adversarial review](docs/ADVERSARIAL_REVIEW.md) for corrected defects, superseded claims and remaining validation gaps. GitHub Actions runs the regression suite on Python 3.10 and 3.12. Successful software checks do not validate silicon, cooling or inference accuracy.
+GitHub Actions runs Python 3.10/3.12 regressions, actual RTL simulation/synthesis, prototype rebuilds and paper compilation. Numerical reference agreement applies to the tiny synthetic decoder; it does not establish pretrained model quality, production inference performance, FPGA operation or physical feasibility. See the [research review](docs/RESEARCH_REVIEW.md), [adversarial review](docs/ADVERSARIAL_REVIEW.md) and [validation plan](docs/VALIDATION_PLAN.md).
 
 ## Publication history and citation
 

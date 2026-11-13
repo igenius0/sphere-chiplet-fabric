@@ -1,6 +1,6 @@
 # Validation and iteration plan
 
-Publication/evidence revision **v1.1.0, 9 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
+Publication/evidence revision **v1.2.0, 10 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
 This plan defines how to select a useful accelerator architecture from the
 spherical/geodesic concept and its alternatives. The thresholds below are
 **proposed engineering decision gates**, not achieved results or a claim that
@@ -8,11 +8,14 @@ one topology is universally best. Keep failed experiments and counterexamples.
 
 ## What the current repository can establish
 
-The Python model can check graph connectivity, deterministic routes, packet
-serialization, directed-link contention and static link-removal sensitivity.
-Its application workloads are synthetic communication proxies. It does not
-execute a model, validate numerical outputs, implement credit-based router RTL,
-measure electrical links, or establish silicon power and cooling feasibility.
+The baseline model checks graph connectivity, routes, packet serialization,
+directed-link contention and static link-removal sensitivity. Its original
+workloads remain communication proxies. Revision v1.2.0 adds a separate
+finite-buffer/credit model, tiny numerical MoE decoder, bounded transport
+reference, word-switch RTL and measurement harness. Their tested contracts
+are listed in the [implementation status](IMPLEMENTATION_STATUS.md).
+These do not supply FPGA-board, electrical, full-system power or cooling
+measurements or establish product performance and silicon feasibility.
 
 The revised 42-rank example reports, at the same aggregate link-bandwidth
 budget, MoE-dispatch p99 latency of approximately 277.21 ns for the sphere and
@@ -37,7 +40,7 @@ peaks or selecting spherical packaging.
 
 ## First five affordable experiment bundles
 
-Rebuild the committed publication evidence with `python scripts/rebuild_publication.py`, then build the paper with `python scripts/build_paper.py`. Verify both builders with their `--check` modes and inspect `artifacts/publication_manifest.json` plus `paper/publication_manifest.json`. Run the experiments below from the repository root after installing `requirements.txt`.
+Rebuild the baseline evidence with `python scripts/rebuild_publication.py`, the executable prototype evidence with `python scripts/run_prototype_validation.py`, and then the paper with `python scripts/build_paper.py`. Verify all three with `--check` and inspect their separate manifests. Run the experiments below from the repository root after installing `requirements.txt`.
 The commands are starting points; the complete matrices below are planned
 validation work and are not represented as already executed.
 
@@ -49,11 +52,10 @@ validation work and are not represented as already executed.
 | 4. Static failure sensitivity | `python sim/run_workloads.py --config examples/moe_dispatch.json --failed-links 5 --seed 100 --output generated/validation/moe-f5-s100.json` | Sweep 0/1/5/20 links and multiple seeds. Report removed-link fraction as well as count, all unreachable packets, surviving throughput and latency. An apparent p99 improvement after failure can reflect route redistribution or selection of surviving traffic. |
 | 5. Geometry, load and collectives | `python sim/run_evaluation.py --subdivisions 1 --n-packets 2000 --seed 100 --output-dir generated/validation/evaluation-s100` | Inspect the hop/latency distributions and offered-load curves. Compare ring/tree with equal full per-rank payload, reporting ring chunk size. A selected balanced coordinate cut is a cut-capacity estimate, not a minimum-bisection proof. |
 
-The current workload CLI supports fixed placement and seeded static failures.
+The original workload CLI supports fixed placement and seeded static failures.
 It does **not** yet import application traces, optimize placement, inject
 failures during execution, or simulate an MoE dispatch-compute-combine step.
-Add those capabilities and their tests before claiming the corresponding
-experiments have been completed.
+The separate tiny decoder and transport reference cover scoped numerical and fault cases; they do not make this legacy CLI a full application-trace simulator.
 
 Use seeds 0–9 for development and seeds 100–109 for the first frozen validation
 matrix. New seed ranges are cheap additional checks; truly held-out workload
@@ -87,9 +89,11 @@ delivery fraction and completed useful work. Show all validation cases, not
 only a geometric average or selected wins.
 
 A finite trace with infinite queues eventually drains. Its drain-inclusive
-payload rate is not a sustained, bounded-queue saturation guarantee. Add
-warm-up, steady-state windows, queue occupancy and finite-buffer backpressure
-in the detailed model before quoting saturation capacity. Latency calculated
+payload rate is not a sustained, bounded-queue saturation guarantee. The new
+bounded model exposes queue occupancy and backpressure, but its drain-inclusive
+rate is also not a steady-state capacity measurement. Add explicit warm-up and
+steady-state measurement windows, then calibrate the modeled service before
+quoting saturation capacity. Latency calculated
 only for surviving packets must always appear beside loss/rejection counts.
 
 ## Model and application cross-checks
@@ -132,6 +136,21 @@ The application and p99 thresholds are proposed starting criteria for design
 selection. Freeze or revise them openly with the product requirements before
 examining the held-out results. A successful application result does not waive
 physical signoff or transport correctness.
+
+The current support for these gates is deliberately narrower than completion:
+
+| Gate | Evidence present in v1.2.0 | Outstanding evidence |
+|---|---|---|
+| G0 | Regression/oracle suites, strict reports and source/output manifests | Review the final revision's executed suite and preserve its passing evidence; hashes alone do not execute tests |
+| G1 | Tiny numerical inference, logical ownership and communication byte accounting | Trained-model quality, real traces, calibrated compute/HBM and equal-resource application performance/energy |
+| G2 | Bounded software credit invariants, fixed-route dependency certificate, bounded transport cases and local RTL tests | Full router/protocol refinement, formal assertions/liveness, CDC/RDC and adaptive/VC transition proof |
+| G3 | Board-agnostic synthesizable word switch with actual simulation and generic synthesis | Board choice, constraints, place/route, timing closure, bitstream and measured trace I/O |
+| G4 | Strict measurement loader, configured limits and coverage assessment | Real calibrated lane/corner BER, SI/PI, voltage, power and thermal/coolant records |
+| G5 | Architecture proposal and prototype evidence | Product PPA, DFT, signoff, package cost/yield and production-test results |
+
+No application throughput/J or physical acceptance gate is claimed complete.
+The [implementation status](IMPLEMENTATION_STATUS.md) and
+[measurement protocol](PHYSICAL_VALIDATION_PROTOCOL.md) record these boundaries.
 
 For the original paper's proposed escape VC plus adaptive VCs, the specification must
 also define legal VC transitions, injection/ejection dependencies, request and

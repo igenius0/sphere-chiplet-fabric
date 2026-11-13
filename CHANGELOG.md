@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.2.0 — 10 November 2026
+
+Add executable software and RTL prototypes for the proposed compute-near-HBM accelerator, with separate evidence and publication attribution. The architecture remains a hardware proposal; the tiny numerical path runs on one CPU with four logical island owners.
+
+- Add a clocked finite-buffer flit model with bounded input/VC queues, delayed credits, endpoint limits, fair arbitration, sink backpressure, explicit cutoffs and a fixed-route channel-dependency certificate.
+- Add a tiny synthetic-weight NumPy causal MoE decoder with prefill/decode KV cache, actual expert computation, dispatch/combine byte accounting and an independent full-prefix numerical reference. An optional reliable contribution path tests actual expert payload recovery and cache noncommit after uncertain delivery.
+- Add a bounded CRC32/ACK/retry transport reference with duplicate suppression, generation barriers, resource release and explicit uncertain sender outcomes after lost acknowledgments. Its logical ticks are separate from network cycles.
+- Add synthesizable synchronous FIFO and local word-fabric RTL, actual Icarus simulations, independent cycle oracles and generic Yosys synthesis. This is a local-switch baseline rather than a hardware realization of the multi-hop Python flit model.
+- Add strict physical-measurement assessment and documented coverage requirements. Missing or synthetic inputs cannot establish measured BER, voltage, power or thermal acceptance.
+- Add `scripts/run_prototype_validation.py`, committed prototype/RTL reports, generated paper macros and a separate exact-source/output manifest. Extend CI and the paper builder to include this evidence alongside the baseline experiment bundle.
+- Synchronize the paper, citation metadata and technical documents with the implemented scope and remaining gates. The eight baseline plot pairs and sensitivity-study numbers remain results of the separate infinite-output-queue model; they do not validate the new finite-buffer model or proposed hierarchy.
+
+The [implementation status](docs/IMPLEMENTATION_STATUS.md) and [independent validation](docs/INDEPENDENT_VALIDATION.md) define the tested contracts. No trained-model quality, multi-device or real-HBM performance, FPGA-board operation, timing closure, formal RTL proof, measured PHY/BER/power/thermal result or full-system efficiency is claimed. The existing DOI continues to identify only the original historical archive.
+
 ## v1.1.0 — 9 November 2026
 
 Corrected research-software and publication revision. The main paper, current root figures and JSON reports, generated LaTeX tables, README, technical documents and citation metadata now describe the same corrected model and evidence. The four-island compute-near-HBM architecture is a proposed next design, version v0.2.
@@ -14,9 +28,9 @@ Corrected research-software and publication revision. The main paper, current ro
 - Add `scripts/rebuild_publication.py` to refresh current data, eight plot pairs, generated paper tables and the model/data publication manifest; `--check` verifies the bundle.
 - Add `scripts/build_paper.py` for deterministic LaTeX compilation and a separate paper manifest with exact source/PDF hashes and compiler information; its `--check` verifies paper attribution.
 
-### Original claims and current treatment
+### Original claims and corrected v1.1.0 treatment
 
-| Earlier presentation | Corrected treatment |
+| Earlier presentation | Treatment at v1.1.0 |
 |---|---|
 | Event-driven simulation described as cycle accurate | Exploratory chronological store-and-forward model with infinite queues; no finite-buffer/credit/VC router |
 | Simultaneous burst described as unloaded/uncontended latency | Every isolated probe resets link reservations; concurrent traffic uses chronological batch events |

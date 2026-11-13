@@ -1,7 +1,11 @@
 # Independent adversarial review
 
+Publication/evidence revision **v1.2.0, 10 November 2026**.
+
 This review checks whether the implementation can falsify its own results. It
 does not establish hardware performance or prove that a topology is optimal.
+The historical findings below concern the original `FabricSim` baseline;
+the separate prototype checks are summarized afterward.
 
 ## Findings and required resolutions
 
@@ -42,11 +46,28 @@ not certify later changes.
 The fixed seeds make failures repeatable. Small analytic graphs supply timing
 oracles; graph comparisons do not hard-code a scientific winner.
 
+## Prototype review added in v1.2.0
+
+The [independent validation record](INDEPENDENT_VALIDATION.md) describes the
+separate oracles and held-out cases for the new implementations:
+
+| Area | Adversarial checks | Evidence boundary |
+|---|---|---|
+| Bounded flit network | Replay actual FIFO/credit events, reconstruct fixed-route dependencies, vary sink stalls and latencies, and account for cutoff state | Fixed tree routes and finite traces; no adaptive/wormhole router or formal RTL proof |
+| Tiny inference | Compare cached logits with separate full-prefix numerical paths, check contribution identities and byte/memory ledgers, and reject missing or corrupt network results before cache commit | Actual synthetic-weight CPU arithmetic with logical owners; no trained-model quality or real HBM timing |
+| Contribution transport | Compare exact payload bytes under corruption, drops, duplicates and reorder; verify lost ACKs remain uncertain and old generations cannot contaminate reuse | Shared admission oracle, finite session and logical ticks; no durable distributed commit or PHY fault measurement |
+| Local RTL | Compare every tested cycle with an independent queue/arbitration oracle; check stalls, reset flush, wrap and contention | Actual RTL simulation and generic synthesis; no universal formal proof, FPGA timing or board result |
+| Physical assessment | Reject malformed/incomplete measurements and prevent synthetic fixtures from qualifying measured acceptance | Assessment software only; no real instrument evidence supplied |
+
+These checks do not change the evidence scope of the original baseline plots.
+See the [implementation status](IMPLEMENTATION_STATUS.md) for remaining gates.
+
 ## Interpretation limits that remain
 
-1. Infinite output queues do not test finite-buffer deadlock, credit
+1. The original `FabricSim` baseline's infinite output queues do not test finite-buffer deadlock, credit
    starvation, head-of-line blocking, packet drops or VC arbitration. The
-   `vcs` argument is metadata in this model.
+   `vcs` argument remains metadata in that model. The separate bounded model
+   has its own tested queue/credit contract and restricted routing certificate.
 2. `send_packet` retains previously submitted reservations. Concurrent
    experiments must use `send_batch` or the batched traffic runners.
 3. Delivered-only percentiles can improve when a failure removes difficult
@@ -62,11 +83,13 @@ oracles; graph comparisons do not hard-code a scientific winner.
 7. A paper or archived figure does not inherit new validation merely because
    the code has been corrected. The current paper and figures are regenerated
    with explicit model/configuration attribution and source/output hashes in
-   `artifacts/publication_manifest.json`. The original archive retains its
+   `artifacts/publication_manifest.json`; prototype evidence has its own
+   `artifacts/prototype_manifest.json`. The original archive retains its
    original evidence status; see [publication revision](PUBLICATION_REVISION.md).
 
 Run the focused review with:
 
 ```bash
 python -m unittest discover -s tests -p test_adversarial.py -v
+python -m unittest discover -s tests -p test_prototype_integration.py -v
 ```
