@@ -3,6 +3,16 @@
 Publication/evidence revision **v1.2.0, 10 November 2026**; see the [revision and evidence map](PUBLICATION_REVISION.md).
 Status: engineering proposal, 10 November 2026. No placement, routing, package extraction, silicon implementation or thermal qualification has been completed. Numbers derived from the repository are analytical bounds. External examples establish available technology classes, not access to compatible chiplets or a manufacturing quotation.
 
+## External-cooling candidate, 13 November 2026
+
+Architecture study v0.3 specifies removable outward-facing cold-plate segments,
+parallel balanced coolant branches and a planar comparison. The internal coolant
+core is omitted from this candidate, subject to thermal/mechanical validation.
+The [experiment protocol](EXTERNAL_COOLING_EXPERIMENT.md) defines contact,
+flow, pressure, pump-power, fault and uncertainty records; no CAD or fabricated
+assembly exists. The [execution plan](FOUR_ISLAND_EXECUTION_PLAN.md) separates
+the heater vehicle from the functional FPGA demonstration.
+
 ## Recommended direction
 
 Build a modular accelerator around **compute and HBM islands with explicit memory locality**, then select the inter-island network using application traces and a costed floorplan. Keep the geodesic network as a candidate. Evaluate a physical spherical shell independently, after the network and memory architecture earn their cost.

@@ -1,5 +1,15 @@
 # Changelog
 
+## Architecture study v0.3 — 13 November 2026 (post-publication planning)
+
+- Specify four local compute/HBM islands and separate FPGA and heater demonstrators.
+- Define segmented external cooling as the shell candidate, with a planar control,
+  balanced parallel branches, contact/flow/pressure/power capture and fault checks.
+- Add empty capture and acceptance CSV templates; explicitly document gaps in
+  the current automated physical checker.
+- Preserve publication v1.2.0, its results/manifests and all missing-hardware gates.
+  No board, CAD, hardware measurement or cooling-performance result is added.
+
 ## v1.2.0 — 10 November 2026
 
 Add executable software and RTL prototypes for the proposed compute-near-HBM accelerator, with separate evidence and publication attribution. The architecture remains a hardware proposal; the tiny numerical path runs on one CPU with four logical island owners.

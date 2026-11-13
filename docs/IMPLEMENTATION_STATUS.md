@@ -13,6 +13,15 @@ Revision **v1.2.0, 10 November 2026**. This revision moves several design gaps i
 
 The [prototype evidence](../artifacts/prototype_validation.json) records the executed scenarios and explicit scope. [RTL evidence](../artifacts/rtl_validation.json) records actual tool versions and synthesis statistics. The [prototype manifest](../artifacts/prototype_manifest.json) identifies source/config/test bytes and generated outputs. Unit-test files are identified by hash; CI separately executes them.
 
+## Prospective architecture study v0.3 — 13 November 2026
+
+The [four-island execution plan](FOUR_ISLAND_EXECUTION_PLAN.md) and
+[external-cooling experiment](EXTERNAL_COOLING_EXPERIMENT.md) now specify the
+next functional and thermal demonstrations. Two empty capture/review CSV
+templates accompany the thermal protocol. No board integration, CAD, new
+application benchmark or physical evidence is supplied by these planning
+additions; all outstanding gates below remain outstanding.
+
 ## Integration contract
 
 The inference prototype uses the finite-buffer network for dispatch and combine scheduling and checks complete flit/credit accounting before phase transitions. CPU arrays supply actual numerical values and a separate logical ownership/byte ledger. The optional reliable contribution path carries serialized outputs from actual expert MLPs; a recoverable-fault case matches reference logits, while lost ACKs prevent combine, accepted logits and cache commit even when the receiver accepted the payloads. The standalone protocol reference also exercises numeric payload recovery, generation barriers and uncertain sender outcomes. Protocol ticks are separate from network cycles. The RTL is a word-switch baseline, not a bit-for-bit hardware realization of the Python multi-hop flit model.

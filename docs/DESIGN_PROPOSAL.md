@@ -2,6 +2,16 @@
 
 Engineering recommendation, 10 November 2026. Publication/evidence revision: [v1.2.0](PUBLICATION_REVISION.md). This is a candidate to build and validate, not a claim to have found the world's fastest processor. The selection objective is useful application throughput and energy at a fixed numerical-accuracy and request-latency target, with manufacturable packaging and defined failure behaviour.
 
+## Next iteration: architecture study v0.3
+
+The [four-island execution plan](FOUR_ISLAND_EXECUTION_PLAN.md), dated
+13 November 2026, makes the next steps explicit. Retain local compute/HBM and
+planar packaging as the reference. Test removable external cold-plate segments
+for the optional faceted shell in place of a central coolant core; no thermal
+advantage or hardware qualification is claimed. See the
+[cooling experiment](EXTERNAL_COOLING_EXPERIMENT.md). Published v1.2.0 results
+are unchanged.
+
 ## Recommended architecture
 
 Start with **four compute/HBM islands, explicit NUMA memory ownership and a hierarchical inter-island fabric**. Each study island contains two compute chiplets, a memory/IO complex, local SRAM and one HBM stack. This gives eight compute chiplets and four stacks for initial architecture sizing; the counts are proposals, not a purchasable component list or completed layout. The application document also gives an eight-island scaling/capacity example, after the smaller platform passes validation.

@@ -6,6 +6,15 @@ spherical/geodesic concept and its alternatives. The thresholds below are
 **proposed engineering decision gates**, not achieved results or a claim that
 one topology is universally best. Keep failed experiments and counterexamples.
 
+## Immediate execution packages, 13 November 2026
+
+Use the [four-island plan](FOUR_ISLAND_EXECUTION_PLAN.md) for the next functional
+prototype and the [external-cooling protocol](EXTERNAL_COOLING_EXPERIMENT.md)
+for the separate heater experiment. Flow, pressure, leak integrity, mechanical
+contact and cooling-power comparisons require additional captures and review;
+the current physical measurement checker does not assess all these criteria.
+These additions define pending work and do not advance any hardware gate.
+
 ## What the current repository can establish
 
 The baseline model checks graph connectivity, routes, packet serialization,

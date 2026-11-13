@@ -11,6 +11,15 @@ See the **[implementation status](docs/IMPLEMENTATION_STATUS.md)** for exactly w
 
 Start with the **[revised paper](paper/main.pdf)**, [publication revision and evidence map](docs/PUBLICATION_REVISION.md), [architecture recommendation](docs/DESIGN_PROPOSAL.md), [application design](docs/APPLICATION_DESIGN.md), [physical design](docs/PHYSICAL_DESIGN.md), and [validation plan](docs/VALIDATION_PLAN.md). The [changelog](CHANGELOG.md) records corrections to the original claims.
 
+## Next hardware iteration
+
+The [four-island execution plan](docs/FOUR_ISLAND_EXECUTION_PLAN.md) and
+[segmented external-cooling experiment](docs/EXTERNAL_COOLING_EXPERIMENT.md)
+define architecture study v0.3 (13 November 2026). They specify separate FPGA
+and heater demonstrators, a planar reference and the evidence needed before
+selecting shell packaging. These are prospective plans; the publication and
+measured-hardware status remain v1.2.0 as described above.
+
 ## Rebuild the publication
 
 Python 3.10+; no GPU required. From the repository root:
